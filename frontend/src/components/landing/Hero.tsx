@@ -1,54 +1,109 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { ArrowUpRight, PlayCircle, Leaf } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden min-h-screen flex items-center">
-      {/* Background with slight blur and gradient overlay */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/image.png)' }}
-      >
-        <div className="absolute inset-0 bg-white/70 backdrop-blur-sm bg-gradient-to-b from-white/60 to-[#f9fafb]"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+    <section className="relative pt-32 pb-0 overflow-hidden min-h-[90vh] flex flex-col bg-white">
+      
+      {/* Top Text Content */}
+      <div className="max-w-5xl mx-auto px-6 relative z-10 w-full flex-grow flex flex-col items-center text-center mt-12">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-3xl mx-auto text-center"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100/80 text-green-700 text-sm font-medium mb-6 border border-green-200 backdrop-blur-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
-            </span>
-            Live Matching Active
+          {/* Top Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-200 text-gray-600 text-xs font-medium mb-8 bg-white/50 backdrop-blur-sm shadow-sm">
+            <span className="text-green-500"><Leaf size={14} /></span>
+            100% Renewable power source
+            <span className="ml-2 text-gray-300">✦</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight leading-tight mb-6">
-            Stop Wasting <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-700">Renewable Energy</span>
+          {/* Heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-[#1a1a1a] tracking-tight leading-[1.1] mb-6">
+            Renewable Power For Tomorrow,<br className="hidden md:block" />
+            Infinite Clean Solutions
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Match surplus solar & wind power with flexible industrial demand in real-time. Optimize your grid, save costs, and accelerate the transition to clean energy.
+          {/* Subheading */}
+          <p className="text-base md:text-lg text-gray-500 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+            Sustainable energy solutions engineering, analyzing, and executing solar projects for homes, businesses, and large-scale commercial clients.
           </p>
           
+          {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-medium text-white bg-green-500 hover:bg-green-600 transition-all shadow-lg shadow-green-500/25 flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-[0.98]">
-              Explore Platform
-              <ArrowRight size={18} />
+            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-3.5 rounded-full text-sm font-medium text-white bg-[#2d4a3e] hover:bg-[#1f362b] transition-all shadow-md flex items-center justify-center gap-2">
+              <Leaf size={16} />
+              Explore Options
             </Link>
-            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-[0.98] shadow-sm">
-              <PlayCircle size={18} className="text-gray-400" />
-              See Demo
+            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-3.5 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 shadow-sm">
+              <PlayCircle size={16} className="text-gray-400" />
+              How it works
             </Link>
           </div>
         </motion.div>
+      </div>
+
+      {/* Floating Elements & Image Section */}
+      <div className="relative w-full mt-16 max-w-7xl mx-auto flex-grow flex items-end justify-center">
+        
+        {/* Floating Left Widget */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="hidden md:flex absolute left-8 bottom-32 bg-white/80 backdrop-blur-md border border-white p-3 rounded-2xl shadow-xl items-center gap-3 z-20"
+        >
+          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+            <ArrowUpRight size={20} />
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Efficiency</p>
+            <p className="text-sm font-bold text-gray-900">72% increased</p>
+          </div>
+        </motion.div>
+
+        {/* Floating Right Widget */}
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+          className="hidden md:flex absolute right-8 bottom-32 bg-white/80 backdrop-blur-md border border-white p-2 rounded-full shadow-xl items-center gap-3 z-20"
+        >
+          <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-transform">
+             <PlayCircle size={24} />
+          </div>
+        </motion.div>
+
+        {/* Main Illustration Image */}
+        <div className="relative z-10 w-full max-w-5xl mx-auto">
+          <img 
+            src="/image.png" 
+            alt="Renewable Energy Illustration" 
+            className="w-full h-auto object-contain object-bottom drop-shadow-2xl mix-blend-multiply"
+          />
+        </div>
+        
+        {/* Soft bottom fade gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-20"></div>
+      </div>
+
+      {/* Partners Ticker */}
+      <div className="w-full border-t border-gray-100 py-6 bg-white relative z-30">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center overflow-x-auto gap-8 text-sm font-semibold text-gray-300 uppercase tracking-widest no-scrollbar">
+          <span>OVO</span>
+          <span>Bower</span>
+          <span>Umney</span>
+          <span>Vestas</span>
+          <span>NPE</span>
+          <span>Winds</span>
+          <span>Concept</span>
+          <span>SolarC</span>
+          <span>Inverter</span>
+          <span>ARC</span>
+        </div>
       </div>
     </section>
   );
