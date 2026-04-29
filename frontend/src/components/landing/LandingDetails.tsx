@@ -39,7 +39,7 @@ export default function LandingDetails() {
     <div className="bg-white">
 
       {/* ── STATS STRIP ── */}
-      <section className="border-y border-gray-100 py-14">
+      <section className="border-y border-gray-100 py-14 bg-gray-50">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10">
           {stats.map((s, i) => (
             <motion.div key={i} {...fadeUp(i * 0.08)} className="text-center">
@@ -51,7 +51,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-28 px-6">
+      <section className="py-28 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-16">
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Platform</p>
@@ -158,7 +158,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── PRICING ── */}
-      <section className="py-28 px-6">
+      <section className="py-28 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-16">
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Pricing</p>
@@ -228,7 +228,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp()}
             className="rounded-3xl bg-gray-900 px-10 py-16 text-center relative overflow-hidden"
@@ -258,7 +258,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-gray-100 bg-white">
+      <footer className="border-t border-gray-100 bg-white">  
         <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
 
           {/* Top row */}
