@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
-import { Leaf, Factory, Sparkles } from 'lucide-react';
+import { Leaf, Factory, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Signup() {
@@ -20,108 +20,118 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9fafb] flex font-sans selection:bg-green-500 selection:text-white">
-      {/* Left Form Section */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24">
-        <div className="w-full max-w-md mx-auto">
-          <Link to="/" className="inline-flex items-center gap-2 mb-12">
-            <Sparkles size={20} className="text-gray-400" />
-            <span className="text-xl font-medium tracking-tight text-[#1a1a1a]">SurplusGrid</span>
-          </Link>
+    <div className="min-h-screen bg-bg-deep flex flex-col font-body selection:bg-accent-primary selection:text-white">
+      {/* Top Navbar Minimal */}
+      <div className="h-20 border-b border-border-subtle flex items-center px-8">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded bg-accent-primary/20 flex items-center justify-center border border-accent-primary/30">
+            <Leaf size={16} className="text-accent-primary" />
+          </div>
+          <span className="text-xl font-display font-bold tracking-tight text-text-primary">SurplusGrid</span>
+        </Link>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          className="w-full max-w-xl glass-card p-10 relative overflow-hidden"
+        >
+          {/* Accent line */}
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-accent-primary to-warning"></div>
           
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-2">Create an account</h2>
-            <p className="text-gray-500 mb-8 font-light">Join the clean energy transition today.</p>
+          <div className="mb-10 text-center">
+            <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Grid Registration</h2>
+            <p className="text-text-secondary font-mono text-xs uppercase tracking-widest">Select operating mode</p>
+          </div>
 
-            <div className="flex bg-gray-100 p-1 rounded-xl mb-8">
-              <button
-                type="button"
-                onClick={() => setRole('producer')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  role === 'producer'
-                    ? 'bg-white text-green-700 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                <Leaf size={16} />
-                Producer
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole('consumer')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  role === 'consumer'
-                    ? 'bg-white text-blue-700 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                <Factory size={16} />
-                Consumer
-              </button>
-            </div>
-
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Company Name</label>
-                <input 
-                  type="text" 
-                  required 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-white text-sm"
-                  placeholder="e.g. Acme Solar"
-                />
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <button
+              type="button"
+              onClick={() => setRole('producer')}
+              className={`p-6 rounded border transition-all text-left flex flex-col ${
+                role === 'producer'
+                  ? 'bg-bg-surface border-accent-primary shadow-[0_0_15px_rgba(29,158,117,0.15)]'
+                  : 'bg-bg-deep border-border-subtle hover:border-text-secondary'
+              }`}
+            >
+              <div className={`w-10 h-10 rounded flex items-center justify-center mb-4 ${role === 'producer' ? 'bg-accent-primary/20 text-accent-primary' : 'bg-bg-surface text-text-secondary'}`}>
+                <Zap size={20} />
               </div>
+              <span className={`font-display font-bold mb-1 ${role === 'producer' ? 'text-accent-primary' : 'text-text-primary'}`}>I am a Producer</span>
+              <span className="font-mono text-[10px] text-text-secondary uppercase tracking-widest leading-relaxed">Log surplus windows to grid</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('consumer')}
+              className={`p-6 rounded border transition-all text-left flex flex-col ${
+                role === 'consumer'
+                  ? 'bg-bg-surface border-warning shadow-[0_0_15px_rgba(245,166,35,0.15)]'
+                  : 'bg-bg-deep border-border-subtle hover:border-text-secondary'
+              }`}
+            >
+              <div className={`w-10 h-10 rounded flex items-center justify-center mb-4 ${role === 'consumer' ? 'bg-warning/20 text-warning' : 'bg-bg-surface text-text-secondary'}`}>
+                <Factory size={20} />
+              </div>
+              <span className={`font-display font-bold mb-1 ${role === 'consumer' ? 'text-warning' : 'text-text-primary'}`}>I am a Consumer</span>
+              <span className="font-mono text-[10px] text-text-secondary uppercase tracking-widest leading-relaxed">Absorb load from surplus</span>
+            </button>
+          </div>
+
+          <form onSubmit={handleSignup} className="space-y-5">
+            <div>
+              <label className="block text-[11px] font-mono text-text-secondary uppercase tracking-widest mb-1.5">Facility Name</label>
+              <input 
+                type="text" 
+                required 
+                className="w-full px-4 py-3 rounded bg-bg-deep border border-border-subtle focus:ring-1 focus:ring-accent-primary focus:border-accent-primary transition-colors text-text-primary text-sm font-mono"
+                placeholder="e.g. Acme Solar / Acme Steel"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+                <label className="block text-[11px] font-mono text-text-secondary uppercase tracking-widest mb-1.5">Authorized Email</label>
                 <input 
                   type="email" 
                   required 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-white text-sm"
-                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 rounded bg-bg-deep border border-border-subtle focus:ring-1 focus:ring-accent-primary focus:border-accent-primary transition-colors text-text-primary text-sm font-mono"
+                  placeholder="admin@facility.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                <label className="block text-[11px] font-mono text-text-secondary uppercase tracking-widest mb-1.5">Set Password</label>
                 <input 
                   type="password" 
                   required 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-white text-sm"
+                  className="w-full px-4 py-3 rounded bg-bg-deep border border-border-subtle focus:ring-1 focus:ring-accent-primary focus:border-accent-primary transition-colors text-text-primary text-sm font-mono tracking-widest"
                   placeholder="••••••••"
                 />
               </div>
-              
-              <button 
-                type="submit"
-                className="w-full py-3.5 px-4 bg-[#1a1a1a] hover:bg-black text-white rounded-xl text-sm font-medium transition-all shadow-md hover:shadow-lg mt-6"
-              >
-                Get Started
-              </button>
-            </form>
+            </div>
+            
+            <button 
+              type="submit"
+              className="w-full py-3.5 px-4 bg-accent-primary hover:bg-accent-light text-bg-deep rounded text-sm font-mono font-bold uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(29,158,117,0.2)] mt-6"
+            >
+              Provision Account
+            </button>
+          </form>
 
-            <p className="mt-8 text-center text-sm text-gray-500">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-green-600 hover:text-green-500 transition-colors">
-                Sign in
+          <div className="mt-8 pt-6 border-t border-border-subtle text-center">
+            <p className="text-xs font-mono text-text-secondary">
+              Terminal Authorized?{' '}
+              <Link to="/login" className="font-bold text-accent-primary hover:text-accent-light transition-colors uppercase">
+                Initialize Session
               </Link>
             </p>
-          </motion.div>
-        </div>
-      </div>
+          </div>
+        </motion.div>
 
-      {/* Right Image Section */}
-      <div className="hidden lg:block lg:w-1/2 relative bg-[#1e362d] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-bl from-[#152720] to-[#223B2F] opacity-90"></div>
-        <img 
-          src="/image.png" 
-          alt="Clean Energy" 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 scale-105"
-        />
-        <div className="absolute inset-0 flex flex-col justify-end p-12 lg:p-20">
-          <h3 className="text-3xl font-light text-white mb-4 leading-tight">
-            Stop wasting power.<br/>Start matching it.
-          </h3>
-          <p className="text-green-100/80 max-w-md font-light leading-relaxed">
-            The simplest way to connect industrial flexible demand with clean energy surplus windows in real-time.
-          </p>
+        <div className="mt-8 text-center text-[10px] font-mono text-text-secondary uppercase tracking-widest flex items-center gap-4">
+          <span>SurplusGrid Registration Protocol</span>
+          <span className="w-1 h-1 bg-accent-primary rounded-full"></span>
+          <span>v2.0.4</span>
         </div>
       </div>
     </div>

@@ -1,109 +1,144 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, PlayCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, Zap, Factory, CheckCircle2 } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="bg-white pt-32 flex flex-col items-center overflow-hidden">
+    <section className="bg-bg-deep pt-32 pb-16 flex flex-col items-center overflow-hidden border-b border-border-subtle relative">
       
-      {/* Top Text Content */}
-      <div className="max-w-[90rem] mx-auto px-6 w-full flex flex-col items-center text-center">
+      {/* Background grid effect */}
+      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+        style={{ backgroundImage: 'linear-gradient(var(--color-border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-border-subtle) 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+      </div>
+
+      <div className="max-w-[90rem] mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-16 relative z-10">
+        
+        {/* Left Content */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full flex flex-col items-center"
+          className="w-full lg:w-1/2 flex flex-col items-start text-left"
         >
-          {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 text-gray-400 text-[11px] font-medium tracking-widest uppercase mb-6 border border-gray-100 rounded-full">
-            <Sparkles size={12} className="text-gray-300" />
-            100% Renewable power source
-            <Sparkles size={12} className="text-gray-300" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-danger/10 border border-danger/20 rounded text-danger text-[11px] font-mono tracking-widest uppercase mb-6">
+            <div className="w-2 h-2 rounded-full bg-danger animate-pulse"></div>
+            Grid Curtailment Alert Active
           </div>
           
-          {/* Heading */}
-          <h1 
-            className="text-[40px] sm:text-[56px] lg:text-[72px] font-light text-[#1a1a1a] leading-[1.05] tracking-[-0.02em] mb-6 max-w-4xl"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
-            Renewable Power For Tomorrow,<br className="hidden md:block" />
-            Infinite Clean Solutions
+          <h1 className="text-[40px] sm:text-[56px] lg:text-[64px] font-display font-extrabold text-text-primary leading-[1.05] tracking-tight mb-6 max-w-2xl">
+            India wastes 1.7B units of clean energy every year. <br/>
+            <span className="text-accent-primary">We stop that.</span>
           </h1>
           
-          {/* Subheading */}
-          <p className="text-[15px] sm:text-[17px] text-gray-500 mb-10 max-w-[650px] mx-auto font-light leading-relaxed">
-            Sustainable energy solutions engineering, analyzing, and executing solar projects for homes, businesses, and large-scale commercial clients.
+          <p className="text-[16px] sm:text-[18px] text-text-secondary mb-10 max-w-[600px] font-body leading-relaxed">
+            The B2B SaaS platform that matches surplus renewable energy windows with flexible industrial demand in real time. Predict, match, and monetize.
           </p>
           
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/signup" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-white bg-[#1e362d] hover:bg-[#152720] transition-all flex items-center justify-center gap-2">
-              <ArrowUpRight size={16} className="text-green-400" />
-              Explore Platform
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <Link to="/signup" className="w-full sm:w-auto px-8 py-3.5 rounded text-[14px] font-mono font-bold text-bg-deep bg-accent-primary hover:bg-accent-light transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(29,158,117,0.3)] hover:shadow-[0_0_30px_rgba(29,158,117,0.5)]">
+              Schedule Load Shift
+              <ArrowRight size={16} />
             </Link>
-            <Link to="/login" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 transition-all flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center shadow-sm">
-                <PlayCircle size={14} className="text-gray-600" />
+            <Link to="/signup" className="w-full sm:w-auto px-8 py-3.5 rounded text-[14px] font-mono font-bold text-text-primary bg-bg-surface border border-border-subtle hover:bg-bg-card transition-all flex items-center justify-center gap-2">
+              List Energy Surplus
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Right Animated Match Card */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="w-full lg:w-1/2 flex justify-center lg:justify-end"
+        >
+          <div className="glass-card w-full max-w-md p-6 relative overflow-hidden group">
+            {/* Ambient glow behind card */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent-primary/5 blur-[80px] -z-10 rounded-full"></div>
+            
+            <div className="flex justify-between items-start mb-6 border-b border-border-subtle pb-4">
+              <div>
+                <p className="text-[11px] font-mono text-warning uppercase tracking-widest mb-1">Live Match Found</p>
+                <h3 className="font-display text-xl text-text-primary">Surplus Alert: Zone West</h3>
               </div>
-              Login
-            </Link>
+              <div className="bg-bg-deep border border-border-subtle px-3 py-1 rounded">
+                <span className="font-mono text-accent-primary text-sm font-bold">14:00 - 16:30</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Producer side */}
+              <div className="flex items-center gap-4 bg-bg-deep p-3 rounded border border-border-subtle">
+                <div className="p-2 bg-accent-primary/10 text-accent-light rounded">
+                  <Zap size={20} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-[13px] font-body text-text-secondary">Source</p>
+                  <p className="text-[15px] font-medium text-text-primary">Adani Solar Park (TN)</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-mono text-lg font-bold text-accent-primary">45 MW</p>
+                  <p className="text-[11px] font-mono text-text-secondary uppercase">Available</p>
+                </div>
+              </div>
+
+              {/* Matching indicator */}
+              <div className="flex justify-center relative py-2">
+                <div className="w-[2px] h-10 bg-gradient-to-b from-accent-primary to-warning"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-bg-surface border border-border-subtle flex items-center justify-center z-10">
+                  <ArrowRight size={12} className="text-text-secondary rotate-90" />
+                </div>
+              </div>
+
+              {/* Consumer side */}
+              <div className="flex items-center gap-4 bg-bg-deep p-3 rounded border border-warning/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-warning/5"></div>
+                <div className="p-2 bg-warning/10 text-warning rounded relative z-10">
+                  <Factory size={20} />
+                </div>
+                <div className="flex-1 relative z-10">
+                  <p className="text-[13px] font-body text-text-secondary">Target Load</p>
+                  <p className="text-[15px] font-medium text-text-primary">TCS Data Center (MUM)</p>
+                </div>
+                <div className="text-right relative z-10">
+                  <p className="font-mono text-lg font-bold text-warning">40 MW</p>
+                  <p className="text-[11px] font-mono text-text-secondary uppercase">Required</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-border-subtle flex justify-between items-center">
+              <div>
+                <p className="text-[12px] font-body text-text-secondary">Projected Savings</p>
+                <p className="font-mono text-xl font-bold text-accent-primary">₹ 42,500</p>
+              </div>
+              <button className="px-4 py-2 bg-accent-primary hover:bg-accent-light text-bg-deep font-mono font-bold text-sm rounded shadow-lg transition-colors flex items-center gap-2">
+                <CheckCircle2 size={16} />
+                Shift Load
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Main Image Section (Standard Flow) */}
-      <div className="relative w-full max-w-[100rem] mx-auto mt-12 flex justify-center items-end">
-        
-        {/* Floating Left Widget */}
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="hidden lg:flex absolute left-[10%] bottom-[20%] bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl shadow-xl border border-gray-100 items-center gap-3 z-20"
-        >
-          <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-[#1e362d]">
-            <ArrowUpRight size={16} strokeWidth={2.5} />
+      {/* Stats Bar */}
+      <div className="w-full border-t border-border-subtle bg-bg-surface/50 mt-20 relative z-10">
+        <div className="max-w-[90rem] mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-border-subtle">
+            <div className="py-4 md:py-0">
+              <p className="font-mono text-4xl lg:text-5xl font-bold text-text-primary mb-2">14.2<span className="text-accent-primary text-2xl lg:text-3xl">GWh</span></p>
+              <p className="font-mono text-[12px] text-text-secondary uppercase tracking-widest">Curtailment Avoided</p>
+            </div>
+            <div className="py-4 md:py-0">
+              <p className="font-mono text-4xl lg:text-5xl font-bold text-text-primary mb-2">340<span className="text-accent-primary text-2xl lg:text-3xl">+</span></p>
+              <p className="font-mono text-[12px] text-text-secondary uppercase tracking-widest">Industrial Facilities Active</p>
+            </div>
+            <div className="py-4 md:py-0">
+              <p className="font-mono text-4xl lg:text-5xl font-bold text-text-primary mb-2">₹1.8<span className="text-accent-primary text-2xl lg:text-3xl">Cr</span></p>
+              <p className="font-mono text-[12px] text-text-secondary uppercase tracking-widest">Client Savings Generated</p>
+            </div>
           </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Efficiency</p>
-            <p className="text-[13px] font-semibold text-gray-900">72% increased</p>
-          </div>
-        </motion.div>
-
-        {/* Floating Right Widget */}
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="hidden lg:flex absolute right-[10%] bottom-[20%] z-20 group cursor-pointer"
-        >
-          <div className="w-14 h-14 bg-[#111] rounded-full flex items-center justify-center text-white shadow-xl group-hover:scale-105 transition-transform duration-300">
-             <PlayCircle size={26} strokeWidth={1.5} />
-          </div>
-        </motion.div>
-
-        {/* The Exact Image */}
-        <img 
-          src="/image.png" 
-          alt="Renewable Energy Landscape" 
-          className="w-full max-w-[85%] object-contain"
-        />
-      </div>
-
-      {/* Partners Ticker */}
-      <div className="w-full border-t border-gray-100 bg-white">
-        <div className="max-w-[90rem] mx-auto px-6 py-6 flex justify-between items-center overflow-x-auto gap-12 text-[12px] font-semibold text-gray-400 uppercase tracking-[0.2em] no-scrollbar">
-          <span className="flex-shrink-0 cursor-default">OVO</span>
-          <span className="flex-shrink-0 cursor-default">Bower</span>
-          <span className="flex-shrink-0 cursor-default">Umney</span>
-          <span className="flex-shrink-0 cursor-default">Vestas</span>
-          <span className="flex-shrink-0 cursor-default">NPE</span>
-          <span className="flex-shrink-0 cursor-default">Winds</span>
-          <span className="flex-shrink-0 cursor-default">Concept</span>
-          <span className="flex-shrink-0 cursor-default">SolarC</span>
-          <span className="flex-shrink-0 cursor-default">Inverter</span>
-          <span className="flex-shrink-0 cursor-default">ARC</span>
         </div>
       </div>
       
