@@ -38,15 +38,15 @@ export default function Hero() {
           
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/dashboard" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-white bg-[#1e362d] hover:bg-[#152720] transition-all flex items-center justify-center gap-2">
+            <Link to="/signup" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-white bg-[#1e362d] hover:bg-[#152720] transition-all flex items-center justify-center gap-2">
               <ArrowUpRight size={16} className="text-green-400" />
-              Explore Options
+              Explore Platform
             </Link>
-            <Link to="/dashboard" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 transition-all flex items-center justify-center gap-2">
+            <Link to="/login" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 transition-all flex items-center justify-center gap-2">
               <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center shadow-sm">
                 <PlayCircle size={14} className="text-gray-600" />
               </div>
-              How it works
+              Login
             </Link>
           </div>
         </motion.div>

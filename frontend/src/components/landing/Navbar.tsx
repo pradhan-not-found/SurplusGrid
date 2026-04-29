@@ -33,10 +33,10 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-6">
-          <Link to="/dashboard" className="hidden md:block text-[13px] font-medium text-gray-700 hover:text-black transition-colors">
+          <Link to="/login" className="hidden md:block text-[13px] font-medium text-gray-700 hover:text-black transition-colors">
             Sign In
           </Link>
-          <Link to="/dashboard" className="px-6 py-2.5 rounded-full text-[13px] font-medium text-white bg-[#1a1a1a] hover:bg-black transition-all">
+          <Link to="/signup" className="px-6 py-2.5 rounded-full text-[13px] font-medium text-white bg-[#1a1a1a] hover:bg-black transition-all">
             Get Started
           </Link>
         </div>
