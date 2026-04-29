@@ -6,10 +6,16 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased font-sans;
+    @apply text-gray-900 antialiased font-sans;
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(at 40% 20%, hsla(160, 100%, 74%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsla(333, 100%, 85%, 0.1) 0px, transparent 50%);
+    background-attachment: fixed;
   }
 }
 
 .glass-card {
-  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl shadow-primary-900/5;
 }
