@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+@config "../../tailwind.config.js";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   body {
@@ -17,5 +16,5 @@
 }
 
 .glass-card {
-  @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl shadow-primary-900/5;
+  @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl shadow-teal-900/5;
 }
