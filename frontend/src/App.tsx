@@ -6,8 +6,28 @@ import { SurplusEntry, DemandEntry, Match } from './types';
 
 function App() {
   const [role, setRole] = useState<'producer' | 'consumer'>('producer');
-  const [surplusList, setSurplusList] = useState<SurplusEntry[]>([]);
-  const [demandList, setDemandList] = useState<DemandEntry[]>([]);
+  const [surplusList, setSurplusList] = useState<SurplusEntry[]>([
+    {
+      id: 'dummy-surplus-1',
+      producerId: 'prod-dummy',
+      date: new Date().toISOString().split('T')[0],
+      startTime: '08:00',
+      endTime: '12:00',
+      energyKwh: 500,
+      status: 'available'
+    }
+  ]);
+  const [demandList, setDemandList] = useState<DemandEntry[]>([
+    {
+      id: 'dummy-demand-1',
+      consumerId: 'cons-dummy',
+      date: new Date().toISOString().split('T')[0],
+      startTime: '14:00',
+      endTime: '18:00',
+      energyKwh: 200,
+      status: 'pending'
+    }
+  ]);
   const [matches, setMatches] = useState<Match[]>([]);
 
   // Simple time overlap check
