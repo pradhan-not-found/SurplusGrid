@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   Factory, Activity, CheckCircle2, ShieldCheck, Zap, Sun,
-  ArrowRight, Mail, Twitter, Linkedin, Github, BarChart3, Leaf
+  ArrowRight, Mail, Globe, MessageSquare, Users, BarChart3, Leaf
 } from 'lucide-react';
 
 const fadeUp = (delay = 0) => ({
@@ -272,13 +272,13 @@ export default function LandingDetails() {
               </p>
               <div className="flex items-center gap-3 mt-6">
                 <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
-                  <Twitter size={15} />
+                  <MessageSquare size={15} />
                 </a>
                 <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
-                  <Linkedin size={15} />
+                  <Users size={15} />
                 </a>
                 <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
-                  <Github size={15} />
+                  <Globe size={15} />
                 </a>
                 <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
                   <Mail size={15} />
