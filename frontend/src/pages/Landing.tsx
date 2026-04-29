@@ -5,7 +5,7 @@ import LandingDetails from '../components/landing/LandingDetails';
 
 export default function Landing() {
   return (
-    <div className="bg-bg-deep text-text-primary font-body selection:bg-accent-primary selection:text-white min-h-screen">
+    <div className="bg-white text-gray-900 font-body min-h-screen selection:bg-green-500 selection:text-white">
       <Navbar />
       <Hero />
       <LandingDetails />
