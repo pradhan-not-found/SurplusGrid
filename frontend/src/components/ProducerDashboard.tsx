@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SurplusEntry, Match, DemandEntry } from '../types';
+import type { SurplusEntry, Match, DemandEntry } from '../types';
 import { Plus, Zap, Clock, Calendar, CheckCircle } from 'lucide-react';
 
 interface ProducerDashboardProps {

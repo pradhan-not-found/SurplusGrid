@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DemandEntry, Match, SurplusEntry } from '../types';
+import type { DemandEntry, Match, SurplusEntry } from '../types';
 import { Factory, Calendar, Clock, Zap, AlertCircle } from 'lucide-react';
 
 interface ConsumerDashboardProps {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ProducerDashboard from './components/ProducerDashboard';
 import ConsumerDashboard from './components/ConsumerDashboard';
 import { Leaf, Factory } from 'lucide-react';
-import { SurplusEntry, DemandEntry, Match } from './types';
+import type { SurplusEntry, DemandEntry, Match } from './types';
 
 function App() {
   const [role, setRole] = useState<'producer' | 'consumer'>('producer');
