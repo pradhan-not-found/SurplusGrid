@@ -5,46 +5,55 @@ import { ArrowUpRight, PlayCircle, Sparkles } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-0 overflow-hidden flex flex-col bg-white">
+    <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden min-h-[95vh] flex flex-col justify-center">
       
+      {/* Full Background Image */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat w-full h-full"
+        style={{ backgroundImage: 'url(/image.png)' }}
+      >
+        {/* Professional Overlay: Soft fade to white at the bottom, slight darkening on top for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/60 to-white backdrop-blur-[2px]"></div>
+      </div>
+
       {/* Top Text Content */}
-      <div className="max-w-[90rem] mx-auto px-6 relative z-10 w-full flex flex-col items-center text-center mt-6">
+      <div className="max-w-[90rem] mx-auto px-6 relative z-10 w-full flex flex-col items-center text-center">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="w-full flex flex-col items-center"
         >
           {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 text-gray-500 text-[11px] font-medium tracking-wide uppercase mb-6">
-            <Sparkles size={12} className="text-gray-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-md rounded-full shadow-sm border border-gray-100 text-gray-600 text-[11px] font-semibold tracking-wide uppercase mb-8">
+            <Sparkles size={14} className="text-green-500" />
             100% Renewable power source
-            <Sparkles size={12} className="text-gray-400" />
+            <Sparkles size={14} className="text-green-500" />
           </div>
           
           {/* Heading */}
           <h1 
-            className="text-[40px] sm:text-[56px] lg:text-[72px] font-light text-[#111] leading-[1.05] tracking-[-0.02em] mb-6 max-w-4xl"
+            className="text-[44px] sm:text-[60px] lg:text-[80px] font-light text-[#0a0a0a] leading-[1.05] tracking-[-0.03em] mb-6 max-w-5xl"
             style={{ fontFamily: "'Outfit', sans-serif" }}
           >
             Renewable Power For Tomorrow,<br className="hidden md:block" />
-            Infinite Clean Solutions
+            <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#223B2F] to-[#4ade80]">Infinite Clean Solutions</span>
           </h1>
           
           {/* Subheading */}
-          <p className="text-[15px] sm:text-base text-gray-500 mb-8 max-w-[600px] mx-auto font-light leading-relaxed">
-            Sustainable energy solutions engineering, analyzing, and executing solar projects for homes, businesses, and large-scale commercial clients.
+          <p className="text-[16px] sm:text-[18px] text-gray-600 mb-10 max-w-[650px] mx-auto font-light leading-relaxed">
+            Sustainable energy solutions engineering, analyzing, and executing solar projects for homes, businesses, and large-scale commercial clients. Join the grid of the future.
           </p>
           
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/dashboard" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-white bg-[#223B2F] hover:bg-[#15251d] transition-all flex items-center justify-center gap-2">
-              <ArrowUpRight size={16} className="text-green-300" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-3.5 rounded-full text-[15px] font-medium text-white bg-[#1a1a1a] hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 duration-300">
+              <ArrowUpRight size={18} className="text-green-400" />
               Explore Options
             </Link>
-            <Link to="/dashboard" className="w-full sm:w-auto px-6 py-2.5 rounded-full text-[14px] font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center shadow-sm">
-                <PlayCircle size={14} className="text-gray-600" />
+            <Link to="/dashboard" className="w-full sm:w-auto px-8 py-3.5 rounded-full text-[15px] font-medium text-gray-800 bg-white border border-gray-200 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300">
+              <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
+                <PlayCircle size={14} className="text-gray-900" />
               </div>
               How it works
             </Link>
@@ -52,64 +61,50 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Main Illustration & Floating Elements */}
-      <div className="relative w-full mt-10 max-w-[100rem] mx-auto flex items-end justify-center min-h-[400px] md:min-h-[500px]">
-        
+      {/* Floating Elements (Overlaying the background) */}
+      <div className="relative w-full max-w-[100rem] mx-auto hidden lg:block">
         {/* Floating Left Widget */}
         <motion.div 
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="hidden md:flex absolute left-12 lg:left-32 bottom-24 bg-white/90 backdrop-blur-md px-3 py-2.5 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] items-center gap-3 z-20"
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="absolute -top-32 left-16 bg-white/90 backdrop-blur-xl px-4 py-3 rounded-2xl shadow-xl border border-white/50 items-center gap-4 flex z-20"
         >
-          <div className="w-8 h-8 bg-[#f4f7f6] rounded-md flex items-center justify-center text-[#223B2F]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+          <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 font-medium">Efficiency</p>
-            <p className="text-[13px] font-semibold text-gray-900">72% increased</p>
+            <p className="text-[11px] uppercase tracking-wider text-gray-500 font-medium">Grid Efficiency</p>
+            <p className="text-[15px] font-bold text-gray-900">72% Increased</p>
           </div>
         </motion.div>
 
         {/* Floating Right Widget */}
         <motion.div 
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="hidden md:flex absolute right-12 lg:right-32 bottom-24 z-20 group cursor-pointer"
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="absolute -top-10 right-16 z-20 group cursor-pointer"
         >
-          <div className="w-14 h-14 bg-[#111] rounded-full flex items-center justify-center text-white shadow-[0_8px_30px_rgb(0,0,0,0.15)] group-hover:scale-105 transition-transform duration-300">
-             <PlayCircle size={24} strokeWidth={1.5} />
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-gray-900 shadow-xl border border-gray-100 group-hover:scale-110 transition-transform duration-300">
+             <PlayCircle size={28} strokeWidth={1.5} className="text-green-600" />
           </div>
         </motion.div>
-
-        {/* Image Section */}
-        <div className="relative z-10 w-full max-w-[90%] md:max-w-[85%] mx-auto pb-8">
-          <img 
-            src="/image.png" 
-            alt="Renewable Energy Landscape" 
-            className="w-full h-auto object-contain drop-shadow-xl"
-            style={{ 
-              WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
-              maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)'
-            }}
-          />
-        </div>
       </div>
 
-      {/* Partners Ticker */}
-      <div className="w-full border-t border-gray-100 bg-white relative z-30 overflow-hidden">
-        <div className="max-w-[90rem] mx-auto px-6 py-6 flex justify-between items-center overflow-x-auto gap-12 text-[12px] font-semibold text-gray-400 uppercase tracking-[0.2em] no-scrollbar">
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">OVO</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Bower</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Umney</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Vestas</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">NPE</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Winds</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Concept</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">SolarC</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">Inverter</span>
-          <span className="flex-shrink-0 hover:text-gray-600 transition-colors cursor-default">ARC</span>
+      {/* Partners Ticker - moved outside of the main flex to anchor at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 w-full border-t border-gray-200/50 bg-white/50 backdrop-blur-md z-30">
+        <div className="max-w-[90rem] mx-auto px-6 py-5 flex justify-between items-center overflow-x-auto gap-12 text-[13px] font-bold text-gray-500 uppercase tracking-[0.25em] no-scrollbar">
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">OVO</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Bower</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Umney</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Vestas</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">NPE</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Winds</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Concept</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">SolarC</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">Inverter</span>
+          <span className="flex-shrink-0 hover:text-gray-900 transition-colors cursor-default">ARC</span>
         </div>
       </div>
     </section>
