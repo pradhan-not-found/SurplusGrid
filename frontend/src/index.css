@@ -1,17 +1,15 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap');
-
 @theme {
   --color-accent-primary: #1D9E75;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-data: 'DM Mono', monospace;
+  --font-display: 'Helvetica', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Helvetica', 'Helvetica Neue', Arial, sans-serif;
+  --font-data: 'Helvetica', 'Helvetica Neue', Arial, sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 font-body antialiased selection:bg-green-500 selection:text-white;
+    @apply bg-white text-[#0D1117] font-body antialiased selection:bg-blue-500 selection:text-white;
   }
 }
 
