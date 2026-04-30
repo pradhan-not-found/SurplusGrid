@@ -1,25 +1,46 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './context/AuthContext';
 import Landing from './pages/Landing';
-import Login from './pages/auth/Login';
+import Signin from './pages/auth/Signin';
 import Signup from './pages/auth/Signup';
-import ProducerDashboard from './pages/ProducerDashboard';
-import ConsumerDashboard from './pages/ConsumerDashboard';
+import Onboarding from './pages/auth/Onboarding';
+
+import ProducerOverview from './pages/producer/ProducerOverview';
+import ProducerWindows from './pages/producer/ProducerWindows';
+import ProducerMatches from './pages/producer/ProducerMatches';
+import ProducerSettings from './pages/producer/ProducerSettings';
+
+import ConsumerOverview from './pages/consumer/ConsumerOverview';
+import ConsumerAlerts from './pages/consumer/ConsumerAlerts';
+import ConsumerSchedule from './pages/consumer/ConsumerSchedule';
+import ConsumerSavings from './pages/consumer/ConsumerSavings';
+import ConsumerSettings from './pages/consumer/ConsumerSettings';
 
 function App() {
   return (
-    <AppProvider>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/producer-dashboard" element={<ProducerDashboard />} />
-          <Route path="/consumer-dashboard" element={<ConsumerDashboard />} />
+          <Route path="/onboarding" element={<Onboarding />} />
+          
+          <Route path="/dashboard/producer" element={<ProducerOverview />} />
+          <Route path="/dashboard/producer/windows" element={<ProducerWindows />} />
+          <Route path="/dashboard/producer/matches" element={<ProducerMatches />} />
+          <Route path="/dashboard/producer/settings" element={<ProducerSettings />} />
+
+          <Route path="/dashboard/consumer" element={<ConsumerOverview />} />
+          <Route path="/dashboard/consumer/alerts" element={<ConsumerAlerts />} />
+          <Route path="/dashboard/consumer/schedule" element={<ConsumerSchedule />} />
+          <Route path="/dashboard/consumer/savings" element={<ConsumerSavings />} />
+          <Route path="/dashboard/consumer/settings" element={<ConsumerSettings />} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </AppProvider>
+    </AuthProvider>
   );
 }
 

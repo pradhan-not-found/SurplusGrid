@@ -1,10 +1,63 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  Factory, Activity, CheckCircle2, ShieldCheck, Zap,
-  ArrowRight, Mail, Globe, MessageSquare, Users, Leaf
+  CheckCircle2, ShieldCheck, Activity, Leaf, Zap,
+  ArrowRight, Mail, Globe, MessageSquare, Users
 } from 'lucide-react';
+
+const ForecastIcon = () => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
+    <rect width="48" height="48" rx="16" fill="url(#paint0_linear)" />
+    <path d="M14 30L22 20L28 24L34 16" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="34" cy="16" r="4" fill="white" fillOpacity="0.3" stroke="white" strokeWidth="2" />
+    <rect x="13" y="34" width="2" height="6" rx="1" fill="white" fillOpacity="0.6" />
+    <rect x="21" y="24" width="2" height="16" rx="1" fill="white" fillOpacity="0.8" />
+    <rect x="27" y="28" width="2" height="12" rx="1" fill="white" fillOpacity="0.7" />
+    <rect x="33" y="20" width="2" height="20" rx="1" fill="white" />
+    <defs>
+      <linearGradient id="paint0_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#2563EB" />
+        <stop offset="1" stopColor="#0EA5E9" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const MatchIcon = () => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
+    <rect width="48" height="48" rx="16" fill="url(#paint1_linear)" />
+    <circle cx="18" cy="24" r="8" stroke="white" strokeWidth="2" strokeOpacity="0.5" />
+    <circle cx="30" cy="24" r="8" stroke="white" strokeWidth="2" strokeOpacity="0.9" />
+    <path d="M24 20L22 24H26L24 28" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <defs>
+      <linearGradient id="paint1_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#8B5CF6" />
+        <stop offset="1" stopColor="#D946EF" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const SettleIcon = () => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
+    <rect width="48" height="48" rx="16" fill="url(#paint2_linear)" />
+    <rect x="16" y="12" width="16" height="24" rx="2" stroke="white" strokeWidth="2" strokeOpacity="0.8" />
+    <path d="M20 18H28M20 22H26M20 28H23" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    <path d="M28 26L30 28L34 22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <defs>
+      <linearGradient id="paint2_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#10B981" />
+        <stop offset="1" stopColor="#059669" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const QuoteIcon = () => (
+  <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-6 text-gray-200">
+    <path d="M16 10H8C6.89543 10 6 10.8954 6 12V20C6 21.1046 6.89543 22 8 22H11C11 26.4183 7.41828 30 3 30V34C9.62742 34 15 28.6274 15 22V10C15 10 16 10 16 10ZM35 10H27C25.8954 10 25 10.8954 25 12V20C25 21.1046 25.8954 22 27 22H30C30 26.4183 26.4183 30 22 30V34C28.6274 34 34 28.6274 34 22V10C34 10 35 10 35 10Z" fill="currentColor"/>
+  </svg>
+);
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -14,25 +67,16 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function LandingDetails() {
-  const [activeTab, setActiveTab] = useState<'producer' | 'consumer'>('producer');
-
-  const producerSteps = [
-    { title: 'Report Surplus', desc: 'Connect your forecast APIs or manually enter predicted curtailment windows with precise MW volumes.', icon: <Activity size={22} /> },
-    { title: 'Algorithmic Match', desc: 'Our engine instantly finds regional industrial loads capable of absorbing your excess MWs in real time.', icon: <Zap size={22} /> },
-    { title: 'Monetize', desc: 'Energy flows. Avoid curtailment completely and realize revenue that would otherwise be lost forever.', icon: <CheckCircle2 size={22} /> },
-  ];
-
-  const consumerSteps = [
-    { title: 'Define Flexibility', desc: 'Log your heavy machinery schedules and permissible load-shift windows into the platform.', icon: <Factory size={22} /> },
-    { title: 'Receive Alerts', desc: 'Get instant push/SMS notifications the moment cheap surplus energy hits your local grid.', icon: <Zap size={22} /> },
-    { title: 'Shift & Save', desc: 'Approve the load shift in one tap. Consume 100% clean energy at massive discounts.', icon: <CheckCircle2 size={22} /> },
-  ];
-
   const stats = [
-    { value: '1.7 BU', label: 'Curtailment Prevented' },
-    { value: '₹4.2 Cr', label: 'Saved This Month' },
-    { value: '342', label: 'Active Matches Daily' },
-    { value: '40%', label: 'Avg. Cost Reduction' },
+    { value: '1.2M+', label: 'Curtailed Energy Saved (kWh)' },
+    { value: '450+', label: 'Businesses Matched' },
+    { value: '850', label: 'MW Diverted Daily' },
+  ];
+
+  const steps = [
+    { title: 'Forecast & Inject', desc: 'Producers upload day-ahead or intra-day generation forecasts. Our system identifies potential curtailment blocks.', icon: <ForecastIcon /> },
+    { title: 'Algorithmic Match', desc: 'Consumers post demand profiles. The SurplusGrid engine calculates optimal matches based on volume, location, and price.', icon: <MatchIcon /> },
+    { title: 'Settle & Report', desc: 'Automated contract execution and SLDC compliance reporting. Transparent settlement data available instantly.', icon: <SettleIcon /> },
   ];
 
   return (
@@ -40,11 +84,11 @@ export default function LandingDetails() {
 
       {/* ── STATS STRIP ── */}
       <section className="border-y border-gray-100 py-14 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
           {stats.map((s, i) => (
             <motion.div key={i} {...fadeUp(i * 0.08)} className="text-center">
-              <p className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-1">{s.value}</p>
-              <p className="text-sm text-gray-400 font-medium">{s.label}</p>
+              <p className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-2">{s.value}</p>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{s.label}</p>
             </motion.div>
           ))}
         </div>
@@ -54,52 +98,27 @@ export default function LandingDetails() {
       <section className="py-28 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Platform</p>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-5 tracking-tight">
-              How SurplusGrid Works
+              Precision matching in real-time.
             </h2>
             <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
-              A unified platform bridging renewable energy curtailment with industrial demand — in real time.
+              Our algorithmic engine connects forecasted surplus with live demand, ensuring grid stability and maximum asset utilization.
             </p>
           </motion.div>
 
-          {/* Tab toggle */}
-          <div className="flex justify-center mb-14">
-            <div className="bg-gray-100 p-1 rounded-full flex gap-1">
-              <button
-                onClick={() => setActiveTab('producer')}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'producer' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}
-              >
-                For Producers
-              </button>
-              <button
-                onClick={() => setActiveTab('consumer')}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${activeTab === 'consumer' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}
-              >
-                For Consumers
-              </button>
-            </div>
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            >
-              {(activeTab === 'producer' ? producerSteps : consumerSteps).map((step, i) => (
-                <div key={i} className="group relative p-8 rounded-3xl border border-gray-100 bg-white hover:border-gray-200 hover:shadow-[0_8px_40px_rgba(0,0,0,0.06)] transition-all duration-300">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${activeTab === 'producer' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
-                    {step.icon}
-                  </div>
-                  <p className="text-xs font-bold text-gray-300 uppercase tracking-widest mb-2">Step 0{i + 1}</p>
-                  <h3 className="font-display font-bold text-xl text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-500 leading-relaxed text-sm">{step.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {steps.map((step, i) => (
+              <motion.div key={i} {...fadeUp(i * 0.1)} className="group relative p-10 rounded-[2rem] border border-gray-100 bg-white hover:border-transparent hover:shadow-[0_20px_80px_-15px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden text-left">
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10">
+                  {step.icon}
+                  <p className="font-data text-xs font-bold text-gray-300 uppercase tracking-widest mb-3">0{i + 1}</p>
+                  <h3 className="font-display font-bold text-2xl text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">{step.title}</h3>
+                  <p className="text-gray-500 leading-relaxed text-sm font-body">{step.desc}</p>
                 </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -120,35 +139,30 @@ export default function LandingDetails() {
                 name: "Rajesh K.",
                 role: "Plant Manager, Tata Steel",
                 initials: "RK",
-                color: "bg-orange-100 text-orange-700",
+                color: "bg-gradient-to-br from-orange-400 to-orange-600 text-white",
               },
               {
                 quote: "Curtailment is the silent killer of solar ROI. Integrating our telemetry with SurplusGrid means whenever the grid says 'stop', we immediately route that power to industrial buyers.",
                 name: "Sarah M.",
                 role: "Director of Ops, CleanPowerGen",
                 initials: "SM",
-                color: "bg-green-100 text-green-700",
+                color: "bg-gradient-to-br from-green-400 to-green-600 text-white",
               },
             ].map((t, i) => (
               <motion.div key={i} {...fadeUp(i * 0.1)}
-                className="bg-white rounded-3xl border border-gray-100 p-10 hover:shadow-[0_8px_40px_rgba(0,0,0,0.05)] transition-all duration-300"
+                className="bg-white rounded-[2rem] border border-gray-100 p-12 hover:shadow-[0_20px_80px_-15px_rgba(0,0,0,0.06)] transition-all duration-500"
               >
-                {/* Stars */}
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, s) => (
-                    <svg key={s} className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                  ))}
-                </div>
-                <blockquote className="text-gray-700 text-lg leading-relaxed font-light mb-8">
+                <QuoteIcon />
+                <blockquote className="text-gray-700 text-xl leading-relaxed font-body mb-10">
                   "{t.quote}"
                 </blockquote>
-                <div className="flex items-center gap-4 pt-6 border-t border-gray-100">
-                  <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold ${t.color}`}>
+                <div className="flex items-center gap-5 pt-8 border-t border-gray-100">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shadow-lg ${t.color}`}>
                     {t.initials}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                    <p className="text-gray-400 text-xs mt-0.5">{t.role}</p>
+                    <p className="font-bold font-display text-gray-900 text-lg">{t.name}</p>
+                    <p className="text-gray-500 text-sm mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </motion.div>
@@ -161,29 +175,27 @@ export default function LandingDetails() {
       <section className="py-28 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Pricing</p>
             <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-4 tracking-tight">
-              Simple, transparent pricing
+              Transparent access for every scale.
             </h2>
-            <p className="text-gray-400 text-lg">No hidden fees. Pay only for what you match.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
             {/* Starter */}
             <motion.div {...fadeUp(0.05)} className="rounded-3xl border border-gray-100 p-8 flex flex-col bg-white">
-              <p className="text-sm font-semibold text-gray-400 mb-2">Starter</p>
-              <p className="text-4xl font-bold text-gray-900 mb-1">₹5,000<span className="text-base text-gray-400 font-normal">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-8">Billed monthly</p>
-              <ul className="space-y-3 mb-10 flex-1">
-                {['Up to 5MW capacity', 'Basic SMS alerts', 'Email support', 'Dashboard access'].map((f, i) => (
+              <p className="text-xl font-bold text-gray-900 mb-1">Starter</p>
+              <p className="text-sm text-gray-500 mb-6">For small C&I consumers.</p>
+              <p className="text-4xl font-bold text-gray-900 mb-8">₹5,000<span className="text-base text-gray-400 font-normal"> /mo</span></p>
+              <ul className="space-y-4 mb-10 flex-1">
+                {['Up to 1MW demand mapping', 'Day-ahead market access', 'Standard reporting'].map((f, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={16} className="text-green-500 shrink-0" /> {f}
+                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
-                Start Free Trial
+              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
+                Select Starter
               </Link>
             </motion.div>
 
@@ -192,34 +204,34 @@ export default function LandingDetails() {
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                 <span className="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
               </div>
-              <p className="text-sm font-semibold text-blue-600 mb-2 mt-2">Growth</p>
-              <p className="text-4xl font-bold text-gray-900 mb-1">₹15,000<span className="text-base text-gray-400 font-normal">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-8">Billed monthly</p>
-              <ul className="space-y-3 mb-10 flex-1">
-                {['Up to 50MW capacity', 'Real-time API access', 'Automated load shifting', 'Priority support', 'Analytics dashboard'].map((f, i) => (
+              <p className="text-xl font-bold text-gray-900 mb-1 mt-2">Growth</p>
+              <p className="text-sm text-gray-500 mb-6">For mid-scale producers and industrials.</p>
+              <p className="text-4xl font-bold text-gray-900 mb-8">₹15,000<span className="text-base text-gray-400 font-normal"> /mo</span></p>
+              <ul className="space-y-4 mb-10 flex-1">
+                {['Up to 10MW capacity', 'Intra-day live matching', 'Automated SLDC compliance', 'Priority API access'].map((f, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={16} className="text-blue-500 shrink-0" /> {f}
+                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3 text-center rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                Upgrade to Growth
+              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+                Start Growth Trial
               </Link>
             </motion.div>
 
             {/* Enterprise */}
             <motion.div {...fadeUp(0.15)} className="rounded-3xl border border-gray-100 p-8 flex flex-col bg-white">
-              <p className="text-sm font-semibold text-gray-400 mb-2">Enterprise</p>
-              <p className="text-4xl font-bold text-gray-900 mb-1">Custom</p>
-              <p className="text-xs text-gray-400 mb-8">Talk to our team</p>
-              <ul className="space-y-3 mb-10 flex-1">
-                {['Unlimited MW capacity', 'Custom SLDC integration', 'Dedicated account manager', 'SLA guarantees', 'On-prem deployment'].map((f, i) => (
+              <p className="text-xl font-bold text-gray-900 mb-1">Enterprise</p>
+              <p className="text-sm text-gray-500 mb-6">For utility-scale operations.</p>
+              <p className="text-3xl font-bold text-gray-900 mb-8 py-1">Custom Quoted</p>
+              <ul className="space-y-4 mb-10 flex-1">
+                {['Unlimited capacity management', 'Dedicated node infrastructure', 'Custom forecasting models'].map((f, i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={16} className="text-green-500 shrink-0" /> {f}
+                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
+              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
                 Contact Sales
               </Link>
             </motion.div>
