@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
-import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X } from 'lucide-react';
+import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X, ArrowUpRight } from 'lucide-react';
 
 export default function ConsumerOverview() {
   const [showBanner, setShowBanner] = useState(true);
@@ -28,100 +28,120 @@ export default function ConsumerOverview() {
   return (
     <DashboardLayout title="Overview">
       {showBanner && (
-        <div className="w-full rounded-[10px] p-[14px_20px] bg-[#EFF6FF] border border-[#BFDBFE] border-l-[3px] border-l-[#2563EB] flex items-center justify-between mb-[32px]">
-          <div className="flex items-center gap-3">
-            <Zap size={16} strokeWidth={1.5} color="#2563EB" />
+        <div className="w-full rounded-[10px] p-[16px_20px] bg-[#FAFAFA] border border-[#E5E7EB] flex items-center justify-between mb-[40px] shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#09090B]" />
+          <div className="flex items-center gap-4 pl-2">
+            <Zap size={18} strokeWidth={1.5} className="text-[#09090B]" />
             <div>
-              <span className="text-[14px] font-medium text-[#1E40AF] mr-2">Next window:</span>
-              <span className="text-[14px] text-[#1E40AF]">Tomorrow 11:00–14:00 · Estimated savings ₹12,400</span>
+              <span className="text-[14px] font-semibold text-[#09090B] mr-2">Next available window:</span>
+              <span className="text-[14px] text-[#3F3F46]">Tomorrow 11:00–14:00 · Estimated savings ₹12,400</span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link to="/dashboard/consumer/alerts" className="text-[14px] font-medium text-[#2563EB] hover:underline flex items-center gap-1">
+          <div className="flex items-center gap-6">
+            <Link to="/dashboard/consumer/alerts" className="text-[13px] font-semibold text-[#09090B] hover:text-[#3F3F46] flex items-center gap-1.5 transition-colors">
               View details <ArrowRight size={14} />
             </Link>
-            <button onClick={() => setShowBanner(false)} className="text-[#60A5FA] hover:text-[#1D4ED8]">
+            <button onClick={() => setShowBanner(false)} className="text-[#A1A1AA] hover:text-[#09090B] transition-colors">
               <X size={16} strokeWidth={1.5} />
             </button>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-4 mb-[32px]">
+      <div className="grid grid-cols-4 gap-5 mb-[40px]">
         {/* Stat 1 */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
-          <div className="flex justify-between items-start">
-            <span className="text-[13px] text-[#6B7280]">Savings this month</span>
-            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <IndianRupee size={20} strokeWidth={1.5} />
-            </div>
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-[13px] font-medium text-[#71717A]">Savings this month</span>
+            <IndianRupee size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
           </div>
-          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">₹38,700</div>
-          <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]">
-            <span>+18% vs last month</span>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-[28px] font-bold text-[#09090B] tracking-tight">₹38.7k</span>
+          </div>
+          <div className="flex items-center gap-1 text-[12px] text-[#71717A] mt-2">
+            <div className="flex items-center text-[#10B981] font-medium"><ArrowUpRight size={14} strokeWidth={2} /> 18%</div>
+            from last month
           </div>
         </div>
 
         {/* Stat 2 */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
-          <div className="flex justify-between items-start">
-            <span className="text-[13px] text-[#6B7280]">Load shifts completed</span>
-            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <CalendarCheck size={20} strokeWidth={1.5} />
-            </div>
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-[13px] font-medium text-[#71717A]">Load shifts completed</span>
+            <CalendarCheck size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
           </div>
-          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">7</div>
-          <div className="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
-            <span>On track for goal</span>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-[28px] font-bold text-[#09090B] tracking-tight">7</span>
+          </div>
+          <div className="flex items-center gap-1 text-[12px] text-[#71717A] mt-2">
+            On track for monthly goal
           </div>
         </div>
 
         {/* Stat 3 */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
-          <div className="flex justify-between items-start">
-            <span className="text-[13px] text-[#6B7280]">Clean energy used</span>
-            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <Leaf size={20} strokeWidth={1.5} />
-            </div>
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-[13px] font-medium text-[#71717A]">Clean energy used</span>
+            <Leaf size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
           </div>
-          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">14.3 MWh</div>
-          <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]">
-            <span>+5% vs last month</span>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-[28px] font-bold text-[#09090B] tracking-tight">14.3</span>
+            <span className="text-[14px] font-medium text-[#71717A]">MWh</span>
+          </div>
+          <div className="flex items-center gap-1 text-[12px] text-[#71717A] mt-2">
+            <div className="flex items-center text-[#10B981] font-medium"><ArrowUpRight size={14} strokeWidth={2} /> 5%</div>
+            from last month
           </div>
         </div>
 
         {/* Stat 4 */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
-          <div className="flex justify-between items-start">
-            <span className="text-[13px] text-[#6B7280]">Carbon offset</span>
-            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <Wind size={20} strokeWidth={1.5} />
-            </div>
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-[13px] font-medium text-[#71717A]">Carbon offset</span>
+            <Wind size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
           </div>
-          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">1,140 kg</div>
-          <div className="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
-            <span>CO₂ equivalent</span>
+          <div className="flex items-baseline gap-1 mb-1">
+            <span className="text-[28px] font-bold text-[#09090B] tracking-tight">1,140</span>
+            <span className="text-[14px] font-medium text-[#71717A]">kg</span>
+          </div>
+          <div className="flex items-center gap-1 text-[12px] text-[#71717A] mt-2">
+            CO₂ equivalent avoided
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-[12px]">
-        <h3 className="text-[15px] font-bold text-[#0D1117]">Pending alerts</h3>
-        <Link to="/dashboard/consumer/alerts" className="text-[13px] font-medium text-[#2563EB] hover:underline">View all alerts</Link>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight">Pending alerts</h3>
+        <Link to="/dashboard/consumer/alerts" className="text-[13px] font-semibold text-[#09090B] hover:text-[#3F3F46] transition-colors">View all alerts →</Link>
       </div>
-      <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden mb-[32px]">
+      
+      <div className="bg-white border border-[#E5E7EB] rounded-[10px] shadow-sm overflow-hidden mb-[40px]">
         <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-[#E5E7EB]">
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Time Window</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Rate Comparison</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Estimated Savings</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider text-right">Action</th>
+            </tr>
+          </thead>
           <tbody>
             {alerts.map((a: any) => (
-              <tr key={a.id} className={`border-b border-[#F1F5F9] last:border-0 ${a.accepted ? 'bg-[#F9FAFB]' : 'hover:bg-[#F9FAFB]'} transition-colors duration-100`}>
-                <td className={`p-[14px_16px] text-[14px] ${a.accepted ? 'text-[#9CA3AF]' : 'font-bold text-[#0D1117]'}`}>{a.time}</td>
-                <td className={`p-[14px_16px] text-[14px] ${a.accepted ? 'text-[#9CA3AF]' : 'text-[#374151]'}`}>₹{a.rateSurplus}/unit vs ₹{a.rateGrid}/unit</td>
-                <td className={`p-[14px_16px] text-[14px] font-bold ${a.accepted ? 'text-[#9CA3AF]' : 'text-[#16A34A]'}`}>Save ₹{a.savings}</td>
-                <td className="p-[14px_16px] text-right">
+              <tr key={a.id} className={`border-b border-[#F4F4F5] last:border-0 ${a.accepted ? 'bg-[#FAFAFA]' : 'hover:bg-[#FAFAFA]'} transition-colors duration-150`}>
+                <td className={`p-[16px_20px] text-[14px] ${a.accepted ? 'text-[#A1A1AA]' : 'font-medium text-[#09090B]'}`}>{a.time}</td>
+                <td className={`p-[16px_20px] text-[14px] ${a.accepted ? 'text-[#A1A1AA]' : 'text-[#3F3F46]'}`}>
+                  <span className="font-semibold text-[#09090B]">₹{a.rateSurplus}</span>/unit <span className="text-[#A1A1AA] mx-1">vs</span> ₹{a.rateGrid}/unit
+                </td>
+                <td className={`p-[16px_20px] text-[14px] ${a.accepted ? 'text-[#A1A1AA]' : 'font-semibold text-[#10B981]'}`}>₹{a.savings.toLocaleString()}</td>
+                <td className="p-[16px_20px] text-right">
                   {a.accepted ? (
-                    <span className="inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]">Scheduled</span>
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[12px] font-medium bg-[#F4F4F5] text-[#71717A]">
+                      Scheduled
+                    </span>
                   ) : (
-                    <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#2563EB] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#1D4ED8] transition-colors">Accept shift</button>
+                    <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#09090B] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#27272A] transition-colors shadow-sm">
+                      Accept shift
+                    </button>
                   )}
                 </td>
               </tr>
@@ -130,29 +150,32 @@ export default function ConsumerOverview() {
         </table>
       </div>
 
-      <h3 className="text-[15px] font-bold text-[#0D1117] mb-[12px]">Recent load shifts</h3>
-      <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">
+      <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight mb-4">Recent load shifts</h3>
+      <div className="bg-white border border-[#E5E7EB] rounded-[10px] shadow-sm overflow-hidden mb-10">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Date</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Time window</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Load shifted (kW)</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Energy rate</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Savings (₹)</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Status</th>
+            <tr className="border-b border-[#E5E7EB]">
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Date</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Time Window</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Load Shifted</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Rate</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Savings</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody>
             {shifts.map((s, i) => (
-              <tr key={i} className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100">
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.date}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.time}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.load}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">₹{s.rate}</td>
-                <td className="p-[14px_16px] text-[14px] font-bold text-[#16A34A]">₹{s.savings}</td>
-                <td className="p-[14px_16px]">
-                  <span className="inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]">Completed</span>
+              <tr key={i} className="border-b border-[#F4F4F5] last:border-0 hover:bg-[#FAFAFA] transition-colors duration-150">
+                <td className="p-[16px_20px] text-[14px] font-medium text-[#09090B]">{s.date}</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{s.time}</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{s.load} kW</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">₹{s.rate}</td>
+                <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{s.savings.toLocaleString()}</td>
+                <td className="p-[16px_20px]">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[#ECFDF5] text-[#065F46] border border-[#D1FAE5]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] mr-1.5" />
+                    Completed
+                  </span>
                 </td>
               </tr>
             ))}
