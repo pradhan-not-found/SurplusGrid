@@ -392,7 +392,7 @@ export default function LandingDetails() {
                 <div className="w-10 h-10 rounded-full bg-zinc-300 border-2 border-white" />
                 <div className="w-10 h-10 rounded-full bg-zinc-400 border-2 border-white" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-light text-zinc-800 tracking-tighter">
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-800 tracking-tighter">
                 Renewable energy
                 <br />
                 matched <span className="italic text-[#2563EB]">in real-time.</span>
