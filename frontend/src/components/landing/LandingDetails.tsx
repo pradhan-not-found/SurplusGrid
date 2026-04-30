@@ -195,9 +195,9 @@ export default function LandingDetails() {
       {/* ── COMPONENT SHOWCASE ── */}
       <section className="w-full flex flex-col justify-center items-center py-[80px]">
         <motion.div {...fadeUp()} className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-12 px-6">
-          <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Components that don't get in the way.</h1>
+          <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Intelligent Grid Data.</h1>
           <span className="text-[16px] text-[#6B7280]">
-            Every panel, alert, and match card is built for operators — not dashboards for dashboards' sake.
+            Monitor solar surplus, wind curtailment, and dynamic load matching in real-time. Built specifically for energy operators and SLDC compliance.
           </span>
         </motion.div>
 
@@ -393,9 +393,9 @@ export default function LandingDetails() {
                 <div className="w-10 h-10 rounded-full bg-zinc-400 border-2 border-white" />
               </div>
               <h2 className="text-3xl md:text-4xl font-light text-zinc-800 tracking-tighter">
-                Grid integration that
+                Renewable energy
                 <br />
-                doesn't <span className="italic text-[#2563EB]">get in the way.</span>
+                matched <span className="italic text-[#2563EB]">in real-time.</span>
               </h2>
             </div>
 
