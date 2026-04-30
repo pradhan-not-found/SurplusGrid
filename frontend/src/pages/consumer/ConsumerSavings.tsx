@@ -138,26 +138,26 @@ export default function ConsumerSavings() {
         </button>
       </div>
       <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-left" style={{ borderCollapse: 'collapse' }}>
           <thead>
-            <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Date</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Time window</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Units shifted (kWh)</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Rate paid</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Grid rate</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Savings (₹)</th>
+            <tr className="bg-[#F8FAFC]">
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Date</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Time window</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Units shifted (kWh)</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Rate paid</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Grid rate</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Savings (₹)</th>
             </tr>
           </thead>
           <tbody>
             {history.map((h, i) => (
-              <tr key={i} className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100">
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{h.date}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{h.time}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{h.units}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">₹{h.rate}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">₹{h.grid}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-bold">₹{h.savings}</td>
+              <tr key={i} className="hover:bg-[#F9FAFB] transition-colors duration-100">
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{h.date}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{h.time}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{h.units}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">₹{h.rate}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">₹{h.grid}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">₹{h.savings}</td>
               </tr>
             ))}
           </tbody>

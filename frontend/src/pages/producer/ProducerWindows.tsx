@@ -120,37 +120,37 @@ export default function ProducerWindows() {
       )}
 
       <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-left" style={{ borderCollapse: 'collapse' }}>
           <thead>
-            <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Date</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Start</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">End</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Surplus (kW)</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Matched (kW)</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Status</th>
-              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Action</th>
+            <tr className="bg-[#F8FAFC]">
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Date</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Start</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">End</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Surplus (kW)</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Matched (kW)</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Action</th>
             </tr>
           </thead>
           <tbody>
             {windows.map((w) => (
-              <tr key={w.id} className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100">
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{w.date}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{w.start}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{w.end}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{w.surplus}</td>
-                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{w.matched}</td>
-                <td className="p-[14px_16px] text-[14px]">
+              <tr key={w.id} className="hover:bg-[#F9FAFB] transition-colors duration-100">
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.date}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.end}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.surplus}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.matched}</td>
+                <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
                   <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border ${
                     w.status === 'Matched' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
                     w.status === 'Seeking' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
                     w.status === 'Expired' ? 'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]' :
-                    'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]' // Curtailed
+                    'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]'
                   }`}>
                     {w.status}
                   </span>
                 </td>
-                <td className="p-[14px_16px]">
+                <td className="p-[14px_16px] border border-[#E5E7EB]">
                   <button onClick={() => handleDelete(w.id)} className="flex items-center gap-1.5 text-[13px] text-[#EF4444] hover:underline">
                     <Trash2 size={13} /> Delete
                   </button>
@@ -159,7 +159,7 @@ export default function ProducerWindows() {
             ))}
             {windows.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-[48px] text-center">
+                <td colSpan={7} className="p-[48px] text-center border border-[#E5E7EB]">
                   <div className="flex flex-col items-center justify-center text-[#6B7280]">
                     <Zap size={48} strokeWidth={1} className="text-[#D1D5DB] mb-4" />
                     <h3 className="text-[16px] font-medium text-[#374151] mb-1">No surplus windows</h3>
