@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
+import { Eye, Copy, Check, CheckCircle2, Send } from 'lucide-react';
 
 export default function ProducerSettings() {
   const { user } = useAuth();
+  
+  // States
   const [msg1, setMsg1] = useState('');
   const [msg2, setMsg2] = useState('');
   const [msg3, setMsg3] = useState('');
 
   const [apiKey, setApiKey] = useState('sk_live_1234567890abcdef');
   const [showKey, setShowKey] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [webhook, setWebhook] = useState('https://api.myfarm.com/surplus-webhook');
 
   const [emailAlerts, setEmailAlerts] = useState(true);
@@ -17,9 +21,9 @@ export default function ProducerSettings() {
   const [dailyDigest, setDailyDigest] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(false);
 
+  // Handlers
   const saveDetails = () => {
-    setMsg1('Saved');
-    setTimeout(() => setMsg1(''), 3000);
+    setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
   };
 
   const regenKey = () => {
@@ -27,106 +31,122 @@ export default function ProducerSettings() {
     alert('Old key is now invalid');
   };
 
+  const copyKey = () => {
+    navigator.clipboard.writeText(apiKey);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   const saveApi = () => {
-    setMsg2('Webhook URL saved');
-    setTimeout(() => setMsg2(''), 3000);
+    setMsg2('Webhook URL saved'); setTimeout(() => setMsg2(''), 3000);
   };
 
   const testWebhook = () => {
-    setMsg2('POST sent · 200 OK');
-    setTimeout(() => setMsg2(''), 3000);
+    setMsg2('POST sent · 200 OK'); setTimeout(() => setMsg2(''), 3000);
   };
 
   const savePrefs = () => {
-    setMsg3('Preferences saved');
-    setTimeout(() => setMsg3(''), 3000);
+    setMsg3('Preferences saved'); setTimeout(() => setMsg3(''), 3000);
   };
+
+  const Toggle = ({ checked, onChange, label, subLabel }: { checked: boolean, onChange: (v:boolean)=>void, label: string, subLabel?: string }) => (
+    <label className="flex items-start gap-4 cursor-pointer group">
+      <div className={`relative w-[44px] h-[24px] rounded-full transition-colors duration-150 shrink-0 mt-0.5 ${checked ? 'bg-[#2563EB]' : 'bg-[#E5E7EB]'}`}>
+        <div className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-150 shadow-sm ${checked ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+      </div>
+      <div>
+        <div className="text-[14px] text-[#374151] font-medium">{label}</div>
+        {subLabel && <div className="text-[12px] text-[#9CA3AF] mt-1">{subLabel}</div>}
+      </div>
+    </label>
+  );
 
   return (
     <DashboardLayout title="Settings">
-      <div className="max-w-2xl space-y-8">
+      <div className="max-w-[720px]">
         
         {/* Section 1 */}
-        <section className="bg-white p-6 border border-gray-200 rounded">
-          <h2 className="text-xl font-bold font-display mb-4">Account details</h2>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-bold mb-1">Full name</label>
-              <input type="text" className="w-full border p-2" defaultValue={user?.name} />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1">Email</label>
-              <input type="email" className="w-full border p-2 bg-gray-100" defaultValue={user?.email} disabled />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1">Phone</label>
-              <input type="tel" className="w-full border p-2" defaultValue={user?.phone} />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1">Company name</label>
-              <input type="text" className="w-full border p-2" defaultValue={user?.companyName} />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1">State</label>
-              <input type="text" className="w-full border p-2" defaultValue={user?.state} />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1">GST number</label>
-              <input type="text" className="w-full border p-2" defaultValue={user?.gst} />
-            </div>
+        <section className="bg-white p-[24px] border border-[#E5E7EB] rounded-[12px] mb-[20px] shadow-none">
+          <div className="mb-[16px]">
+            <h3 className="text-[15px] font-bold text-[#0D1117] mb-1">Account details</h3>
+            <p className="text-[13px] text-[#6B7280]">Update your personal and company information.</p>
+          </div>
+          <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
+          
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.name} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email} disabled /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.phone || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.companyName} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.state} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.gst || ''} /></div>
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={saveDetails} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Save changes</button>
-            {msg1 && <span className="text-green-600 font-bold text-sm">{msg1}</span>}
+            <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>
+            {msg1 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg1}</div>}
           </div>
         </section>
 
         {/* Section 2 */}
-        <section className="bg-white p-6 border border-gray-200 rounded">
-          <h2 className="text-xl font-bold font-display mb-4">API integration</h2>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-1">API Key</label>
+        <section className="bg-white p-[24px] border border-[#E5E7EB] rounded-[12px] mb-[20px] shadow-none">
+          <div className="mb-[16px]">
+            <h3 className="text-[15px] font-bold text-[#0D1117] mb-1">API integration</h3>
+            <p className="text-[13px] text-[#6B7280]">Manage programmatic access to your surplus data.</p>
+          </div>
+          <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
+          
+          <div className="mb-6">
+            <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">API Key</label>
             <div className="flex gap-2">
-              <input type="text" className="flex-1 border p-2 bg-gray-50 font-data" value={showKey ? apiKey : '••••••••••••••••'} readOnly />
-              <button onClick={() => setShowKey(!showKey)} className="border px-4 py-2 rounded font-bold">Reveal</button>
-              <button onClick={regenKey} className="border px-4 py-2 rounded text-red-600 border-red-200 hover:bg-red-50 font-bold">Regenerate key</button>
+              <div className="flex-1 bg-[#F8FAFC] border border-[#E5E7EB] rounded-[8px] px-[14px] flex items-center justify-between">
+                <span className="font-mono text-[14px] text-[#0D1117]">{showKey ? apiKey : '••••••••••••••••••••••••'}</span>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setShowKey(!showKey)} className="text-[#6B7280] hover:text-[#0D1117] p-1">
+                    <Eye size={16} strokeWidth={1.5} />
+                  </button>
+                  <button onClick={copyKey} className="text-[#6B7280] hover:text-[#0D1117] p-1" title={copied ? "Copied!" : "Copy"}>
+                    {copied ? <Check size={16} strokeWidth={2} className="text-[#16A34A]" /> : <Copy size={16} strokeWidth={1.5} />}
+                  </button>
+                </div>
+              </div>
+              <button onClick={regenKey} className="h-[40px] px-[20px] bg-white border border-[#FECACA] text-[#DC2626] rounded-[8px] font-medium text-[14px] hover:bg-[#FEF2F2] transition-colors">
+                Regenerate key
+              </button>
             </div>
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-1">Webhook URL</label>
-            <input type="text" className="w-full border p-2" value={webhook} onChange={e=>setWebhook(e.target.value)} />
+          
+          <div className="mb-6">
+            <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Webhook URL</label>
+            <input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={webhook} onChange={e=>setWebhook(e.target.value)} />
           </div>
+          
           <div className="flex items-center gap-4">
-            <button onClick={saveApi} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Save webhook</button>
-            <button onClick={testWebhook} className="border px-6 py-2 rounded font-bold">Test webhook</button>
-            {msg2 && <span className="text-green-600 font-bold text-sm">{msg2}</span>}
+            <button onClick={saveApi} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save webhook</button>
+            <button onClick={testWebhook} className="h-[40px] px-[20px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] flex items-center gap-2 transition-colors">
+              <Send size={14} strokeWidth={1.5} /> Test webhook
+            </button>
+            {msg2 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg2}</div>}
           </div>
         </section>
 
         {/* Section 3 */}
-        <section className="bg-white p-6 border border-gray-200 rounded">
-          <h2 className="text-xl font-bold font-display mb-4">Notifications</h2>
-          <div className="space-y-3 mb-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={emailAlerts} onChange={e=>setEmailAlerts(e.target.checked)} className="w-4 h-4" />
-              <span>Email alerts for new matches</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={smsAlerts} onChange={e=>setSmsAlerts(e.target.checked)} className="w-4 h-4" />
-              <span>SMS alerts for new matches</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={dailyDigest} onChange={e=>setDailyDigest(e.target.checked)} className="w-4 h-4" />
-              <span>Daily digest email</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={weeklySummary} onChange={e=>setWeeklySummary(e.target.checked)} className="w-4 h-4" />
-              <span>Weekly summary email</span>
-            </label>
+        <section className="bg-white p-[24px] border border-[#E5E7EB] rounded-[12px] mb-[20px] shadow-none">
+          <div className="mb-[16px]">
+            <h3 className="text-[15px] font-bold text-[#0D1117] mb-1">Notifications</h3>
+            <p className="text-[13px] text-[#6B7280]">Control how and when you want to be alerted.</p>
           </div>
+          <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
+          
+          <div className="space-y-6 mb-8">
+            <Toggle checked={emailAlerts} onChange={setEmailAlerts} label="Email alerts for new matches" subLabel="Receive an email immediately when a surplus window finds a match." />
+            <Toggle checked={smsAlerts} onChange={setSmsAlerts} label="SMS alerts for new matches" subLabel="Critical alerts sent straight to your registered mobile number." />
+            <Toggle checked={dailyDigest} onChange={setDailyDigest} label="Daily digest email" subLabel="A summary of all grid injection events over the past 24 hours." />
+            <Toggle checked={weeklySummary} onChange={setWeeklySummary} label="Weekly summary email" subLabel="Detailed report of curtailment avoided and generated revenue." />
+          </div>
+          
           <div className="flex items-center gap-4">
-            <button onClick={savePrefs} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Save preferences</button>
-            {msg3 && <span className="text-green-600 font-bold text-sm">{msg3}</span>}
+            <button onClick={savePrefs} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save preferences</button>
+            {msg3 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg3}</div>}
           </div>
         </section>
 

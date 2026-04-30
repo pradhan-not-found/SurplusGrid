@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
+import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X } from 'lucide-react';
 
 export default function ConsumerOverview() {
   const [showBanner, setShowBanner] = useState(true);
@@ -19,7 +20,6 @@ export default function ConsumerOverview() {
   ];
 
   const handleAccept = (id: number) => {
-    // move alert to bottom with Accepted status
     const alert = alerts.find(a => a.id === id);
     if (!alert) return;
     setAlerts([...alerts.filter(a => a.id !== id), { ...alert, accepted: true } as any]);
@@ -28,48 +28,100 @@ export default function ConsumerOverview() {
   return (
     <DashboardLayout title="Overview">
       {showBanner && (
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded flex items-center justify-between mb-8">
-          <div>
-            <strong className="text-blue-900">Next cheap energy window:</strong> Tomorrow 11:00–14:00 · Estimated savings ₹12,400
-            <Link to="/dashboard/consumer/alerts" className="ml-4 text-blue-600 hover:underline">View details</Link>
+        <div className="w-full rounded-[10px] p-[14px_20px] bg-[#EFF6FF] border border-[#BFDBFE] border-l-[3px] border-l-[#2563EB] flex items-center justify-between mb-[32px]">
+          <div className="flex items-center gap-3">
+            <Zap size={16} strokeWidth={1.5} color="#2563EB" />
+            <div>
+              <span className="text-[14px] font-medium text-[#1E40AF] mr-2">Next window:</span>
+              <span className="text-[14px] text-[#1E40AF]">Tomorrow 11:00–14:00 · Estimated savings ₹12,400</span>
+            </div>
           </div>
-          <button onClick={() => setShowBanner(false)} className="text-blue-900 font-bold px-2">&times;</button>
+          <div className="flex items-center gap-4">
+            <Link to="/dashboard/consumer/alerts" className="text-[14px] font-medium text-[#2563EB] hover:underline flex items-center gap-1">
+              View details <ArrowRight size={14} />
+            </Link>
+            <button onClick={() => setShowBanner(false)} className="text-[#60A5FA] hover:text-[#1D4ED8]">
+              <X size={16} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-6 rounded border border-gray-200">
-          <div className="text-sm text-gray-500 mb-1">Savings this month</div>
-          <div className="text-3xl font-bold font-display">₹38,700</div>
+      <div className="grid grid-cols-4 gap-4 mb-[32px]">
+        {/* Stat 1 */}
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
+          <div className="flex justify-between items-start">
+            <span className="text-[13px] text-[#6B7280]">Savings this month</span>
+            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
+              <IndianRupee size={20} strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">₹38,700</div>
+          <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]">
+            <span>+18% vs last month</span>
+          </div>
         </div>
-        <div className="bg-white p-6 rounded border border-gray-200">
-          <div className="text-sm text-gray-500 mb-1">Load shifts completed</div>
-          <div className="text-3xl font-bold font-display">7</div>
+
+        {/* Stat 2 */}
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
+          <div className="flex justify-between items-start">
+            <span className="text-[13px] text-[#6B7280]">Load shifts completed</span>
+            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
+              <CalendarCheck size={20} strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">7</div>
+          <div className="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
+            <span>On track for goal</span>
+          </div>
         </div>
-        <div className="bg-white p-6 rounded border border-gray-200">
-          <div className="text-sm text-gray-500 mb-1">Clean energy used</div>
-          <div className="text-3xl font-bold font-display">14.3 MWh</div>
+
+        {/* Stat 3 */}
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
+          <div className="flex justify-between items-start">
+            <span className="text-[13px] text-[#6B7280]">Clean energy used</span>
+            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
+              <Leaf size={20} strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">14.3 MWh</div>
+          <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]">
+            <span>+5% vs last month</span>
+          </div>
         </div>
-        <div className="bg-white p-6 rounded border border-gray-200">
-          <div className="text-sm text-gray-500 mb-1">Carbon offset</div>
-          <div className="text-3xl font-bold font-display">1,140 kg CO₂</div>
+
+        {/* Stat 4 */}
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] pb-[24px] hover:border-[#BFDBFE] transition-colors duration-150">
+          <div className="flex justify-between items-start">
+            <span className="text-[13px] text-[#6B7280]">Carbon offset</span>
+            <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
+              <Wind size={20} strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">1,140 kg</div>
+          <div className="flex items-center gap-1.5 text-[12px] text-[#6B7280]">
+            <span>CO₂ equivalent</span>
+          </div>
         </div>
       </div>
 
-      <h2 className="text-lg font-bold font-display mb-4">Pending alerts</h2>
-      <div className="bg-white border border-gray-200 rounded mb-4 overflow-x-auto">
-        <table className="w-full text-left text-sm">
+      <div className="flex justify-between items-center mb-[12px]">
+        <h3 className="text-[15px] font-bold text-[#0D1117]">Pending alerts</h3>
+        <Link to="/dashboard/consumer/alerts" className="text-[13px] font-medium text-[#2563EB] hover:underline">View all alerts</Link>
+      </div>
+      <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden mb-[32px]">
+        <table className="w-full text-left border-collapse">
           <tbody>
             {alerts.map((a: any) => (
-              <tr key={a.id} className={`border-b border-gray-100 last:border-0 ${a.accepted ? 'opacity-50 bg-gray-50' : ''}`}>
-                <td className="p-4 font-bold">{a.time}</td>
-                <td className="p-4">₹{a.rateSurplus}/unit vs ₹{a.rateGrid}/unit</td>
-                <td className="p-4 text-green-600 font-bold">Save ₹{a.savings}</td>
-                <td className="p-4 text-right">
+              <tr key={a.id} className={`border-b border-[#F1F5F9] last:border-0 ${a.accepted ? 'bg-[#F9FAFB]' : 'hover:bg-[#F9FAFB]'} transition-colors duration-100`}>
+                <td className={`p-[14px_16px] text-[14px] ${a.accepted ? 'text-[#9CA3AF]' : 'font-bold text-[#0D1117]'}`}>{a.time}</td>
+                <td className={`p-[14px_16px] text-[14px] ${a.accepted ? 'text-[#9CA3AF]' : 'text-[#374151]'}`}>₹{a.rateSurplus}/unit vs ₹{a.rateGrid}/unit</td>
+                <td className={`p-[14px_16px] text-[14px] font-bold ${a.accepted ? 'text-[#9CA3AF]' : 'text-[#16A34A]'}`}>Save ₹{a.savings}</td>
+                <td className="p-[14px_16px] text-right">
                   {a.accepted ? (
-                    <span className="text-gray-500 font-bold px-4">Scheduled</span>
+                    <span className="inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]">Scheduled</span>
                   ) : (
-                    <button onClick={() => handleAccept(a.id)} className="bg-gray-900 text-white px-4 py-2 rounded font-bold">Accept shift</button>
+                    <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#2563EB] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#1D4ED8] transition-colors">Accept shift</button>
                   )}
                 </td>
               </tr>
@@ -77,30 +129,31 @@ export default function ConsumerOverview() {
           </tbody>
         </table>
       </div>
-      <Link to="/dashboard/consumer/alerts" className="text-blue-600 hover:underline text-sm font-bold block mb-8">View all alerts</Link>
 
-      <h2 className="text-lg font-bold font-display mb-4">Recent load shifts</h2>
-      <div className="bg-white border border-gray-200 rounded overflow-x-auto">
-        <table className="w-full text-left text-sm">
+      <h3 className="text-[15px] font-bold text-[#0D1117] mb-[12px]">Recent load shifts</h3>
+      <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="p-4 font-bold">Date</th>
-              <th className="p-4 font-bold">Time window</th>
-              <th className="p-4 font-bold">Load shifted (kW)</th>
-              <th className="p-4 font-bold">Energy rate</th>
-              <th className="p-4 font-bold">Savings (₹)</th>
-              <th className="p-4 font-bold">Status</th>
+            <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Date</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Time window</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Load shifted (kW)</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Energy rate</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Savings (₹)</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Status</th>
             </tr>
           </thead>
           <tbody>
             {shifts.map((s, i) => (
-              <tr key={i} className="border-b border-gray-100 last:border-0">
-                <td className="p-4">{s.date}</td>
-                <td className="p-4">{s.time}</td>
-                <td className="p-4">{s.load}</td>
-                <td className="p-4">₹{s.rate}</td>
-                <td className="p-4 text-green-600 font-bold">₹{s.savings}</td>
-                <td className="p-4"><span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">Completed</span></td>
+              <tr key={i} className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100">
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.date}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.time}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.load}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">₹{s.rate}</td>
+                <td className="p-[14px_16px] text-[14px] font-bold text-[#16A34A]">₹{s.savings}</td>
+                <td className="p-[14px_16px]">
+                  <span className="inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]">Completed</span>
+                </td>
               </tr>
             ))}
           </tbody>
