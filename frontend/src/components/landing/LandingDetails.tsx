@@ -393,9 +393,9 @@ export default function LandingDetails() {
                 <div className="w-10 h-10 rounded-full bg-zinc-400 border-2 border-white" />
               </div>
               <h2 className="text-3xl md:text-4xl font-light text-zinc-800 tracking-tighter">
-                Components that
+                Grid integration that
                 <br />
-                don't <span className="italic text-[#2563EB]">get in the way.</span>
+                doesn't <span className="italic text-[#2563EB]">get in the way.</span>
               </h2>
             </div>
 
@@ -403,11 +403,11 @@ export default function LandingDetails() {
             <div className="p-8 md:p-12 flex items-center">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 w-full">
                 {[
-                  { label: "Components", href: "#" },
-                  { label: "Blocks", href: "#" },
+                  { label: "Grid Matching", href: "#" },
+                  { label: "Solar & Wind", href: "#" },
                   { label: "Terms of Service", href: "#" },
-                  { label: "Documentation", href: "#" },
-                  { label: "Showcase", href: "#" },
+                  { label: "API Documentation", href: "#" },
+                  { label: "SLDC Guidelines", href: "#" },
                   { label: "Privacy Policy", href: "#" },
                 ].map((link) => (
                   <Link
