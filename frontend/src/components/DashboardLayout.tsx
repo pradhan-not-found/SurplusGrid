@@ -49,11 +49,11 @@ export default function DashboardLayout({ children, title }: { children: React.R
         
         <div className="h-[1px] bg-[#F1F5F9] mx-5 my-4" />
         
-        <div className="px-5 mb-2 text-[10px] font-medium text-[#6B7280] tracking-[0.1em] uppercase">
+        <div className="px-5 mb-3 text-[11px] font-semibold text-[#A1A1AA] tracking-wider uppercase">
           Platform
         </div>
 
-        <nav className="flex-1 px-3 space-y-[2px]">
+        <nav className="flex-1 px-3 space-y-1">
           {links.map((link) => {
             const isActive = location.pathname === link.path;
             const Icon = link.icon;
@@ -61,14 +61,13 @@ export default function DashboardLayout({ children, title }: { children: React.R
               <Link 
                 key={link.path} 
                 to={link.path}
-                className={`relative flex items-center gap-[10px] h-[40px] px-[16px] rounded-[8px] transition-all duration-120
+                className={`flex items-center gap-3 h-[36px] px-3 rounded-[6px] transition-all duration-150
                   ${isActive 
-                    ? 'bg-[#EFF6FF] text-[#2563EB] font-medium' 
-                    : 'text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#0D1117]'}`}
+                    ? 'bg-[#F4F4F5] text-[#09090B] font-medium shadow-sm' 
+                    : 'text-[#71717A] hover:bg-[#F4F4F5]/50 hover:text-[#27272A]'}`}
               >
-                {isActive && <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-[#2563EB] rounded-r-full" />}
-                <Icon size={18} strokeWidth={1.5} className={isActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]'} />
-                <span className="text-[14px]">{link.label}</span>
+                <Icon size={16} strokeWidth={1.5} className={isActive ? 'text-[#09090B]' : 'text-[#A1A1AA]'} />
+                <span className="text-[13px]">{link.label}</span>
               </Link>
             );
           })}
