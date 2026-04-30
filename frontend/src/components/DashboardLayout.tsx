@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { 
   LayoutDashboard, Zap, GitMerge, Settings2, 
   BellRing, CalendarClock, TrendingUp,
-  LogOut, Bell, Sun, Factory
+  LogOut, Bell, Sun, Factory, CheckCircle2
 } from 'lucide-react';
 
 export default function DashboardLayout({ children, title }: { children: React.ReactNode, title: string }) {

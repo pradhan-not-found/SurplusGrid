@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import type { User } from '../types/auth';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string) => void;
+  login: (userData: User | string) => void;
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
 }
@@ -24,15 +25,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
-  const login = (email: string) => {
-    // Mock login/signup logic
-    const newUser: User = {
-      id: Math.random().toString(36).substring(7),
-      name: email.split('@')[0],
-      email,
-      role: null,
-      onboardingComplete: false,
-    };
+  const login = (userData: User | string) => {
+    let newUser: User;
+    if (typeof userData === 'string') {
+      newUser = {
+        id: Math.random().toString(36).substring(7),
+        name: userData.split('@')[0],
+        email: userData,
+        role: null,
+        onboardingComplete: false,
+      };
+    } else {
+      newUser = userData;
+    }
     setUser(newUser);
     localStorage.setItem('surplusgrid_user', JSON.stringify(newUser));
   };
