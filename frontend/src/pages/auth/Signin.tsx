@@ -58,31 +58,31 @@ export default function Signin() {
           className="absolute inset-0 bg-cover bg-center z-0" 
           style={{ backgroundImage: 'url(/wind.png)' }}
         />
-        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm z-10" />
+        <div className="absolute inset-0 bg-black/5 backdrop-blur-md z-10" />
         
         <div className="flex-1 flex flex-col justify-center relative z-20">
-          <div className="p-10 bg-white/50 backdrop-blur-md border border-white/40 rounded-2xl shadow-sm max-w-[420px]">
-            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] mb-8 object-contain" />
-            <h1 className="text-[28px] font-bold text-[#0D1117] mb-8 leading-tight tracking-[-0.01em]">
+          <div className="p-10 bg-white/20 backdrop-blur-2xl border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(255,255,255,0.1)] max-w-[420px]">
+            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] mb-8 object-contain brightness-110" />
+            <h1 className="text-[28px] font-bold text-white mb-8 leading-tight tracking-[-0.01em] drop-shadow-sm">
               The smarter energy grid exchange.
             </h1>
             <div className="space-y-4">
-              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
-                <ShieldCheck size={16} color="#0D1117" />
+              <div className="flex items-center gap-3 text-[13px] font-medium text-white drop-shadow-sm">
+                <ShieldCheck size={16} className="text-white" />
                 SLDC compliant reporting
               </div>
-              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
-                <Zap size={16} color="#0D1117" />
+              <div className="flex items-center gap-3 text-[13px] font-medium text-white drop-shadow-sm">
+                <Zap size={16} className="text-white" />
                 Real-time surplus matching
               </div>
-              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
-                <TrendingUp size={16} color="#0D1117" />
+              <div className="flex items-center gap-3 text-[13px] font-medium text-white drop-shadow-sm">
+                <TrendingUp size={16} className="text-white" />
                 Used by 450+ industrial operators
               </div>
             </div>
           </div>
         </div>
-        <div className="text-[11px] text-[#0D1117] font-semibold relative z-20">
+        <div className="text-[11px] text-white/80 font-medium relative z-20">
           © {new Date().getFullYear()} SurplusGrid Pvt. Ltd.
         </div>
       </div>
