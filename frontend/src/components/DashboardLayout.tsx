@@ -1,16 +1,29 @@
 import { useAuth } from '../context/AuthContext';
 import { Navigate, Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, Zap, GitMerge, Settings2, 
   BellRing, CalendarClock, TrendingUp,
-  LogOut, Bell, Sun, Factory, CheckCircle2
+  LogOut, Bell, CheckCircle2, User, ChevronRight
 } from 'lucide-react';
 
 export default function DashboardLayout({ children, title }: { children: React.ReactNode, title: string }) {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setShowProfile(false);
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   if (!user) {
     return <Navigate to="/signin" replace />;
@@ -40,10 +53,12 @@ export default function DashboardLayout({ children, title }: { children: React.R
       {/* Sidebar */}
       <div className="w-[240px] bg-white flex flex-col border-r border-[#E5E7EB] shrink-0">
         <div className="pt-[24px] px-[20px] pb-[8px]">
-          <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-4" />
-          <div className="inline-flex items-center gap-1.5 px-[8px] py-[4px] rounded-[6px] border border-[#E5E7EB] bg-[#F9FAFB] text-[11px] font-medium text-[#475569] shadow-sm">
-            {user.role === 'producer' ? <Sun size={12} className="text-[#F59E0B]" /> : <Factory size={12} className="text-[#2563EB]" />}
-            {user.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
+          <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-5" />
+          <div className="flex items-center gap-2 mt-1">
+            <div className="h-3 w-[2px] bg-[#E5E7EB] rounded-full" />
+            <span className="text-[10px] font-medium text-[#9CA3AF] tracking-[0.1em] uppercase">
+              {user.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
+            </span>
           </div>
         </div>
         
@@ -142,8 +157,62 @@ export default function DashboardLayout({ children, title }: { children: React.R
               </div>
             )}
 
-            <div className="w-8 h-8 rounded-full bg-[#1E3A5F] text-[#60A5FA] flex items-center justify-center text-[13px] font-medium cursor-pointer">
-              {initials}
+            {/* Profile avatar + dropdown */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }}
+                className="w-8 h-8 rounded-full bg-[#0D1117] text-white flex items-center justify-center text-[12px] font-semibold hover:ring-2 hover:ring-[#E5E7EB] transition-all"
+              >
+                {initials}
+              </button>
+
+              {showProfile && (
+                <div className="absolute top-[44px] right-0 w-[240px] bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.10)] z-50 overflow-hidden">
+                  {/* Header */}
+                  <div className="px-4 py-3 border-b border-[#F1F5F9]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#0D1117] text-white flex items-center justify-center text-[13px] font-semibold shrink-0">
+                        {initials}
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="text-[13px] font-semibold text-[#0D1117] truncate">{user.name}</p>
+                        <p className="text-[11px] text-[#9CA3AF] truncate">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="mt-2.5 inline-flex items-center gap-1">
+                      <span className="text-[10px] font-medium text-[#9CA3AF] tracking-[0.08em] uppercase">
+                        {user.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Menu items */}
+                  <div className="py-1">
+                    <Link
+                      to={user.role === 'producer' ? '/dashboard/producer/settings' : '/dashboard/consumer/settings'}
+                      onClick={() => setShowProfile(false)}
+                      className="flex items-center justify-between px-4 py-2.5 text-[13px] text-[#374151] hover:bg-[#F9FAFB] transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <User size={14} className="text-[#9CA3AF] group-hover:text-[#374151]" />
+                        Account Settings
+                      </div>
+                      <ChevronRight size={13} className="text-[#D1D5DB]" />
+                    </Link>
+                  </div>
+
+                  {/* Sign out */}
+                  <div className="border-t border-[#F1F5F9] py-1">
+                    <button
+                      onClick={() => { setShowProfile(false); logout(); }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-[#EF4444] hover:bg-[#FFF5F5] transition-colors"
+                    >
+                      <LogOut size={14} />
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
