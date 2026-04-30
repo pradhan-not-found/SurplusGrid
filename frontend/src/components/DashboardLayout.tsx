@@ -1,102 +1,173 @@
-import { ReactNode } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link, useLocation, Navigate } from 'react-router-dom';
+import { Navigate, Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { 
+  LayoutDashboard, Zap, GitMerge, Settings2, 
+  BellRing, CalendarClock, TrendingUp,
+  LogOut, Bell, Sun, Factory
+} from 'lucide-react';
 
-interface LayoutProps {
-  children: ReactNode;
-  title: string;
-}
-
-export default function DashboardLayout({ children, title }: LayoutProps) {
+export default function DashboardLayout({ children, title }: { children: React.ReactNode, title: string }) {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [showNotifications, setShowNotifications] = useState(false);
 
   if (!user) {
     return <Navigate to="/signin" replace />;
   }
-  if (!user.onboardingComplete) {
-    return <Navigate to="/onboarding" replace />;
-  }
-
-  // Prevent cross-role access
-  const isProducerPath = location.pathname.includes('/dashboard/producer');
-  const isConsumerPath = location.pathname.includes('/dashboard/consumer');
-  if (user.role === 'producer' && isConsumerPath) {
-    return <Navigate to="/dashboard/producer" replace />;
-  }
-  if (user.role === 'consumer' && isProducerPath) {
-    return <Navigate to="/dashboard/consumer" replace />;
-  }
 
   const producerLinks = [
-    { label: 'Overview', path: '/dashboard/producer' },
-    { label: 'Surplus Windows', path: '/dashboard/producer/windows' },
-    { label: 'Matches', path: '/dashboard/producer/matches' },
-    { label: 'Settings', path: '/dashboard/producer/settings' },
+    { label: 'Overview', path: '/dashboard/producer', icon: LayoutDashboard },
+    { label: 'Surplus Windows', path: '/dashboard/producer/windows', icon: Zap },
+    { label: 'Matches', path: '/dashboard/producer/matches', icon: GitMerge },
+    { label: 'Settings', path: '/dashboard/producer/settings', icon: Settings2 },
   ];
 
   const consumerLinks = [
-    { label: 'Overview', path: '/dashboard/consumer' },
-    { label: 'Energy Alerts', path: '/dashboard/consumer/alerts' },
-    { label: 'Load Schedule', path: '/dashboard/consumer/schedule' },
-    { label: 'Savings', path: '/dashboard/consumer/savings' },
-    { label: 'Settings', path: '/dashboard/consumer/settings' },
+    { label: 'Overview', path: '/dashboard/consumer', icon: LayoutDashboard },
+    { label: 'Energy Alerts', path: '/dashboard/consumer/alerts', icon: BellRing },
+    { label: 'Load Schedule', path: '/dashboard/consumer/schedule', icon: CalendarClock },
+    { label: 'Savings', path: '/dashboard/consumer/savings', icon: TrendingUp },
+    { label: 'Settings', path: '/dashboard/consumer/settings', icon: Settings2 },
   ];
 
   const links = user.role === 'producer' ? producerLinks : consumerLinks;
+  
+  const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() : 'U';
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-body">
+    <div className="flex h-screen bg-[#F8FAFC] font-body text-[#0D1117]">
       {/* Sidebar */}
-      <aside className="w-[220px] bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-100">
-          <div className="font-display font-bold text-xl">SurplusGrid</div>
-          <div className="text-xs uppercase tracking-wider text-gray-500 mt-1">
-            {user.role}
+      <div className="w-[240px] bg-[#0D1117] flex flex-col border-r border-white/5 shrink-0">
+        <div className="pt-[24px] px-[20px] pb-[8px]">
+          <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-4" />
+          <div className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full border text-[11px] font-medium
+            ${user.role === 'producer' ? 'bg-[#1C3A2A] text-[#4ADE80] border-[#166534]' : 'bg-[#1E2E4A] text-[#60A5FA] border-[#1D4ED8]'}`}>
+            {user.role === 'producer' ? <Sun size={10} /> : <Factory size={10} />}
+            {user.role === 'producer' ? 'Producer' : 'Consumer'}
           </div>
         </div>
         
-        <nav className="flex-1 p-4 space-y-2">
+        <div className="h-[1px] bg-white/5 mx-5 my-4" />
+        
+        <div className="px-5 mb-2 text-[10px] font-medium text-[#475569] tracking-[0.1em] uppercase">
+          Platform
+        </div>
+
+        <nav className="flex-1 px-3 space-y-[2px]">
           {links.map((link) => {
             const isActive = location.pathname === link.path;
+            const Icon = link.icon;
             return (
-              <Link
-                key={link.path}
+              <Link 
+                key={link.path} 
                 to={link.path}
-                className={`block p-2 rounded ${isActive ? 'bg-gray-100 font-bold' : 'hover:bg-gray-50'}`}
+                className={`relative flex items-center gap-[10px] h-[40px] px-[16px] rounded-[8px] transition-all duration-120
+                  ${isActive 
+                    ? 'bg-[#2563EB]/15 text-white font-medium' 
+                    : 'text-[#94A3B8] hover:bg-white/5 hover:text-[#E2E8F0]'}`}
               >
-                {link.label}
+                {isActive && <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-[#2563EB] rounded-r-full" />}
+                <Icon size={18} strokeWidth={1.5} className={isActive ? 'text-[#60A5FA]' : 'text-[#64748B]'} />
+                <span className="text-[14px]">{link.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-200">
-          <div className="text-sm font-bold truncate">{user.name}</div>
-          <div className="text-xs text-gray-500 truncate mb-3">{user.email}</div>
+        <div className="border-t border-white/5 mt-auto">
+          <div className="p-4 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-[#1E3A5F] text-[#60A5FA] flex items-center justify-center text-[13px] font-medium shrink-0">
+              {initials}
+            </div>
+            <div className="overflow-hidden">
+              <div className="text-[13px] font-medium text-white truncate">{user.name}</div>
+              <div className="text-[11px] text-[#64748B] truncate">{user.email}</div>
+            </div>
+          </div>
           <button 
             onClick={logout}
-            className="w-full text-left text-sm text-red-600 hover:text-red-700"
+            className="w-full flex items-center gap-[10px] px-[28px] py-3 text-[13px] text-[#64748B] hover:text-[#EF4444] group transition-colors duration-120"
           >
+            <LogOut size={15} strokeWidth={1.5} className="group-hover:text-[#EF4444] transition-colors" />
             Sign out
           </button>
         </div>
-      </aside>
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col">
-        <header className="h-16 border-b border-gray-200 bg-white flex items-center justify-between px-6">
-          <h1 className="font-display font-bold text-xl">{title}</h1>
-          <div className="relative">
-            <button className="p-2 border border-gray-200 rounded">
-              🔔 <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top bar */}
+        <header className="h-[60px] bg-white border-b border-[#F1F5F9] flex items-center justify-between px-8 shrink-0">
+          <h1 className="text-[18px] font-bold text-[#0D1117] tracking-[-0.01em]">{title}</h1>
+          
+          <div className="flex items-center gap-4 relative">
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative w-9 h-9 border border-[#E5E7EB] rounded-[8px] flex items-center justify-center hover:bg-[#F8FAFC] transition-colors"
+            >
+              <Bell size={18} strokeWidth={1.5} className="text-[#374151]" />
+              <div className="absolute -top-1.5 -right-1.5 w-[18px] h-[18px] rounded-full bg-[#EF4444] border-2 border-white text-white flex items-center justify-center text-[10px] font-bold">
+                2
+              </div>
             </button>
+
+            {showNotifications && (
+              <div className="absolute top-[48px] right-12 w-[280px] bg-white border border-[#E5E7EB] rounded-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] z-50 overflow-hidden">
+                <div className="flex justify-between items-center p-3 border-b border-[#F1F5F9]">
+                  <span className="font-bold text-[14px]">Notifications</span>
+                  <button className="text-[12px] text-[#2563EB] hover:underline">Mark all read</button>
+                </div>
+                <div className="divide-y divide-[#F1F5F9]">
+                  <div className="p-3 hover:bg-[#F9FAFB] cursor-pointer">
+                    <div className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#EFF6FF] flex items-center justify-center text-[#2563EB] shrink-0"><Zap size={14} /></div>
+                      <div>
+                        <p className="text-[13px] text-[#0D1117] leading-snug">New surplus window matched</p>
+                        <p className="text-[11px] text-[#9CA3AF] mt-1">2 mins ago</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 hover:bg-[#F9FAFB] cursor-pointer">
+                    <div className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#ECFDF5] flex items-center justify-center text-[#10B981] shrink-0"><CheckCircle2 size={14} /></div>
+                      <div>
+                        <p className="text-[13px] text-[#0D1117] leading-snug">Settlement report generated</p>
+                        <p className="text-[11px] text-[#9CA3AF] mt-1">1 hour ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link to="#" className="block p-2 text-center text-[13px] text-[#2563EB] hover:bg-[#F9FAFB] font-medium border-t border-[#F1F5F9]">
+                  View all
+                </Link>
+              </div>
+            )}
+
+            <div className="w-8 h-8 rounded-full bg-[#1E3A5F] text-[#60A5FA] flex items-center justify-center text-[13px] font-medium cursor-pointer">
+              {initials}
+            </div>
           </div>
         </header>
-        <div className="p-6 flex-1 overflow-auto">
-          {children}
-        </div>
-      </main>
+
+        {/* Scrollable content area */}
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-[1100px] mx-auto">
+            {/* Header Block inside content */}
+            <div className="mb-[24px]">
+              <h2 className="text-[22px] font-bold text-[#0D1117] tracking-[-0.01em]">{title}</h2>
+              <p className="text-[14px] text-[#6B7280]">
+                {user.role === 'producer' 
+                  ? 'Manage your surplus generation and grid injections.' 
+                  : 'Monitor your flexible load shifts and clean energy savings.'}
+              </p>
+            </div>
+            <div className="h-[1px] bg-[#F1F5F9] mb-[24px]" />
+            
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
