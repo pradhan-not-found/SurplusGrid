@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Activity, Zap,
-  CheckCircle2, Activity, Zap,
   ArrowRight, Mail, Globe, ShieldCheck, Leaf, ArrowUpRight
 } from 'lucide-react';
 
@@ -302,69 +301,74 @@ export default function LandingDetails() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-[#E5E7EB] bg-white">  
-        <div className="max-w-[1100px] mx-auto px-6 pt-[64px] pb-[40px]">
-
-          {/* Top row */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
-
-            {/* Brand col */}
-            <div className="md:col-span-2">
-              <img src="/logo.png" alt="SurplusGrid" className="h-9 w-auto object-contain mb-5" />
-              <p className="text-[#9CA3AF] text-[14px] leading-[1.7] max-w-xs">
-                India's first real-time B2B renewable energy exchange. Eliminating curtailment, one match at a time.
-              </p>
-              <div className="flex items-center gap-3 mt-6">
-                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <GithubIcon className="w-4 h-4" />
-                </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <TwitterIcon className="w-4 h-4" />
-                </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <Globe size={15} />
-                </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <Mail size={15} />
-                </a>
+      <footer className="w-full bg-white mt-[40px]">
+        <div className="border-t border-[#E5E7EB] overflow-hidden">
+          {/* Top Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-[#E5E7EB]">
+            {/* Left - Tagline */}
+            <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-[#E5E7EB]">
+              <div className="flex -space-x-2 mb-6">
+                <div className="w-10 h-10 rounded-full bg-zinc-200 border-2 border-white" />
+                <div className="w-10 h-10 rounded-full bg-zinc-300 border-2 border-white" />
+                <div className="w-10 h-10 rounded-full bg-zinc-400 border-2 border-white" />
               </div>
+              <h2 className="text-3xl md:text-4xl font-light text-zinc-800 tracking-tighter">
+                Components that
+                <br />
+                don't <span className="italic text-[#2563EB]">get in the way.</span>
+              </h2>
             </div>
 
-            {/* Link cols */}
-            {[
-              { heading: 'Product', links: ['Platform', 'Pricing', 'API Docs', 'Changelog', 'System Status'] },
-              { heading: 'Company', links: ['About', 'Blog', 'Careers', 'Press', 'Contact'] },
-              { heading: 'Legal', links: ['Terms of Service', 'Privacy Policy', 'Cookie Policy', 'SLDC Compliance'] },
-            ].map((col) => (
-              <div key={col.heading}>
-                <p className="text-[11px] font-bold text-[#0D1117] uppercase tracking-[0.15em] mb-5">{col.heading}</p>
-                <ul className="space-y-3">
-                  {col.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-[14px] text-[#9CA3AF] hover:text-[#0D1117] transition-colors">{link}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom row */}
-          <div className="border-t border-[#E5E7EB] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[13px] text-[#9CA3AF]">© {new Date().getFullYear()} SurplusGrid Technologies Pvt. Ltd. All rights reserved.</p>
-            <div className="flex flex-wrap justify-center gap-6">
-              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
-                <ShieldCheck size={14} className="text-[#2563EB]" /> POSOCO Compliant
-              </div>
-              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
-                <Activity size={14} className="text-[#2563EB]" /> SLDC Integrated
-              </div>
-              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
-                <Leaf size={14} className="text-[#2563EB]" /> Carbon Verified
+            {/* Right - Links */}
+            <div className="p-8 md:p-12 flex items-center">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 w-full">
+                {[
+                  { label: "Components", href: "#" },
+                  { label: "Blocks", href: "#" },
+                  { label: "Terms of Service", href: "#" },
+                  { label: "Documentation", href: "#" },
+                  { label: "Showcase", href: "#" },
+                  { label: "Privacy Policy", href: "#" },
+                ].map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    className="flex items-center justify-between py-2 text-zinc-600 hover:text-zinc-900 transition-colors border-b border-[#E5E7EB] group"
+                  >
+                    <span className="text-sm">{link.label}</span>
+                    <ArrowUpRight size={16} className="opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
 
+          {/* Bottom Section */}
+          <div className="relative p-8 md:p-12 min-h-[300px] flex flex-col justify-between">
+            {/* Large Brand Name */}
+            <div className="flex-1 flex items-center justify-center pointer-events-none select-none">
+               <img src="/logo.png" alt="SurplusGrid" className="max-w-[90%] md:max-w-[70%] lg:max-w-[50%] h-auto object-contain opacity-90 grayscale contrast-125" />
+            </div>
+
+            {/* Social Icons */}
+            <div className="absolute top-8 right-8 flex items-center gap-3">
+              <a href="#" target="_blank" className="p-2 rounded-full border border-[#E5E7EB] text-zinc-600 hover:text-zinc-900 hover:border-zinc-400 transition-colors">
+                <TwitterIcon className="w-4 h-4" />
+              </a>
+              <a href="#" target="_blank" className="p-2 rounded-full border border-[#E5E7EB] text-zinc-600 hover:text-zinc-900 hover:border-zinc-400 transition-colors">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
+              <a href="#" target="_blank" className="p-2 rounded-full border border-[#E5E7EB] text-zinc-600 hover:text-zinc-900 hover:border-zinc-400 transition-colors">
+                <GithubIcon className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Copyright */}
+            <div className="absolute bottom-8 right-8 text-right text-xs text-zinc-500 uppercase tracking-wider">
+              <p>All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} SurplusGrid.</p>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
