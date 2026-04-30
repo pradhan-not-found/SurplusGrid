@@ -41,10 +41,9 @@ export default function DashboardLayout({ children, title }: { children: React.R
       <div className="w-[240px] bg-white flex flex-col border-r border-[#E5E7EB] shrink-0">
         <div className="pt-[24px] px-[20px] pb-[8px]">
           <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-4" />
-          <div className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full border text-[11px] font-medium
-            ${user.role === 'producer' ? 'bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]' : 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]'}`}>
-            {user.role === 'producer' ? <Sun size={10} /> : <Factory size={10} />}
-            {user.role === 'producer' ? 'Producer' : 'Consumer'}
+          <div className="inline-flex items-center gap-1.5 px-[8px] py-[4px] rounded-[6px] border border-[#E5E7EB] bg-[#F9FAFB] text-[11px] font-medium text-[#475569] shadow-sm">
+            {user.role === 'producer' ? <Sun size={12} className="text-[#F59E0B]" /> : <Factory size={12} className="text-[#2563EB]" />}
+            {user.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
           </div>
         </div>
         

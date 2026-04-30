@@ -252,7 +252,7 @@ export default function Onboarding() {
                 <label className="block text-[13px] font-medium text-[#374151] mb-3">Grid connectivity zone</label>
                 <div className="space-y-2.5">
                   {['NRLDC', 'WRLDC', 'SRLDC', 'ERLDC', 'NERLDC'].map(zone => (
-                    <label key={zone} className="flex items-center gap-3 cursor-pointer group">
+                    <label key={zone} onClick={() => setConnectivity(zone)} className="flex items-center gap-3 cursor-pointer group">
                       <div className={`w-[18px] h-[18px] rounded-full border border-[#E5E7EB] flex items-center justify-center bg-white group-hover:border-[#93C5FD] transition-colors ${connectivity === zone ? '!border-[#2563EB]' : ''}`}>
                         {connectivity === zone && <div className="w-[8px] h-[8px] rounded-full bg-[#2563EB]" />}
                       </div>
