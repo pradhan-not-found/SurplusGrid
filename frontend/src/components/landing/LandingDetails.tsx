@@ -55,6 +55,86 @@ function TestimonialCard({ t }: { t: typeof allTestimonials[0] }) {
   );
 }
 
+// -- SHOWCASE COMPONENTS --
+function MiniCard({ title, sub, value, badge, color }: { title: string, sub: string, value: string, badge: string, color: string }) {
+  return (
+    <div className="bg-white p-5 border border-[#E5E7EB] w-52 mb-4 rounded-[12px] shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs text-[#6B7280]">{title}</span>
+        <span className="text-[10px] px-2 py-0.5 bg-zinc-100 text-[#374151] rounded-full">{badge}</span>
+      </div>
+      <p className="text-xl font-semibold text-[#0D1117] mb-1">{value}</p>
+      <p className="text-[11px] text-[#9CA3AF]">{sub}</p>
+      <div className="mt-4 h-1 w-full bg-zinc-100 rounded-full overflow-hidden">
+        <div className={`h-full w-2/3 bg-gradient-to-r ${color}`} />
+      </div>
+    </div>
+  );
+}
+
+function MiniAlertCard() {
+  return (
+    <div className="bg-white p-4 border border-[#E5E7EB] w-52 mb-4 rounded-[12px] shadow-sm space-y-2">
+      <div className="flex items-center gap-2 p-2 bg-rose-50 border border-rose-100 rounded-lg">
+        <div className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+          <Zap size={12} className="text-rose-600" />
+        </div>
+        <span className="text-[11px] text-rose-700 font-medium">Grid Frequency Drop</span>
+      </div>
+      <div className="flex items-center gap-2 p-2 bg-blue-50 border border-blue-100 rounded-lg">
+        <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <Activity size={12} className="text-blue-600" />
+        </div>
+        <span className="text-[11px] text-blue-700 font-medium">New match available</span>
+      </div>
+    </div>
+  );
+}
+
+function MiniSettleCard() {
+  return (
+    <div className="bg-white p-4 border border-[#E5E7EB] w-52 mb-4 rounded-[12px] shadow-sm">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-bold text-[#0D1117] uppercase tracking-wider">Settlement</span>
+        <span className="text-[10px] text-emerald-600 font-medium">Cleared</span>
+      </div>
+      <div className="flex items-center gap-2 mb-3">
+        <CheckCircle2 size={16} className="text-emerald-500" />
+        <span className="text-xs text-[#374151]">Block #8924</span>
+      </div>
+      <button className="w-full py-1.5 bg-[#0D1117] text-white text-[10px] font-medium rounded-lg">View Receipt</button>
+    </div>
+  );
+}
+
+function MiniStatusCard() {
+  return (
+    <div className="bg-white p-5 border border-[#E5E7EB] w-52 mb-4 rounded-[12px] shadow-sm">
+      <p className="text-xs text-[#6B7280] mb-3">System Status</p>
+      <div className="flex flex-wrap gap-2">
+        <span className="px-2 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-full text-[10px] font-medium">WRLDC Sync</span>
+        <span className="px-2 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded-full text-[10px] font-medium">Matcher Active</span>
+        <span className="px-2 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-[10px] font-medium">API Delayed</span>
+      </div>
+    </div>
+  );
+}
+
+function EnergyMarqueeCol({ children, cards, reverse = false, speed = 25 }: { children?: React.ReactNode; cards?: React.ReactNode[], reverse?: boolean; speed?: number }) {
+  const content = cards || children;
+  return (
+    <div className="flex flex-col overflow-hidden h-[600px] relative">
+      <div
+        className={`flex flex-col ${reverse ? "animate-marquee-down" : "animate-marquee-up"}`}
+        style={{ animationDuration: `${speed}s` }}
+      >
+        {content}
+        {content}
+      </div>
+    </div>
+  );
+}
+
 export default function LandingDetails() {
   const stats = [
     { value: '1.2M+', label: 'Curtailed Energy Saved (kWh)' },
