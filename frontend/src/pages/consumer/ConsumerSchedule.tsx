@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import { Trash2 } from 'lucide-react';
 
 export default function ConsumerSchedule() {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
-  // mock states: null (empty), 'flex' (flexible window), 'sched' (scheduled shift), 'live' (active shift)
   const [grid, setGrid] = useState<Record<string, string>>({
     'Mon-11': 'sched', 'Mon-12': 'sched', 'Mon-13': 'sched',
     'Tue-09': 'flex', 'Tue-10': 'flex',
@@ -16,7 +16,6 @@ export default function ConsumerSchedule() {
     const key = `${day}-${hour}`;
     const current = grid[key];
     if (current === 'sched' || current === 'live') {
-      // open popover or just alert for wireframe
       alert(`Shift from SolarTech Farm\nRate: ₹2.1/unit\nSavings: ₹12,400\n[Cancel Shift]`);
     } else {
       setGrid(prev => ({
@@ -32,38 +31,36 @@ export default function ConsumerSchedule() {
   ]);
 
   const handleCancel = (id: number) => {
-    if (window.confirm("Cancel this scheduled shift?")) {
-      setUpcoming(upcoming.filter(s => s.id !== id));
-    }
+    setUpcoming(upcoming.filter(s => s.id !== id));
   };
 
   return (
     <DashboardLayout title="Load Schedule">
-      <div className="flex justify-between items-center mb-4">
-        <button className="border px-4 py-2 rounded font-bold">&lt; Previous week</button>
-        <h2 className="font-bold text-lg">May 1 – May 7, 2026</h2>
-        <button className="border px-4 py-2 rounded font-bold">Next week &gt;</button>
+      <div className="flex justify-between items-center mb-[24px]">
+        <button className="h-[40px] px-[16px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">&lt; Previous week</button>
+        <h2 className="text-[16px] font-bold text-[#0D1117]">May 1 – May 7, 2026</h2>
+        <button className="h-[40px] px-[16px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors">Next week &gt;</button>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded p-4 mb-4 overflow-x-auto">
+      <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-[20px] mb-[24px] overflow-x-auto shadow-none">
         <div className="min-w-[700px]">
-          <div className="grid grid-cols-8 border-b">
-            <div className="p-2 font-bold text-gray-500 text-xs">Time</div>
-            {days.map(d => <div key={d} className="p-2 font-bold text-center border-l">{d}</div>)}
+          <div className="grid grid-cols-8 border-b border-[#E5E7EB]">
+            <div className="p-2 font-medium text-[#9CA3AF] text-[11px] uppercase tracking-[0.04em]">Time</div>
+            {days.map(d => <div key={d} className="p-2 font-medium text-[13px] text-[#374151] text-center border-l border-[#F1F5F9]">{d}</div>)}
           </div>
           <div className="h-[400px] overflow-y-auto">
             {Array.from({length: 24}).map((_, h) => (
-              <div key={h} className="grid grid-cols-8 border-b border-gray-100">
-                <div className="p-2 text-xs text-gray-500 font-data border-r">{String(h).padStart(2, '0')}:00</div>
+              <div key={h} className="grid grid-cols-8 border-b border-[#F1F5F9] last:border-0">
+                <div className="p-2 text-[12px] text-[#9CA3AF] border-r border-[#F1F5F9]">{String(h).padStart(2, '0')}:00</div>
                 {days.map(d => {
                   const key = `${d}-${h}`;
                   const state = grid[key];
-                  const bg = state === 'flex' ? 'bg-blue-100' : state === 'sched' ? 'bg-green-500 text-white' : state === 'live' ? 'bg-red-500 text-white' : 'hover:bg-gray-50';
+                  const bg = state === 'flex' ? 'bg-[#DBEAFE]' : state === 'sched' ? 'bg-[#16A34A] text-white' : state === 'live' ? 'bg-[#EF4444] text-white' : 'hover:bg-[#F9FAFB]';
                   return (
                     <div 
                       key={d} 
                       onClick={() => toggleCell(d, h)}
-                      className={`border-r border-gray-100 cursor-pointer ${bg}`}
+                      className={`border-r border-[#F1F5F9] cursor-pointer transition-colors ${bg}`}
                     />
                   );
                 })}
@@ -73,40 +70,50 @@ export default function ConsumerSchedule() {
         </div>
       </div>
 
-      <div className="flex gap-6 mb-8 text-sm">
-        <div className="flex items-center gap-2"><div className="w-4 h-4 border"></div> Empty</div>
-        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-blue-100"></div> Flexible window</div>
-        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-green-500"></div> Scheduled shift</div>
-        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-red-500"></div> Active shift</div>
+      <div className="flex gap-6 mb-[48px] text-[13px] text-[#6B7280]">
+        <div className="flex items-center gap-2"><div className="w-4 h-4 border border-[#E5E7EB] rounded-[4px] bg-[#F9FAFB]"></div> Empty</div>
+        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-[#DBEAFE] rounded-[4px]"></div> Flexible window</div>
+        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-[#16A34A] rounded-[4px]"></div> Scheduled shift</div>
+        <div className="flex items-center gap-2"><div className="w-4 h-4 bg-[#EF4444] rounded-[4px]"></div> Active shift</div>
       </div>
 
-      <h2 className="text-lg font-bold font-display mb-4">Upcoming scheduled shifts</h2>
-      <div className="bg-white border border-gray-200 rounded overflow-x-auto">
-        <table className="w-full text-left text-sm">
+      <h3 className="text-[15px] font-bold text-[#0D1117] mb-[12px]">Upcoming scheduled shifts</h3>
+      <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="p-4 font-bold">Date</th>
-              <th className="p-4 font-bold">Time window</th>
-              <th className="p-4 font-bold">Load (kW)</th>
-              <th className="p-4 font-bold">Producer</th>
-              <th className="p-4 font-bold">Rate</th>
-              <th className="p-4 font-bold">Savings</th>
-              <th className="p-4 font-bold">Action</th>
+            <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Date</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Time window</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Load (kW)</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Producer</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Rate</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Savings</th>
+              <th className="p-[12px_16px] text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase">Action</th>
             </tr>
           </thead>
           <tbody>
             {upcoming.map(s => (
-              <tr key={s.id} className="border-b border-gray-100 last:border-0">
-                <td className="p-4">{s.date}</td>
-                <td className="p-4">{s.time}</td>
-                <td className="p-4">{s.load}</td>
-                <td className="p-4">{s.producer}</td>
-                <td className="p-4">₹{s.rate}</td>
-                <td className="p-4 text-green-600 font-bold">₹{s.savings}</td>
-                <td className="p-4"><button onClick={() => handleCancel(s.id)} className="text-red-600 hover:underline">Cancel</button></td>
+              <tr key={s.id} className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100">
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.date}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.time}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.load}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{s.producer}</td>
+                <td className="p-[14px_16px] text-[14px] text-[#0D1117]">₹{s.rate}</td>
+                <td className="p-[14px_16px] text-[14px] font-bold text-[#16A34A]">₹{s.savings}</td>
+                <td className="p-[14px_16px]">
+                  <button onClick={() => handleCancel(s.id)} className="flex items-center gap-1.5 text-[13px] text-[#EF4444] hover:underline">
+                    <Trash2 size={13} strokeWidth={1.5} /> Cancel
+                  </button>
+                </td>
               </tr>
             ))}
-            {upcoming.length === 0 && <tr><td colSpan={7} className="p-4 text-gray-500">No scheduled shifts</td></tr>}
+            {upcoming.length === 0 && (
+              <tr>
+                <td colSpan={7} className="p-[48px] text-center text-[14px] text-[#6B7280]">
+                  No scheduled shifts
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
