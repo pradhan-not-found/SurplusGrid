@@ -75,60 +75,59 @@ export default function Signup() {
 
       {/* Right Panel */}
       <div className="w-full md:w-[55%] flex items-center justify-center p-8 bg-white relative">
-        <Link to="/" className="absolute top-8 left-8 flex items-center gap-2 text-[14px] text-[#6B7280] hover:text-[#0D1117] transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <Link to="/" className="absolute top-8 left-10 flex items-center gap-2 text-[13px] font-medium text-[#6B7280] hover:text-[#09090B] transition-colors group">
+          <svg className="group-hover:-translate-x-0.5 transition-transform" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Back to home
         </Link>
-        <div className="w-full max-w-[420px]">
-          <div className="text-[18px] font-bold text-[#0D1117] mb-2">SurplusGrid</div>
-          <h2 className="text-[26px] font-bold text-[#0D1117] tracking-[-0.02em] mb-1">
+        <div className="w-full max-w-[380px]">
+          <h2 className="text-[30px] font-bold text-[#09090B] tracking-[-0.03em] mb-2">
             Create your account
           </h2>
-          <p className="text-[14px] text-[#6B7280] mb-8">
+          <p className="text-[15px] text-[#71717A] mb-10 tracking-tight">
             Join the network and start optimising your energy.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Full name</label>
+              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Full Name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
                 placeholder="Arjun Kumar"
               />
             </div>
             <div>
-              <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Email address</label>
+              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
-                placeholder="you@company.com"
+                className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
+                placeholder="name@company.com"
               />
             </div>
 
             <div>
-              <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Password</label>
+              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full h-[44px] px-[14px] pr-10 border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                  className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#374151]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -136,15 +135,15 @@ export default function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[46px] mt-2 bg-[#2563EB] text-white font-medium text-[15px] rounded-[8px] hover:bg-[#1D4ED8] disabled:opacity-70 disabled:hover:bg-[#2563EB] flex items-center justify-center transition-colors"
+              className="w-full h-[50px] mt-4 bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
             >
-              {loading ? <Loader2 size={18} className="animate-spin" /> : "Create account"}
+              {loading ? <Loader2 size={20} className="animate-spin" /> : "Create your free account"}
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#F3F4F6] text-center">
-            <span className="text-[14px] text-[#6B7280]">Already have an account? </span>
-            <Link to="/signin" className="text-[14px] text-[#2563EB] hover:underline">
+          <div className="mt-10 pt-8 border-t border-[#F4F4F5] text-center">
+            <span className="text-[14px] text-[#71717A]">Already have an account? </span>
+            <Link to="/signin" className="text-[14px] font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
               Sign in
             </Link>
           </div>
