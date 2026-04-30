@@ -1,91 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ProducerDashboard from './ProducerDashboard';
 import ConsumerDashboard from './ConsumerDashboard';
 import { Leaf, Factory, ArrowLeft } from 'lucide-react';
-import type { SurplusEntry, DemandEntry, Match } from '../types';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const [role, setRole] = useState<'producer' | 'consumer'>('producer');
-  const [surplusList, setSurplusList] = useState<SurplusEntry[]>([
-    {
-      id: 'dummy-surplus-1',
-      producerId: 'prod-dummy',
-      date: new Date().toISOString().split('T')[0],
-      startTime: '08:00',
-      endTime: '12:00',
-      energyKwh: 500,
-      status: 'available'
-    }
-  ]);
-  const [demandList, setDemandList] = useState<DemandEntry[]>([
-    {
-      id: 'dummy-demand-1',
-      consumerId: 'cons-dummy',
-      date: new Date().toISOString().split('T')[0],
-      startTime: '14:00',
-      endTime: '18:00',
-      energyKwh: 200,
-      status: 'pending'
-    }
-  ]);
-  const [matches, setMatches] = useState<Match[]>([]);
-
-  // Simple time overlap check
-  const checkOverlap = (s1: string, e1: string, s2: string, e2: string) => {
-    return s1 < e2 && s2 < e1;
-  };
-
-  // Run matching logic whenever surplus or demand changes
-  useEffect(() => {
-    const newMatches: Match[] = [];
-    const updatedSurplus = [...surplusList];
-    const updatedDemand = [...demandList];
-    let stateChanged = false;
-
-    updatedSurplus.forEach(surplus => {
-      if (surplus.status === 'matched') return;
-
-      updatedDemand.forEach(demand => {
-        if (demand.status === 'matched') return;
-
-        // Check if date is same and times overlap
-        if (surplus.date === demand.date && checkOverlap(surplus.startTime, surplus.endTime, demand.startTime, demand.endTime)) {
-          // Simple match
-          const matchedKwh = Math.min(surplus.energyKwh, demand.energyKwh);
-          const savings = matchedKwh * 0.15; // mock $0.15 saved per kWh
-
-          newMatches.push({
-            id: `match-${Date.now()}-${Math.random()}`,
-            surplusId: surplus.id,
-            demandId: demand.id,
-            matchedKwh,
-            savings: Number(savings.toFixed(2))
-          });
-
-          surplus.status = 'matched';
-          demand.status = 'matched';
-          stateChanged = true;
-        }
-      });
-    });
-
-    if (stateChanged) {
-      setSurplusList(updatedSurplus);
-      setDemandList(updatedDemand);
-      setMatches(prev => [...prev, ...newMatches]);
-    }
-  }, [surplusList, demandList]);
-
-  const addSurplus = (surplus: Omit<SurplusEntry, 'id' | 'status'>) => {
-    setSurplusList(prev => [...prev, { ...surplus, id: `surplus-${Date.now()}`, status: 'available' }]);
-  };
-
-  const addDemand = (demand: Omit<DemandEntry, 'id' | 'status'>) => {
-    setDemandList(prev => [...prev, { ...demand, id: `demand-${Date.now()}`, status: 'pending' }]);
-  };
-
-  const availableSurplus = surplusList.filter(s => s.status === 'available');
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-teal-500 selection:text-white">
@@ -136,21 +56,7 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {role === 'producer' ? (
-          <ProducerDashboard 
-            surplusList={surplusList} 
-            matches={matches} 
-            addSurplus={addSurplus}
-            consumerDemands={demandList} 
-          />
-        ) : (
-          <ConsumerDashboard 
-            consumerDemands={demandList} 
-            matches={matches} 
-            addDemand={addDemand}
-            availableSurplus={availableSurplus} 
-          />
-        )}
+        {role === 'producer' ? <ProducerDashboard /> : <ConsumerDashboard />}
       </main>
     </div>
   );

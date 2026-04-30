@@ -12,7 +12,7 @@ const mockCostData = [
 ];
 
 export default function ConsumerDashboard() {
-  const { demandList, surplusList, matches, addDemand, setUserRole } = useAppContext();
+  const { surplusList, matches, addDemand, setUserRole } = useAppContext();
   const navigate = useNavigate();
   
   const [date, setDate] = useState('');
