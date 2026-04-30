@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Activity, Zap,
-  ArrowRight, Mail, Globe, MessageSquare, Users, ShieldCheck, Leaf
+  ArrowRight, Mail, Globe, ShieldCheck, Leaf
 } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -23,6 +23,37 @@ const fadeUp = (delay = 0) => ({
   viewport: { once: true },
   transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 });
+
+const allTestimonials = [
+  { name: 'Rajesh Kumar',     handle: '@rajesh_ops',           gradient: 'from-orange-500 to-amber-400',   quote: 'Just discovered SurplusGrid — their real-time matching algorithm is amazing. Saved 12% on our load this week.' },
+  { name: 'Clean Power Dev',  handle: '@cleanpower_dev',       gradient: 'from-emerald-500 to-teal-400',   quote: 'SurplusGrid: A complete energy platform that just works ✨ Eliminating solar curtailment has never been easier.' },
+  { name: 'Syskey Energy',    handle: '@energy_syskey',        gradient: 'from-pink-500 to-rose-400',      quote: 'Everything about this is next level: the POSOCO compliance, the instant settlement, dynamic pricing.' },
+  { name: 'Murray G.',        handle: '@solar_murray',         gradient: 'from-violet-500 to-purple-500',  quote: 'Literally the coolest B2B exchange in the Indian energy sector —' },
+  { name: 'Industrial DIY',   handle: '@industrial_diy',       gradient: 'from-blue-500 to-cyan-400',      quote: "Have you heard of SurplusGrid? They've lovingly put together an incredibly flexible industrial load marketplace. Huge ROI." },
+  { name: 'Grid Watch',       handle: '@grid_watch',           gradient: 'from-indigo-500 to-blue-400',    quote: 'SurplusGrid has got to be the most efficient energy matching engine I have seen in a while 🔥' },
+  { name: 'Dan Infrastructure',handle: '@dan_infra',           gradient: 'from-cyan-500 to-blue-400',      quote: 'This is genuinely impressive work. The attention to detail in their automated SLDC reporting shows.' },
+  { name: 'Emma S.',          handle: '@emma_sustainability',  gradient: 'from-violet-400 to-indigo-500',  quote: "Saw about SurplusGrid and it's just wow, the dashboard is incredibly well designed! Love the overall feel and quality." },
+  { name: 'Sarah Renewables', handle: '@sarah_renewables',     gradient: 'from-teal-500 to-emerald-400',   quote: 'The next generation of grid balancing is emerging this year 👀 The flexibility doesn’t exist anywhere else.' },
+  { name: 'Priya Mehta',      handle: '@priya_grid',           gradient: 'from-amber-400 to-orange-500',   quote: 'Real-time SLDC compliance out of the box. We switched from manual settlement to SurplusGrid overnight.' },
+  { name: 'WindGen Ops',      handle: '@windgen_ops',          gradient: 'from-slate-500 to-gray-600',     quote: 'Curtailment revenue recovery went up 22% in month one. No other platform comes close.' },
+  { name: 'EV Fleet Manager', handle: '@evfleet_mgr',          gradient: 'from-rose-500 to-pink-400',      quote: 'Being matched to surplus solar during charging windows cut our overnight energy cost dramatically.' },
+];
+
+const row1 = allTestimonials.slice(0, 4);
+const row2 = allTestimonials.slice(4, 8);
+const row3 = allTestimonials.slice(8, 12);
+
+function TestimonialCard({ t }: { t: typeof allTestimonials[0] }) {
+  return (
+    <div className="w-[320px] shrink-0 bg-transparent p-5 border border-[#E5E7EB] flex flex-col justify-between" style={{ height: 160 }}>
+      <p className="text-[#374151] text-sm leading-relaxed line-clamp-3">{t.quote}</p>
+      <div className="flex items-center gap-3 mt-3">
+        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${t.gradient} shrink-0`} />
+        <span className="text-[#6B7280] text-sm">@{t.handle.replace('@', '')}</span>
+      </div>
+    </div>
+  );
+}
 
 export default function LandingDetails() {
   const stats = [
@@ -99,72 +130,31 @@ export default function LandingDetails() {
           </motion.h1>
         </div>
 
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 max-w-[1100px] w-full mx-auto space-y-6">
-          {[
-            {
-              quote: "Just discovered SurplusGrid — their real-time matching algorithm is amazing. Saved 12% on our load this week.",
-              name: "Rajesh Kumar",
-              handle: "@rajesh_ops"
-            },
-            {
-              quote: "SurplusGrid: A complete energy platform that just works ✨ Eliminating solar curtailment has never been easier.",
-              name: "Clean Power Dev",
-              handle: "@cleanpower_dev"
-            },
-            {
-              quote: "Everything about this is next level: the POSOCO compliance, the instant settlement, dynamic pricing.",
-              name: "Syskey Energy",
-              handle: "@energy_syskey"
-            },
-            {
-              quote: "Literally the coolest B2B exchange in the Indian energy sector —",
-              name: "Murray G.",
-              handle: "@solar_murray"
-            },
-            {
-              quote: "Have you heard of SurplusGrid? They've lovingly put together an incredibly flexible industrial load marketplace. Huge ROI.",
-              name: "Industrial DIY",
-              handle: "@industrial_diy"
-            },
-            {
-              quote: "SurplusGrid has got to be the most efficient energy matching engine I have seen in a while 🔥",
-              name: "Grid Watch",
-              handle: "@grid_watch"
-            },
-            {
-              quote: "This is genuinely impressive work. The attention to detail in their automated SLDC reporting shows.",
-              name: "Dan Infrastructure",
-              handle: "@dan_infra"
-            },
-            {
-              quote: "Saw about SurplusGrid and it's just wow, the dashboard is incredibly well designed! Love the overall feel and quality.",
-              name: "Emma S.",
-              handle: "@emma_sustainability"
-            },
-            {
-              quote: "The next generation of grid balancing is emerging this year 👀 The flexibility doesn't exist anywhere else.",
-              name: "Sarah Renewables",
-              handle: "@sarah_renewables"
-            }
-          ].map((t, i) => (
-            <motion.div key={i} {...fadeUp(i * 0.05)}
-              className="bg-white rounded-[16px] border border-[#E5E7EB] p-6 shadow-sm flex flex-col gap-4 break-inside-avoid relative hover:border-[#D1D5DB] transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F3F4F6] to-[#E5E7EB] border border-[#E5E7EB] flex items-center justify-center font-semibold text-[#374151] text-sm shrink-0">
-                  {t.name[0]}
-                </div>
-                <div>
-                  <p className="text-[14px] font-medium text-[#0D1117] leading-tight mb-0.5">{t.name}</p>
-                  <p className="text-[12px] text-[#6B7280] leading-tight">{t.handle}</p>
-                </div>
-                <TwitterIcon className="w-4 h-4 text-[#9CA3AF] ml-auto absolute top-6 right-6 opacity-40" />
-              </div>
-              <p className="text-[14px] text-[#374151] leading-[1.6]">
-                {t.quote}
-              </p>
-            </motion.div>
-          ))}
+        <div className="w-full overflow-hidden relative">
+          {/* Fade overlays */}
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+          <div className="flex flex-col">
+            {/* Row 1 — scrolls left */}
+            <div className="flex animate-marquee-left" style={{ animationDuration: '40s' }}>
+              {[...row1, ...row1, ...row1].map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+            {/* Row 2 — scrolls right */}
+            <div className="flex animate-marquee-right" style={{ animationDuration: '45s' }}>
+              {[...row2, ...row2, ...row2].map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+            {/* Row 3 — scrolls left */}
+            <div className="flex animate-marquee-left" style={{ animationDuration: '35s' }}>
+              {[...row3, ...row3, ...row3].map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -181,25 +171,55 @@ export default function LandingDetails() {
 
         <div className="flex flex-wrap justify-center gap-12 max-w-[1100px] mx-auto w-full">
           {[
-            { name: "Ashish Ranjan Das", role: "Full Stack Web3 Developer", img: "/assets/ashish.webp", github: "https://github.com/0day-Ashish", linkedin: "https://linkedin.com/in/arddev", twitter: "https://twitter.com/Ashish_06" },
-            { name: "Subham Karmakar", role: "Full Stack Developer", img: "https://github.com/subham12r.png", github: "https://github.com/subham12r", linkedin: "https://linkedin.com/in/subham12r", twitter: "https://twitter.com/subham12r" },
-            { name: "Aryadeep Roy", role: "Full-Stack Developer", img: "/assets/aryadeep.jpg", github: "https://github.com/arya232006", linkedin: "https://www.linkedin.com/in/aryadeep-roy2371/", twitter: "#" },
-            { name: "Souradeep", role: "Frontend Engineer", img: "https://github.com/shadcn.png", github: "#", linkedin: "#", twitter: "#" }
+            {
+              name: "Souradeep Pradhan",
+              role: "Full Stack Developer",
+              img: "/souradeep.png",
+              github: "https://github.com/pradhan-not-found/",
+              linkedin: "https://www.linkedin.com/in/souradeep-pradhan/",
+              website: "https://souradeep.me/"
+            },
+            {
+              name: "Srijit Paul",
+              role: "Full Stack Developer",
+              img: "/srijit.png",
+              github: "https://github.com/SoulSaviour1234",
+              linkedin: "https://www.linkedin.com/in/srijit-paul-65593630b",
+              website: "#"
+            },
+            {
+              name: "Sattwik Das",
+              role: "Full Stack Developer",
+              img: "/sattwik.png",
+              github: "https://github.com/Sattwik-Das",
+              linkedin: "https://www.linkedin.com/in/sattwik-das-337001359",
+              website: "#"
+            },
+            {
+              name: "Aniruddha",
+              role: "Full Stack Developer",
+              img: "/anirudhha.png",
+              github: "#",
+              linkedin: "#",
+              website: "#"
+            },
           ].map((dev, i) => (
             <motion.div key={i} {...fadeUp(i * 0.1)} className="flex items-center gap-4">
               <img
                 src={dev.img}
                 alt={dev.name}
-                onError={(e) => { e.currentTarget.src = 'https://github.com/shadcn.png' }} // fallback for missing local images
-                className="w-20 h-20 rounded-full border-2 border-[#E5E7EB] shrink-0 object-cover object-top p-0.5 bg-zinc-100"
+                onError={(e) => { e.currentTarget.src = 'https://github.com/shadcn.png' }}
+                className="w-20 h-20 rounded-full border border-[#E5E7EB] shrink-0 object-cover bg-[#F9FAFB]"
               />
               <div>
-                <h3 className="text-lg font-medium text-[#0D1117] tracking-tight">{dev.name}</h3>
-                <p className="text-sm text-[#6B7280] mb-2">{dev.role}</p>
+                <h3 className="text-[15px] font-medium text-[#0D1117] tracking-tight mb-0.5">{dev.name}</h3>
+                <p className="text-[13px] text-[#6B7280] mb-2">{dev.role}</p>
                 <div className="flex items-center gap-3">
-                  <a href={dev.github} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><GithubIcon className="w-4 h-4" /></a>
-                  <a href={dev.linkedin} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><LinkedinIcon className="w-4 h-4" /></a>
-                  <a href={dev.twitter} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><TwitterIcon className="w-4 h-4" /></a>
+                  <a href={dev.github} target="_blank" rel="noopener noreferrer" className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><GithubIcon className="w-[15px] h-[15px]" /></a>
+                  <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><LinkedinIcon className="w-[15px] h-[15px]" /></a>
+                  {dev.website !== '#' && (
+                    <a href={dev.website} target="_blank" rel="noopener noreferrer" className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><Globe size={15} /></a>
+                  )}
                 </div>
               </div>
             </motion.div>
