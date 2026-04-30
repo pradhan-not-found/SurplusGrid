@@ -2,7 +2,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Activity, Zap,
-  ArrowRight, Mail, Globe, ShieldCheck, Leaf
+  CheckCircle2, Activity, Zap,
+  ArrowRight, Mail, Globe, ShieldCheck, Leaf, ArrowUpRight
 } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -112,14 +113,60 @@ export default function LandingDetails() {
         </div>
       </section>
 
-      {/* ── COMPONENTS / ZEROUI INSPIRED ── */}
-      <section className="w-full flex flex-col justify-center items-center py-[80px] px-6">
-        <motion.div {...fadeUp()} className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-10">
-          <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Components that don't get in the way</h1>
+      {/* ── COMPONENT SHOWCASE ── */}
+      <section className="w-full flex flex-col justify-center items-center py-[80px]">
+        <motion.div {...fadeUp()} className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-12 px-6">
+          <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Components that don't get in the way.</h1>
           <span className="text-[16px] text-[#6B7280]">
-            Explore our extensive library of pre-designed, customizable components that can be easily integrated into your energy projects, saving you time and effort.
+            Every panel, alert, and match card is built for operators — not dashboards for dashboards' sake.
           </span>
         </motion.div>
+
+        {/* Vertical marquee grid */}
+        <div className="w-full overflow-hidden relative max-w-[100vw]" style={{ height: 600 }}>
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+          <div className="flex w-full justify-center md:gap-4 overflow-hidden px-4 md:px-0">
+            {/* Col 1 — up */}
+            <EnergyMarqueeCol speed={30} reverse={false} cards={[
+              <MiniCard key="c1" title="Solar Output" sub="Live MW" value="42.3 MW" badge="+8%" color="from-amber-400 to-orange-400" />,
+              <MiniCard key="c2" title="Match Found" sub="SolarTech → BlastFurnace" value="3.8 MW" badge="Live" color="from-emerald-400 to-teal-500" />,
+              <MiniCard key="c3" title="Surplus Window" sub="Tomorrow 11:00–14:00" value="₹2.1/unit" badge="Pending" color="from-blue-400 to-indigo-500" />,
+              <MiniAlertCard key="a1" />,
+              <MiniSettleCard key="s1" />,
+            ]} />
+            {/* Col 2 — down */}
+            <div className="hidden sm:block">
+            <EnergyMarqueeCol speed={35} reverse={true} cards={[
+              <MiniCard key="c4" title="Wind Output" sub="WRLDC Zone" value="18.6 MW" badge="Active" color="from-cyan-400 to-blue-500" />,
+              <MiniCard key="c5" title="Curtailment Saved" sub="This month" value="1.2M kWh" badge="↑12%" color="from-violet-400 to-purple-500" />,
+              <MiniCard key="c6" title="Revenue" sub="April 2026" value="₹41.2k" badge="+24%" color="from-rose-400 to-pink-500" />,
+              <MiniStatusCard key="st1" />,
+              <MiniCard key="c7" title="SLDC Report" sub="Auto-generated" value="Compliant" badge="✓" color="from-emerald-500 to-green-400" />,
+            ]} />
+            </div>
+            {/* Col 3 — up */}
+            <div className="hidden md:block">
+            <EnergyMarqueeCol speed={27} reverse={false} cards={[
+              <MiniCard key="c8" title="Load Shifted" sub="Apr 2026" value="67.4 MWh" badge="↑5%" color="from-teal-400 to-emerald-500" />,
+              <MiniCard key="c9" title="Carbon Offset" sub="CO₂ equivalent" value="1,140 kg" badge="Verified" color="from-green-400 to-teal-400" />,
+              <MiniCard key="c10" title="Active Matches" sub="Right now" value="3" badge="Live" color="from-blue-500 to-cyan-400" />,
+              <MiniCard key="c11" title="Savings" sub="This month" value="₹38.7k" badge="+18%" color="from-amber-500 to-orange-400" />,
+              <MiniAlertCard key="a2" />,
+            ]} />
+            </div>
+            {/* Col 4 — down */}
+            <div className="hidden lg:block">
+            <EnergyMarqueeCol speed={29} reverse={true} cards={[
+              <MiniCard key="c12" title="EV Fleet" sub="Charging window" value="11:00–14:00" badge="Matched" color="from-indigo-400 to-violet-500" />,
+              <MiniCard key="c13" title="Demand Profile" sub="BlueSteel Industries" value="15 MW" badge="Seeking" color="from-pink-400 to-rose-500" />,
+              <MiniSettleCard key="s2" />,
+              <MiniCard key="c14" title="Intra-day Bid" sub="Day-ahead market" value="₹1.9/unit" badge="Open" color="from-sky-400 to-blue-500" />,
+              <MiniStatusCard key="st2" />,
+            ]} />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── TESTIMONIALS ── */}
