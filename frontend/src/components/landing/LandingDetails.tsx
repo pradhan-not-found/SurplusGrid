@@ -1,63 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  CheckCircle2, ShieldCheck, Activity, Leaf, Zap,
-  ArrowRight, Mail, Globe, MessageSquare, Users
+  CheckCircle2, Activity, Zap,
+  ArrowRight, Mail, Globe, MessageSquare, Users, ShieldCheck, Leaf
 } from 'lucide-react';
-
-const ForecastIcon = () => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
-    <rect width="48" height="48" rx="16" fill="url(#paint0_linear)" />
-    <path d="M14 30L22 20L28 24L34 16" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="34" cy="16" r="4" fill="white" fillOpacity="0.3" stroke="white" strokeWidth="2" />
-    <rect x="13" y="34" width="2" height="6" rx="1" fill="white" fillOpacity="0.6" />
-    <rect x="21" y="24" width="2" height="16" rx="1" fill="white" fillOpacity="0.8" />
-    <rect x="27" y="28" width="2" height="12" rx="1" fill="white" fillOpacity="0.7" />
-    <rect x="33" y="20" width="2" height="20" rx="1" fill="white" />
-    <defs>
-      <linearGradient id="paint0_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#2563EB" />
-        <stop offset="1" stopColor="#0EA5E9" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-const MatchIcon = () => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
-    <rect width="48" height="48" rx="16" fill="url(#paint1_linear)" />
-    <circle cx="18" cy="24" r="8" stroke="white" strokeWidth="2" strokeOpacity="0.5" />
-    <circle cx="30" cy="24" r="8" stroke="white" strokeWidth="2" strokeOpacity="0.9" />
-    <path d="M24 20L22 24H26L24 28" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <defs>
-      <linearGradient id="paint1_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#8B5CF6" />
-        <stop offset="1" stopColor="#D946EF" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-const SettleIcon = () => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 mb-8">
-    <rect width="48" height="48" rx="16" fill="url(#paint2_linear)" />
-    <rect x="16" y="12" width="16" height="24" rx="2" stroke="white" strokeWidth="2" strokeOpacity="0.8" />
-    <path d="M20 18H28M20 22H26M20 28H23" stroke="white" strokeWidth="2" strokeLinecap="round" />
-    <path d="M28 26L30 28L34 22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <defs>
-      <linearGradient id="paint2_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#10B981" />
-        <stop offset="1" stopColor="#059669" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-const QuoteIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-6 text-gray-200">
-    <path d="M16 10H8C6.89543 10 6 10.8954 6 12V20C6 21.1046 6.89543 22 8 22H11C11 26.4183 7.41828 30 3 30V34C9.62742 34 15 28.6274 15 22V10C15 10 16 10 16 10ZM35 10H27C25.8954 10 25 10.8954 25 12V20C25 21.1046 25.8954 22 27 22H30C30 26.4183 26.4183 30 22 30V34C28.6274 34 34 28.6274 34 22V10C34 10 35 10 35 10Z" fill="currentColor"/>
-  </svg>
-);
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -74,48 +20,49 @@ export default function LandingDetails() {
   ];
 
   const steps = [
-    { title: 'Forecast & Inject', desc: 'Producers upload day-ahead or intra-day generation forecasts. Our system identifies potential curtailment blocks.', icon: <ForecastIcon /> },
-    { title: 'Algorithmic Match', desc: 'Consumers post demand profiles. The SurplusGrid engine calculates optimal matches based on volume, location, and price.', icon: <MatchIcon /> },
-    { title: 'Settle & Report', desc: 'Automated contract execution and SLDC compliance reporting. Transparent settlement data available instantly.', icon: <SettleIcon /> },
+    { title: 'Forecast & Inject', desc: 'Producers upload day-ahead or intra-day generation forecasts. Our system identifies potential curtailment blocks.', icon: <Activity size={24} /> },
+    { title: 'Algorithmic Match', desc: 'Consumers post demand profiles. The SurplusGrid engine calculates optimal matches based on volume, location, and price.', icon: <Zap size={24} /> },
+    { title: 'Settle & Report', desc: 'Automated contract execution and SLDC compliance reporting. Transparent settlement data available instantly.', icon: <CheckCircle2 size={24} /> },
   ];
 
   return (
     <div className="bg-white">
 
       {/* ── STATS STRIP ── */}
-      <section className="border-y border-gray-100 py-14 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-          {stats.map((s, i) => (
-            <motion.div key={i} {...fadeUp(i * 0.08)} className="text-center">
-              <p className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-2">{s.value}</p>
-              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{s.label}</p>
-            </motion.div>
-          ))}
+      <section className="bg-white border-y border-[#E5E7EB] py-[80px]">
+        <div className="max-w-[1100px] mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E5E7EB]">
+            {stats.map((s, i) => (
+              <motion.div key={i} {...fadeUp(i * 0.08)} className="text-center py-8 md:py-0">
+                <p className="text-[64px] font-bold tracking-[-0.03em] text-[#0D1117] hover:text-[#2563EB] transition-colors duration-200 leading-none mb-2">{s.value}</p>
+                <p className="text-[11px] text-[#9CA3AF] tracking-[0.15em] uppercase">{s.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-28 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div {...fadeUp()} className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-5 tracking-tight">
+      <section className="bg-white py-[120px] px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div {...fadeUp()} className="text-center mb-[32px]">
+            <h2 className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em] mb-4">
               Precision matching in real-time.
             </h2>
-            <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
+            <p className="text-[18px] text-[#6B7280] max-w-[560px] mx-auto">
               Our algorithmic engine connects forecasted surplus with live demand, ensuring grid stability and maximum asset utilization.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
             {steps.map((step, i) => (
-              <motion.div key={i} {...fadeUp(i * 0.1)} className="group relative p-10 rounded-[2rem] border border-gray-100 bg-white hover:border-transparent hover:shadow-[0_20px_80px_-15px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden text-left">
-                <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10">
+              <motion.div key={i} {...fadeUp(i * 0.1)} className="bg-white p-[40px] rounded-[16px] border border-[#E5E7EB] hover:border-[#2563EB] transition-colors duration-150 shadow-none">
+                <div className="w-[48px] h-[48px] rounded-[10px] bg-[#F0F7FF] text-[#2563EB] flex items-center justify-center mb-6">
                   {step.icon}
-                  <p className="font-data text-xs font-bold text-gray-300 uppercase tracking-widest mb-3">0{i + 1}</p>
-                  <h3 className="font-display font-bold text-2xl text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">{step.title}</h3>
-                  <p className="text-gray-500 leading-relaxed text-sm font-body">{step.desc}</p>
                 </div>
+                <p className="text-[12px] text-[#D1D5DB] mb-2 block">0{i + 1}</p>
+                <h3 className="text-[22px] font-bold text-[#0D1117] mb-3">{step.title}</h3>
+                <p className="text-[15px] leading-[1.7] text-[#6B7280]">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -123,46 +70,47 @@ export default function LandingDetails() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="py-28 px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Testimonials</p>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 tracking-tight">
+      <section className="bg-[#F9FAFB] py-[120px] px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div {...fadeUp()} className="text-center mb-[64px]">
+            <p className="text-[11px] font-bold text-[#2563EB] uppercase tracking-[0.15em] mb-4">Testimonials</p>
+            <h2 className="text-[40px] font-bold text-[#0D1117] tracking-[-0.02em]">
               Trusted by industry leaders
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
             {[
               {
                 quote: "We run blast furnaces that draw 15MW. Being alerted to surplus windows lets us shift our heaviest batches to off-peak pricing. SurplusGrid cut our highest utility tier by 30%.",
                 name: "Rajesh K.",
                 role: "Plant Manager, Tata Steel",
                 initials: "RK",
-                color: "bg-gradient-to-br from-orange-400 to-orange-600 text-white",
+                color: "bg-orange-100 text-orange-700",
               },
               {
                 quote: "Curtailment is the silent killer of solar ROI. Integrating our telemetry with SurplusGrid means whenever the grid says 'stop', we immediately route that power to industrial buyers.",
                 name: "Sarah M.",
                 role: "Director of Ops, CleanPowerGen",
                 initials: "SM",
-                color: "bg-gradient-to-br from-green-400 to-green-600 text-white",
+                color: "bg-green-100 text-green-700",
               },
             ].map((t, i) => (
               <motion.div key={i} {...fadeUp(i * 0.1)}
-                className="bg-white rounded-[2rem] border border-gray-100 p-12 hover:shadow-[0_20px_80px_-15px_rgba(0,0,0,0.06)] transition-all duration-500"
+                className="bg-white rounded-[16px] border border-[#E5E7EB] p-[40px] shadow-none"
               >
-                <QuoteIcon />
-                <blockquote className="text-gray-700 text-xl leading-relaxed font-body mb-10">
-                  "{t.quote}"
-                </blockquote>
-                <div className="flex items-center gap-5 pt-8 border-t border-gray-100">
-                  <div className={`w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shadow-lg ${t.color}`}>
+                <div className="text-[24px] text-[#E5E7EB] font-bold mb-6">"</div>
+                <div className="text-[17px] leading-[1.75] text-[#374151]">
+                  {t.quote}
+                </div>
+                <div className="border-t border-[#F3F4F6] my-[24px]"></div>
+                <div className="flex items-center gap-4">
+                  <div className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-sm font-bold ${t.color}`}>
                     {t.initials}
                   </div>
                   <div>
-                    <p className="font-bold font-display text-gray-900 text-lg">{t.name}</p>
-                    <p className="text-gray-500 text-sm mt-0.5">{t.role}</p>
+                    <p className="text-[15px] font-bold text-[#0D1117] leading-tight">{t.name}</p>
+                    <p className="text-[13px] text-[#9CA3AF] mt-0.5 leading-tight">{t.role}</p>
                   </div>
                 </div>
               </motion.div>
@@ -172,66 +120,77 @@ export default function LandingDetails() {
       </section>
 
       {/* ── PRICING ── */}
-      <section className="py-28 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <motion.div {...fadeUp()} className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-900 mb-4 tracking-tight">
+      <section className="bg-white py-[120px] px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div {...fadeUp()} className="text-center mb-[64px]">
+            <h2 className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">
               Transparent access for every scale.
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px] items-stretch">
 
             {/* Starter */}
-            <motion.div {...fadeUp(0.05)} className="rounded-3xl border border-gray-100 p-8 flex flex-col bg-white">
-              <p className="text-xl font-bold text-gray-900 mb-1">Starter</p>
-              <p className="text-sm text-gray-500 mb-6">For small C&I consumers.</p>
-              <p className="text-4xl font-bold text-gray-900 mb-8">₹5,000<span className="text-base text-gray-400 font-normal"> /mo</span></p>
+            <motion.div {...fadeUp(0.05)} className="rounded-[16px] border border-[#E5E7EB] p-[40px] flex flex-col bg-white shadow-none">
+              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Starter</p>
+              <p className="text-[14px] text-[#9CA3AF] mb-8">For small C&I consumers.</p>
+              <div className="mb-8">
+                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">₹5,000</span>
+                <span className="text-[20px] text-[#9CA3AF] align-bottom ml-1 font-normal">/mo</span>
+              </div>
               <ul className="space-y-4 mb-10 flex-1">
                 {['Up to 1MW demand mapping', 'Day-ahead market access', 'Standard reporting'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
+                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
+                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
+              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] border border-[#D1D5DB] bg-white text-[#0D1117] font-medium text-[15px] hover:bg-[#F9FAFB] hover:border-[#9CA3AF] transition-colors">
                 Select Starter
               </Link>
             </motion.div>
 
             {/* Growth — featured */}
-            <motion.div {...fadeUp(0.1)} className="rounded-3xl border-2 border-blue-600 p-8 flex flex-col bg-white relative shadow-2xl shadow-blue-100 -mt-4 -mb-4">
+            <motion.div {...fadeUp(0.1)} className="rounded-[16px] border-[2px] border-[#2563EB] p-[40px] flex flex-col bg-white relative shadow-none">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
+                <span className="bg-[#2563EB] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
               </div>
-              <p className="text-xl font-bold text-gray-900 mb-1 mt-2">Growth</p>
-              <p className="text-sm text-gray-500 mb-6">For mid-scale producers and industrials.</p>
-              <p className="text-4xl font-bold text-gray-900 mb-8">₹15,000<span className="text-base text-gray-400 font-normal"> /mo</span></p>
+              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Growth</p>
+              <p className="text-[14px] text-[#9CA3AF] mb-8">For mid-scale producers and industrials.</p>
+              <div className="mb-8">
+                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">₹15,000</span>
+                <span className="text-[20px] text-[#9CA3AF] align-bottom ml-1 font-normal">/mo</span>
+              </div>
               <ul className="space-y-4 mb-10 flex-1">
                 {['Up to 10MW capacity', 'Intra-day live matching', 'Automated SLDC compliance', 'Priority API access'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
+                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
+                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] bg-[#2563EB] text-white font-medium text-[15px] hover:bg-[#1D4ED8] transition-colors">
                 Start Growth Trial
               </Link>
             </motion.div>
 
             {/* Enterprise */}
-            <motion.div {...fadeUp(0.15)} className="rounded-3xl border border-gray-100 p-8 flex flex-col bg-white">
-              <p className="text-xl font-bold text-gray-900 mb-1">Enterprise</p>
-              <p className="text-sm text-gray-500 mb-6">For utility-scale operations.</p>
-              <p className="text-3xl font-bold text-gray-900 mb-8 py-1">Custom Quoted</p>
+            <motion.div {...fadeUp(0.15)} className="rounded-[16px] border border-[#E5E7EB] p-[40px] flex flex-col bg-white shadow-none">
+              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Enterprise</p>
+              <p className="text-[14px] text-[#9CA3AF] mb-8">For utility-scale operations.</p>
+              <div className="mb-8">
+                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">Custom</span>
+              </div>
               <ul className="space-y-4 mb-10 flex-1">
                 {['Unlimited capacity management', 'Dedicated node infrastructure', 'Custom forecasting models'].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                    <CheckCircle2 size={18} className="text-blue-500 shrink-0" /> {f}
+                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
+                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    {f}
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className="w-full py-3.5 text-center rounded-xl border border-gray-200 text-gray-900 text-sm font-semibold hover:bg-gray-50 transition-colors">
+              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] border border-[#D1D5DB] bg-white text-[#0D1117] font-medium text-[15px] hover:bg-[#F9FAFB] hover:border-[#9CA3AF] transition-colors">
                 Contact Sales
               </Link>
             </motion.div>
@@ -240,27 +199,24 @@ export default function LandingDetails() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+      <section className="bg-white mt-[120px] pb-[120px] px-6">
+        <div className="max-w-[1100px] mx-auto">
           <motion.div {...fadeUp()}
-            className="rounded-3xl bg-gray-900 px-10 py-16 text-center relative overflow-hidden"
+            className="rounded-[24px] bg-[#0D1117] px-10 py-16 text-center relative overflow-hidden"
           >
-            {/* Subtle gradient blobs inside banner */}
-            <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-green-500/15 rounded-full blur-3xl" />
             <div className="relative z-10">
-              <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Get Started</p>
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 tracking-tight">
+              <p className="text-[11px] tracking-[0.15em] text-[#60A5FA] uppercase mb-4">Get Started</p>
+              <h2 className="text-[40px] font-bold text-white tracking-[-0.02em] mb-4">
                 Ready to eliminate curtailment?
               </h2>
-              <p className="text-gray-400 text-base mb-10 max-w-lg mx-auto leading-relaxed">
+              <p className="text-[17px] text-[#94A3B8] max-w-[480px] mx-auto leading-[1.7] mb-10 font-normal">
                 Join India's leading renewable energy marketplace. Start matching surplus with demand in minutes.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/signup" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-gray-900 text-sm font-semibold hover:bg-gray-100 transition-colors">
-                  Sign up for free <ArrowRight size={15} />
+              <div className="flex flex-col sm:flex-row gap-[16px] justify-center">
+                <Link to="/signup" className="inline-flex items-center justify-center gap-2 px-[28px] py-[14px] rounded-[100px] bg-white text-[#0D1117] font-medium text-[15px] hover:bg-[#F1F5F9] transition-colors">
+                  Sign up for free <ArrowRight size={16} />
                 </Link>
-                <Link to="/login" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-gray-700 text-gray-300 text-sm font-semibold hover:border-gray-500 transition-colors">
+                <Link to="/signin" className="inline-flex items-center justify-center gap-2 px-[28px] py-[14px] rounded-[100px] border border-white/30 text-white font-medium text-[15px] hover:border-white/60 bg-transparent transition-colors">
                   Sign in
                 </Link>
               </div>
@@ -270,8 +226,8 @@ export default function LandingDetails() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-gray-100 bg-white">  
-        <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
+      <footer className="border-t border-[#E5E7EB] bg-white">  
+        <div className="max-w-[1100px] mx-auto px-6 pt-[64px] pb-[40px]">
 
           {/* Top row */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
@@ -279,20 +235,20 @@ export default function LandingDetails() {
             {/* Brand col */}
             <div className="md:col-span-2">
               <img src="/logo.png" alt="SurplusGrid" className="h-9 w-auto object-contain mb-5" />
-              <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+              <p className="text-[#9CA3AF] text-[14px] leading-[1.7] max-w-xs">
                 India's first real-time B2B renewable energy exchange. Eliminating curtailment, one match at a time.
               </p>
               <div className="flex items-center gap-3 mt-6">
-                <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
+                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
                   <MessageSquare size={15} />
                 </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
+                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
                   <Users size={15} />
                 </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
+                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
                   <Globe size={15} />
                 </a>
-                <a href="#" className="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-300 transition-all">
+                <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
                   <Mail size={15} />
                 </a>
               </div>
@@ -305,11 +261,11 @@ export default function LandingDetails() {
               { heading: 'Legal', links: ['Terms of Service', 'Privacy Policy', 'Cookie Policy', 'SLDC Compliance'] },
             ].map((col) => (
               <div key={col.heading}>
-                <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-5">{col.heading}</p>
+                <p className="text-[11px] font-bold text-[#0D1117] uppercase tracking-[0.15em] mb-5">{col.heading}</p>
                 <ul className="space-y-3">
                   {col.links.map((link) => (
                     <li key={link}>
-                      <a href="#" className="text-sm text-gray-400 hover:text-gray-900 transition-colors">{link}</a>
+                      <a href="#" className="text-[14px] text-[#9CA3AF] hover:text-[#0D1117] transition-colors">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -318,17 +274,17 @@ export default function LandingDetails() {
           </div>
 
           {/* Bottom row */}
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400">© {new Date().getFullYear()} SurplusGrid Technologies Pvt. Ltd. All rights reserved.</p>
+          <div className="border-t border-[#E5E7EB] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[13px] text-[#9CA3AF]">© {new Date().getFullYear()} SurplusGrid Technologies Pvt. Ltd. All rights reserved.</p>
             <div className="flex flex-wrap justify-center gap-6">
-              <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-                <ShieldCheck size={13} className="text-green-500" /> POSOCO Compliant
+              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
+                <ShieldCheck size={14} className="text-[#2563EB]" /> POSOCO Compliant
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-                <Activity size={13} className="text-blue-500" /> SLDC Integrated
+              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
+                <Activity size={14} className="text-[#2563EB]" /> SLDC Integrated
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-                <Leaf size={13} className="text-green-500" /> Carbon Verified
+              <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] font-medium">
+                <Leaf size={14} className="text-[#2563EB]" /> Carbon Verified
               </div>
             </div>
           </div>
