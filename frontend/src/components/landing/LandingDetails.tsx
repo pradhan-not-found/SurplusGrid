@@ -5,6 +5,18 @@ import {
   ArrowRight, Mail, Globe, MessageSquare, Users, ShieldCheck, Leaf
 } from 'lucide-react';
 
+const GithubIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/><path d="M9 20c-5 1.5-5-2.5-7-3"/></svg>
+);
+
+const LinkedinIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+);
+
+const TwitterIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+);
+
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
@@ -34,7 +46,7 @@ export default function LandingDetails() {
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#E5E7EB]">
             {stats.map((s, i) => (
               <motion.div key={i} {...fadeUp(i * 0.08)} className="text-center py-8 md:py-0">
-                <p className="text-[64px] font-bold tracking-[-0.03em] text-[#0D1117] hover:text-[#2563EB] transition-colors duration-200 leading-none mb-2">{s.value}</p>
+                <p className="text-[64px] font-medium tracking-tighter text-[#0D1117] hover:text-[#2563EB] transition-colors duration-200 leading-none mb-2">{s.value}</p>
                 <p className="text-[11px] text-[#9CA3AF] tracking-[0.15em] uppercase">{s.label}</p>
               </motion.div>
             ))}
@@ -46,7 +58,7 @@ export default function LandingDetails() {
       <section className="bg-white py-[120px] px-6">
         <div className="max-w-[1100px] mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-[32px]">
-            <h2 className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em] mb-4">
+            <h2 className="text-4xl lg:text-5xl font-medium tracking-tighter text-[#0D1117] mb-4">
               Precision matching in real-time.
             </h2>
             <p className="text-[18px] text-[#6B7280] max-w-[560px] mx-auto">
@@ -61,7 +73,7 @@ export default function LandingDetails() {
                   {step.icon}
                 </div>
                 <p className="text-[12px] text-[#D1D5DB] mb-2 block">0{i + 1}</p>
-                <h3 className="text-[22px] font-bold text-[#0D1117] mb-3">{step.title}</h3>
+                <h3 className="text-[22px] font-medium tracking-tight text-[#0D1117] mb-3">{step.title}</h3>
                 <p className="text-[15px] leading-[1.7] text-[#6B7280]">{step.desc}</p>
               </motion.div>
             ))}
@@ -69,144 +81,141 @@ export default function LandingDetails() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <section className="bg-[#F9FAFB] py-[120px] px-6">
-        <div className="max-w-[1100px] mx-auto">
-          <motion.div {...fadeUp()} className="text-center mb-[64px]">
-            <p className="text-[11px] font-bold text-[#2563EB] uppercase tracking-[0.15em] mb-4">Testimonials</p>
-            <h2 className="text-[40px] font-bold text-[#0D1117] tracking-[-0.02em]">
-              Trusted by industry leaders
-            </h2>
-          </motion.div>
+      {/* ── COMPONENTS / ZEROUI INSPIRED ── */}
+      <section className="w-full flex flex-col justify-center items-center py-[80px] px-6">
+        <motion.div {...fadeUp()} className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-10">
+          <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Components that don't get in the way</h1>
+          <span className="text-[16px] text-[#6B7280]">
+            Explore our extensive library of pre-designed, customizable components that can be easily integrated into your energy projects, saving you time and effort.
+          </span>
+        </motion.div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-            {[
-              {
-                quote: "We run blast furnaces that draw 15MW. Being alerted to surplus windows lets us shift our heaviest batches to off-peak pricing. SurplusGrid cut our highest utility tier by 30%.",
-                name: "Rajesh K.",
-                role: "Plant Manager, Tata Steel",
-                initials: "RK",
-                color: "bg-orange-100 text-orange-700",
-              },
-              {
-                quote: "Curtailment is the silent killer of solar ROI. Integrating our telemetry with SurplusGrid means whenever the grid says 'stop', we immediately route that power to industrial buyers.",
-                name: "Sarah M.",
-                role: "Director of Ops, CleanPowerGen",
-                initials: "SM",
-                color: "bg-green-100 text-green-700",
-              },
-            ].map((t, i) => (
-              <motion.div key={i} {...fadeUp(i * 0.1)}
-                className="bg-white rounded-[16px] border border-[#E5E7EB] p-[40px] shadow-none"
-              >
-                <div className="text-[24px] text-[#E5E7EB] font-bold mb-6">"</div>
-                <div className="text-[17px] leading-[1.75] text-[#374151]">
-                  {t.quote}
+      {/* ── TESTIMONIALS ── */}
+      <section className="w-full flex flex-col justify-center items-center py-[80px] px-6">
+        <div className="w-full flex flex-col justify-center items-center gap-2 max-w-3xl text-center mb-12">
+          <motion.h1 {...fadeUp()} className="text-3xl lg:text-4xl tracking-tighter font-medium text-[#374151]">
+            See what industry leaders are saying about <span className="text-[#0D1117] font-semibold text-4xl">SurplusGrid</span>
+          </motion.h1>
+        </div>
+
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 max-w-[1100px] w-full mx-auto space-y-6">
+          {[
+            {
+              quote: "Just discovered SurplusGrid — their real-time matching algorithm is amazing. Saved 12% on our load this week.",
+              name: "Rajesh Kumar",
+              handle: "@rajesh_ops"
+            },
+            {
+              quote: "SurplusGrid: A complete energy platform that just works ✨ Eliminating solar curtailment has never been easier.",
+              name: "Clean Power Dev",
+              handle: "@cleanpower_dev"
+            },
+            {
+              quote: "Everything about this is next level: the POSOCO compliance, the instant settlement, dynamic pricing.",
+              name: "Syskey Energy",
+              handle: "@energy_syskey"
+            },
+            {
+              quote: "Literally the coolest B2B exchange in the Indian energy sector —",
+              name: "Murray G.",
+              handle: "@solar_murray"
+            },
+            {
+              quote: "Have you heard of SurplusGrid? They've lovingly put together an incredibly flexible industrial load marketplace. Huge ROI.",
+              name: "Industrial DIY",
+              handle: "@industrial_diy"
+            },
+            {
+              quote: "SurplusGrid has got to be the most efficient energy matching engine I have seen in a while 🔥",
+              name: "Grid Watch",
+              handle: "@grid_watch"
+            },
+            {
+              quote: "This is genuinely impressive work. The attention to detail in their automated SLDC reporting shows.",
+              name: "Dan Infrastructure",
+              handle: "@dan_infra"
+            },
+            {
+              quote: "Saw about SurplusGrid and it's just wow, the dashboard is incredibly well designed! Love the overall feel and quality.",
+              name: "Emma S.",
+              handle: "@emma_sustainability"
+            },
+            {
+              quote: "The next generation of grid balancing is emerging this year 👀 The flexibility doesn't exist anywhere else.",
+              name: "Sarah Renewables",
+              handle: "@sarah_renewables"
+            }
+          ].map((t, i) => (
+            <motion.div key={i} {...fadeUp(i * 0.05)}
+              className="bg-white rounded-[16px] border border-[#E5E7EB] p-6 shadow-sm flex flex-col gap-4 break-inside-avoid relative hover:border-[#D1D5DB] transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F3F4F6] to-[#E5E7EB] border border-[#E5E7EB] flex items-center justify-center font-semibold text-[#374151] text-sm shrink-0">
+                  {t.name[0]}
                 </div>
-                <div className="border-t border-[#F3F4F6] my-[24px]"></div>
-                <div className="flex items-center gap-4">
-                  <div className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-sm font-bold ${t.color}`}>
-                    {t.initials}
-                  </div>
-                  <div>
-                    <p className="text-[15px] font-bold text-[#0D1117] leading-tight">{t.name}</p>
-                    <p className="text-[13px] text-[#9CA3AF] mt-0.5 leading-tight">{t.role}</p>
-                  </div>
+                <div>
+                  <p className="text-[14px] font-medium text-[#0D1117] leading-tight mb-0.5">{t.name}</p>
+                  <p className="text-[12px] text-[#6B7280] leading-tight">{t.handle}</p>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+                <TwitterIcon className="w-4 h-4 text-[#9CA3AF] ml-auto absolute top-6 right-6 opacity-40" />
+              </div>
+              <p className="text-[14px] text-[#374151] leading-[1.6]">
+                {t.quote}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* ── PRICING ── */}
-      <section className="bg-white py-[120px] px-6">
-        <div className="max-w-[1100px] mx-auto">
-          <motion.div {...fadeUp()} className="text-center mb-[64px]">
-            <h2 className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">
-              Transparent access for every scale.
-            </h2>
-          </motion.div>
+      {/* ── MEET THE DEVS ── */}
+      <section className="w-full flex flex-col justify-center items-center py-[80px] px-6">
+        <div className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-12">
+          <motion.h1 {...fadeUp()} className="text-3xl tracking-tighter font-medium text-[#374151]">
+            Meet the <span className="text-[#0D1117] font-semibold">Devs</span>
+          </motion.h1>
+          <motion.span {...fadeUp(0.1)} className="text-[16px] text-[#6B7280]">
+            Made with ❤️ for devs by devs.
+          </motion.span>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px] items-stretch">
-
-            {/* Starter */}
-            <motion.div {...fadeUp(0.05)} className="rounded-[16px] border border-[#E5E7EB] p-[40px] flex flex-col bg-white shadow-none">
-              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Starter</p>
-              <p className="text-[14px] text-[#9CA3AF] mb-8">For small C&I consumers.</p>
-              <div className="mb-8">
-                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">₹5,000</span>
-                <span className="text-[20px] text-[#9CA3AF] align-bottom ml-1 font-normal">/mo</span>
+        <div className="flex flex-wrap justify-center gap-12 max-w-[1100px] mx-auto w-full">
+          {[
+            { name: "Ashish Ranjan Das", role: "Full Stack Web3 Developer", img: "/assets/ashish.webp", github: "https://github.com/0day-Ashish", linkedin: "https://linkedin.com/in/arddev", twitter: "https://twitter.com/Ashish_06" },
+            { name: "Subham Karmakar", role: "Full Stack Developer", img: "https://github.com/subham12r.png", github: "https://github.com/subham12r", linkedin: "https://linkedin.com/in/subham12r", twitter: "https://twitter.com/subham12r" },
+            { name: "Aryadeep Roy", role: "Full-Stack Developer", img: "/assets/aryadeep.jpg", github: "https://github.com/arya232006", linkedin: "https://www.linkedin.com/in/aryadeep-roy2371/", twitter: "#" },
+            { name: "Souradeep", role: "Frontend Engineer", img: "https://github.com/shadcn.png", github: "#", linkedin: "#", twitter: "#" }
+          ].map((dev, i) => (
+            <motion.div key={i} {...fadeUp(i * 0.1)} className="flex items-center gap-4">
+              <img
+                src={dev.img}
+                alt={dev.name}
+                onError={(e) => { e.currentTarget.src = 'https://github.com/shadcn.png' }} // fallback for missing local images
+                className="w-20 h-20 rounded-full border-2 border-[#E5E7EB] shrink-0 object-cover object-top p-0.5 bg-zinc-100"
+              />
+              <div>
+                <h3 className="text-lg font-medium text-[#0D1117] tracking-tight">{dev.name}</h3>
+                <p className="text-sm text-[#6B7280] mb-2">{dev.role}</p>
+                <div className="flex items-center gap-3">
+                  <a href={dev.github} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><GithubIcon className="w-4 h-4" /></a>
+                  <a href={dev.linkedin} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><LinkedinIcon className="w-4 h-4" /></a>
+                  <a href={dev.twitter} className="text-[#9CA3AF] hover:text-[#0D1117] transition-colors"><TwitterIcon className="w-4 h-4" /></a>
+                </div>
               </div>
-              <ul className="space-y-4 mb-10 flex-1">
-                {['Up to 1MW demand mapping', 'Day-ahead market access', 'Standard reporting'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
-                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] border border-[#D1D5DB] bg-white text-[#0D1117] font-medium text-[15px] hover:bg-[#F9FAFB] hover:border-[#9CA3AF] transition-colors">
-                Select Starter
-              </Link>
             </motion.div>
-
-            {/* Growth — featured */}
-            <motion.div {...fadeUp(0.1)} className="rounded-[16px] border-[2px] border-[#2563EB] p-[40px] flex flex-col bg-white relative shadow-none">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="bg-[#2563EB] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
-              </div>
-              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Growth</p>
-              <p className="text-[14px] text-[#9CA3AF] mb-8">For mid-scale producers and industrials.</p>
-              <div className="mb-8">
-                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">₹15,000</span>
-                <span className="text-[20px] text-[#9CA3AF] align-bottom ml-1 font-normal">/mo</span>
-              </div>
-              <ul className="space-y-4 mb-10 flex-1">
-                {['Up to 10MW capacity', 'Intra-day live matching', 'Automated SLDC compliance', 'Priority API access'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
-                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] bg-[#2563EB] text-white font-medium text-[15px] hover:bg-[#1D4ED8] transition-colors">
-                Start Growth Trial
-              </Link>
-            </motion.div>
-
-            {/* Enterprise */}
-            <motion.div {...fadeUp(0.15)} className="rounded-[16px] border border-[#E5E7EB] p-[40px] flex flex-col bg-white shadow-none">
-              <p className="text-[20px] font-bold text-[#0D1117] mb-2">Enterprise</p>
-              <p className="text-[14px] text-[#9CA3AF] mb-8">For utility-scale operations.</p>
-              <div className="mb-8">
-                <span className="text-[48px] font-bold text-[#0D1117] tracking-[-0.02em]">Custom</span>
-              </div>
-              <ul className="space-y-4 mb-10 flex-1">
-                {['Unlimited capacity management', 'Dedicated node infrastructure', 'Custom forecasting models'].map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] leading-[1.8]">
-                    <svg className="w-4 h-4 text-[#2563EB] shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center rounded-[10px] p-[14px] border border-[#D1D5DB] bg-white text-[#0D1117] font-medium text-[15px] hover:bg-[#F9FAFB] hover:border-[#9CA3AF] transition-colors">
-                Contact Sales
-              </Link>
-            </motion.div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="bg-white mt-[120px] pb-[120px] px-6">
+      <section className="bg-white mt-[80px] pb-[120px] px-6">
         <div className="max-w-[1100px] mx-auto">
           <motion.div {...fadeUp()}
             className="rounded-[24px] bg-[#0D1117] px-10 py-16 text-center relative overflow-hidden"
           >
             <div className="relative z-10">
               <p className="text-[11px] tracking-[0.15em] text-[#60A5FA] uppercase mb-4">Get Started</p>
-              <h2 className="text-[40px] font-bold text-white tracking-[-0.02em] mb-4">
+              <h2 className="text-4xl font-medium tracking-tighter text-white mb-4">
                 Ready to eliminate curtailment?
               </h2>
               <p className="text-[17px] text-[#94A3B8] max-w-[480px] mx-auto leading-[1.7] mb-10 font-normal">
@@ -240,10 +249,10 @@ export default function LandingDetails() {
               </p>
               <div className="flex items-center gap-3 mt-6">
                 <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <MessageSquare size={15} />
+                  <GithubIcon className="w-4 h-4" />
                 </a>
                 <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
-                  <Users size={15} />
+                  <TwitterIcon className="w-4 h-4" />
                 </a>
                 <a href="#" className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#9CA3AF] hover:text-[#0D1117] hover:border-[#D1D5DB] transition-colors">
                   <Globe size={15} />
