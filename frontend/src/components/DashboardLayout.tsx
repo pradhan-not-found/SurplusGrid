@@ -38,19 +38,19 @@ export default function DashboardLayout({ children, title }: { children: React.R
   return (
     <div className="flex h-screen bg-[#F8FAFC] font-body text-[#0D1117]">
       {/* Sidebar */}
-      <div className="w-[240px] bg-[#0D1117] flex flex-col border-r border-white/5 shrink-0">
+      <div className="w-[240px] bg-white flex flex-col border-r border-[#E5E7EB] shrink-0">
         <div className="pt-[24px] px-[20px] pb-[8px]">
           <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-4" />
           <div className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full border text-[11px] font-medium
-            ${user.role === 'producer' ? 'bg-[#1C3A2A] text-[#4ADE80] border-[#166534]' : 'bg-[#1E2E4A] text-[#60A5FA] border-[#1D4ED8]'}`}>
+            ${user.role === 'producer' ? 'bg-[#ECFDF5] text-[#065F46] border-[#A7F3D0]' : 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]'}`}>
             {user.role === 'producer' ? <Sun size={10} /> : <Factory size={10} />}
             {user.role === 'producer' ? 'Producer' : 'Consumer'}
           </div>
         </div>
         
-        <div className="h-[1px] bg-white/5 mx-5 my-4" />
+        <div className="h-[1px] bg-[#F1F5F9] mx-5 my-4" />
         
-        <div className="px-5 mb-2 text-[10px] font-medium text-[#475569] tracking-[0.1em] uppercase">
+        <div className="px-5 mb-2 text-[10px] font-medium text-[#6B7280] tracking-[0.1em] uppercase">
           Platform
         </div>
 
@@ -64,30 +64,30 @@ export default function DashboardLayout({ children, title }: { children: React.R
                 to={link.path}
                 className={`relative flex items-center gap-[10px] h-[40px] px-[16px] rounded-[8px] transition-all duration-120
                   ${isActive 
-                    ? 'bg-[#2563EB]/15 text-white font-medium' 
-                    : 'text-[#94A3B8] hover:bg-white/5 hover:text-[#E2E8F0]'}`}
+                    ? 'bg-[#EFF6FF] text-[#2563EB] font-medium' 
+                    : 'text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#0D1117]'}`}
               >
                 {isActive && <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-[#2563EB] rounded-r-full" />}
-                <Icon size={18} strokeWidth={1.5} className={isActive ? 'text-[#60A5FA]' : 'text-[#64748B]'} />
+                <Icon size={18} strokeWidth={1.5} className={isActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]'} />
                 <span className="text-[14px]">{link.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="border-t border-white/5 mt-auto">
+        <div className="border-t border-[#E5E7EB] mt-auto">
           <div className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#1E3A5F] text-[#60A5FA] flex items-center justify-center text-[13px] font-medium shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#F0F7FF] text-[#2563EB] flex items-center justify-center text-[13px] font-medium shrink-0">
               {initials}
             </div>
             <div className="overflow-hidden">
-              <div className="text-[13px] font-medium text-white truncate">{user.name}</div>
-              <div className="text-[11px] text-[#64748B] truncate">{user.email}</div>
+              <div className="text-[13px] font-medium text-[#0D1117] truncate">{user.name}</div>
+              <div className="text-[11px] text-[#6B7280] truncate">{user.email}</div>
             </div>
           </div>
           <button 
             onClick={logout}
-            className="w-full flex items-center gap-[10px] px-[28px] py-3 text-[13px] text-[#64748B] hover:text-[#EF4444] group transition-colors duration-120"
+            className="w-full flex items-center gap-[10px] px-[28px] py-3 text-[13px] text-[#6B7280] hover:text-[#EF4444] hover:bg-[#F9FAFB] group transition-colors duration-120"
           >
             <LogOut size={15} strokeWidth={1.5} className="group-hover:text-[#EF4444] transition-colors" />
             Sign out
