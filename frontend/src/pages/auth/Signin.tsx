@@ -53,28 +53,36 @@ export default function Signin() {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left Panel */}
-      <div className="hidden md:flex w-[45%] bg-[#F8FAFC] border-r border-[#E5E7EB] flex-col justify-between p-12">
-        <div className="flex-1 flex flex-col justify-center">
-          <img src="/logo.png" alt="SurplusGrid" className="w-[140px] mb-8 object-contain" />
-          <h1 className="text-[28px] font-bold text-[#0D1117] mb-10 leading-tight tracking-[-0.01em]">
-            The smarter energy grid exchange.
-          </h1>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-[13px] text-[#374151]">
-              <ShieldCheck size={14} color="#2563EB" />
-              SLDC compliant reporting
-            </div>
-            <div className="flex items-center gap-3 text-[13px] text-[#374151]">
-              <Zap size={14} color="#2563EB" />
-              Real-time surplus matching
-            </div>
-            <div className="flex items-center gap-3 text-[13px] text-[#374151]">
-              <TrendingUp size={14} color="#2563EB" />
-              Used by 450+ industrial operators
+      <div className="hidden md:flex w-[45%] border-r border-[#E5E7EB] flex-col justify-between p-12 relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center z-0" 
+          style={{ backgroundImage: 'url(/wind.png)' }}
+        />
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm z-10" />
+        
+        <div className="flex-1 flex flex-col justify-center relative z-20">
+          <div className="p-10 bg-white/50 backdrop-blur-md border border-white/40 rounded-2xl shadow-sm max-w-[420px]">
+            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] mb-8 object-contain" />
+            <h1 className="text-[28px] font-bold text-[#0D1117] mb-8 leading-tight tracking-[-0.01em]">
+              The smarter energy grid exchange.
+            </h1>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
+                <ShieldCheck size={16} color="#0D1117" />
+                SLDC compliant reporting
+              </div>
+              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
+                <Zap size={16} color="#0D1117" />
+                Real-time surplus matching
+              </div>
+              <div className="flex items-center gap-3 text-[13px] font-medium text-[#0D1117]">
+                <TrendingUp size={16} color="#0D1117" />
+                Used by 450+ industrial operators
+              </div>
             </div>
           </div>
         </div>
-        <div className="text-[11px] text-[#6B7280]">
+        <div className="text-[11px] text-[#0D1117] font-semibold relative z-20">
           © {new Date().getFullYear()} SurplusGrid Pvt. Ltd.
         </div>
       </div>
