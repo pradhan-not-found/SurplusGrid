@@ -40,7 +40,6 @@ export default function ConsumerDashboard() {
     setDate(''); setStartTime(''); setEndTime(''); setEnergy('');
   };
 
-  const pendingDemand = demandList.filter(d => d.status === 'pending');
   const availableSurplus = surplusList.filter(s => s.status === 'available');
 
   return (

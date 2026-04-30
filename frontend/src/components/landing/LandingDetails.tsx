@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  Factory, Activity, CheckCircle2, ShieldCheck, Zap, Sun,
-  ArrowRight, Mail, Globe, MessageSquare, Users, BarChart3, Leaf
+  Factory, Activity, CheckCircle2, ShieldCheck, Zap,
+  ArrowRight, Mail, Globe, MessageSquare, Users, Leaf
 } from 'lucide-react';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] },
+  transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 });
 
 export default function LandingDetails() {

@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 

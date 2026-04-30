@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
-import { Sparkles, Factory, Zap } from 'lucide-react';
+import { Factory, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Signup() {

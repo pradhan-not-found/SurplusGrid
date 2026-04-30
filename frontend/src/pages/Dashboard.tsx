@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import ProducerDashboard from '../components/ProducerDashboard';
-import ConsumerDashboard from '../components/ConsumerDashboard';
+import ProducerDashboard from './ProducerDashboard';
+import ConsumerDashboard from './ConsumerDashboard';
 import { Leaf, Factory, ArrowLeft } from 'lucide-react';
 import type { SurplusEntry, DemandEntry, Match } from '../types';
 import { Link } from 'react-router-dom';

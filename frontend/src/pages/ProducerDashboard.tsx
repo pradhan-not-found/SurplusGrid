@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { LogOut, Zap, Activity, Grid2X2, Settings, Bell, CheckCircle2, BatteryWarning, Sparkles } from 'lucide-react';
+import { LogOut, Activity, Grid2X2, Settings, Bell, CheckCircle2, BatteryWarning, Sparkles } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line } from 'recharts';
 
 const mockChartData = [
@@ -185,7 +185,7 @@ export default function ProducerDashboard() {
                       </tr>
                     </thead>
                     <tbody className="text-sm font-medium text-gray-900">
-                      {availableSurplus.map((item, i) => (
+                      {availableSurplus.map((item) => (
                         <tr key={item.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                           <td className="py-4 px-2 text-gray-500">{item.date}</td>
                           <td className="py-4 px-2">{item.startTime} - {item.endTime}</td>
