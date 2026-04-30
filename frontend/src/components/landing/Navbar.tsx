@@ -27,7 +27,7 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Link to="/login" className="px-5 py-2.5 rounded-full text-sm font-medium text-gray-900 hover:bg-gray-50 transition-all">
+          <Link to="/signin" className="px-5 py-2.5 rounded-full text-sm font-medium text-gray-900 hover:bg-gray-50 transition-all">
             Login
           </Link>
           <Link to="/signup" className="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-all">

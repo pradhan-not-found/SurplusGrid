@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Activity, Zap,
-  ArrowRight, Mail, Globe, ShieldCheck, Leaf, ArrowUpRight
+  ArrowRight, Globe, ArrowUpRight
 } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -291,7 +291,7 @@ export default function LandingDetails() {
             Meet the <span className="text-[#0D1117] font-semibold">Devs</span>
           </motion.h1>
           <motion.span {...fadeUp(0.1)} className="text-[16px] text-[#6B7280]">
-            Made with ❤️ for devs by devs.
+            Made with ❤️ for grid operators by devs.
           </motion.span>
         </div>
 
