@@ -109,9 +109,6 @@ export default function ProducerOverview() {
                     w.status === 'Partial' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#DBEAFE]' :
                     'bg-[#F4F4F5] text-[#3F3F46] border-[#E4E4E7]'
                   }`}>
-                    {w.status === 'Matched' && <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] mr-1.5" />}
-                    {w.status === 'Seeking' && <div className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] mr-1.5" />}
-                    {w.status === 'Partial' && <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] mr-1.5" />}
                     {w.status}
                   </span>
                 </td>
@@ -127,7 +124,7 @@ export default function ProducerOverview() {
           <div key={i} className="bg-white border border-[#E5E7EB] rounded-[10px] shadow-sm p-5 min-w-[280px] hover:border-[#D4D4D8] transition-all duration-200">
             <div className="flex items-center justify-between mb-4">
               <div className="text-[15px] font-bold text-[#09090B] tracking-tight">{m.consumer}</div>
-              <div className="w-2 h-2 rounded-full bg-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+              <div className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#ECFDF5] text-[#065F46] border border-[#D1FAE5]">Active</div>
             </div>
             
             <div className="space-y-3">

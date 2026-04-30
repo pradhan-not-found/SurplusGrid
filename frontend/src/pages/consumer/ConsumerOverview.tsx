@@ -173,7 +173,6 @@ export default function ConsumerOverview() {
                 <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{s.savings.toLocaleString()}</td>
                 <td className="p-[16px_20px]">
                   <span className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[#ECFDF5] text-[#065F46] border border-[#D1FAE5]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] mr-1.5" />
                     Completed
                   </span>
                 </td>
