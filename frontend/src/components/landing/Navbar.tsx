@@ -19,10 +19,9 @@ export default function Navbar() {
 
         {/* Links */}
         <div className="hidden lg:flex items-center gap-10 text-sm font-medium text-gray-500">
+          <a href="#how-it-works" className="hover:text-gray-900 transition-colors">How it Works</a>
           <a href="#platform" className="hover:text-gray-900 transition-colors">Platform</a>
           <a href="#network" className="hover:text-gray-900 transition-colors">Network</a>
-          <a href="#impact" className="hover:text-gray-900 transition-colors">Pricing</a>
-          <a href="#impact" className="hover:text-gray-900 transition-colors">Impact</a>
         </div>
 
         {/* Actions */}

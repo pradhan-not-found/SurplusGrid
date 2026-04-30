@@ -166,7 +166,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="bg-white py-[120px] px-6">
+      <section id="how-it-works" className="bg-white py-[120px] px-6">
         <div className="max-w-[1100px] mx-auto">
           <motion.div {...fadeUp()} className="text-center mb-[32px]">
             <h2 className="text-4xl lg:text-5xl font-medium tracking-tighter text-[#0D1117] mb-4">
