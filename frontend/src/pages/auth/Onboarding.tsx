@@ -1,167 +1,353 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Sun, Factory, Loader2, ChevronDown } from 'lucide-react';
+
+const COMPANIES = [
+  "Tata Power", "Adani Green Energy", "ReNew Power", "Greenko Group",
+  "Azure Power", "Hero Future Energies", "Torrent Power", "NTPC Renewable",
+  "Sterlite Power", "JSW Energy", "Waaree Energies", "Vikram Solar",
+  "Tata Steel", "Vedanta Limited", "Hindustan Zinc", "Hindalco Industries",
+  "JSW Steel", "SAIL", "ArcelorMittal Nippon Steel India", "Ultratech Cement",
+  "Ambuja Cements", "ACC Limited", "Dalmia Bharat", "Shree Cement",
+  "Marico", "ITC Limited", "Britannia Industries", "Amul", "Godrej Industries",
+  "Reliance Industries", "HPCL", "BPCL", "Indian Oil Corporation", "GAIL India",
+  "Infosys", "Wipro", "HCL Technologies", "TCS", "Tech Mahindra",
+  "Amazon India", "Flipkart", "Zomato", "Swiggy", "Ola Electric"
+];
+
+const STATES = [
+  "Andaman & Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+  "Bihar", "Chandigarh", "Chhattisgarh", "Dadra & Nagar Haveli and Daman & Diu",
+  "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu & Kashmir",
+  "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh",
+  "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+  "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+];
 
 export default function Onboarding() {
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
+  
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<'producer' | 'consumer' | null>(null);
-
-  // Step 2
-  const [company, setCompany] = useState('');
+  
+  const [companyName, setCompanyName] = useState('');
   const [state, setState] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gst, setGst] = useState('');
-
-  // Step 3 Producer
-  const [farmName, setFarmName] = useState('');
+  
+  // Producer fields
   const [capacity, setCapacity] = useState('');
-  const [connType, setConnType] = useState('LT');
-  const [sldcZone, setSldcZone] = useState('NLDC');
-  const [reportPref, setReportPref] = useState('Manual');
-
-  // Step 3 Consumer
-  const [facilityName, setFacilityName] = useState('');
-  const [facilityType, setFacilityType] = useState('Cold storage');
+  const [connectivity, setConnectivity] = useState('');
+  
+  // Consumer fields
   const [peakLoad, setPeakLoad] = useState('');
-  const [flexLoad, setFlexLoad] = useState('');
+  const [flexibleLoad, setFlexibleLoad] = useState('');
   const [shiftHours, setShiftHours] = useState<string[]>([]);
+  
+  const [loading, setLoading] = useState(false);
+  
+  // Autocomplete state
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [search, setSearch] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  if (!user) return <Navigate to="/signin" />;
-  if (user.onboardingComplete) return <Navigate to={user.role === 'producer' ? '/dashboard/producer' : '/dashboard/consumer'} />;
+  if (!user) return <Navigate to="/signup" replace />;
+  if (user.onboardingComplete) return <Navigate to={`/dashboard/${user.role}`} replace />;
 
-  const handleNext2 = () => {
-    if (!company || !state || !phone) return alert('Fill required fields');
-    setStep(3);
+  const filteredCompanies = search 
+    ? COMPANIES.filter(c => c.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
+    : COMPANIES.slice(0, 5);
+
+  const handleNext = () => {
+    if (step === 1 && !role) return;
+    if (step === 2 && (!companyName || !state)) return;
+    setStep(s => s + 1);
   };
 
-  const completeProducer = () => {
-    if (!farmName || !capacity) return alert('Fill required fields');
-    updateUser({
-      role: 'producer',
-      onboardingComplete: true,
-      companyName: company, state, phone, gst,
-      farmName, capacityKw: Number(capacity), connectionType: connType, sldcZone, reportingPref: reportPref
-    });
-    navigate('/dashboard/producer');
+  const handleFinish = () => {
+    setLoading(true);
+    setTimeout(() => {
+      updateUser({
+        role,
+        companyName,
+        state,
+        onboardingComplete: true,
+        ...(role === 'producer' ? { capacityMw: Number(capacity), connectivity } : { peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexibleLoad), shiftableHours: shiftHours })
+      });
+      navigate(`/dashboard/${role}`);
+    }, 800);
   };
 
-  const completeConsumer = () => {
-    if (!facilityName || !peakLoad || !flexLoad) return alert('Fill required fields');
-    if (Number(flexLoad) > Number(peakLoad)) return alert('Flexible load cannot exceed peak load');
-    updateUser({
-      role: 'consumer',
-      onboardingComplete: true,
-      companyName: company, state, phone, gst,
-      facilityName, facilityType, peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexLoad), shiftableHours: shiftHours
-    });
-    navigate('/dashboard/consumer');
-  };
-
-  const toggleHour = (hr: string) => {
-    setShiftHours(prev => prev.includes(hr) ? prev.filter(h => h !== hr) : [...prev, hr]);
-  };
+  const progress = (step / 3) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-body">
-      <div className="w-full max-w-3xl bg-white border border-gray-200 rounded-xl p-8">
-        <div className="mb-6 text-sm text-gray-500 font-bold uppercase tracking-widest text-center">
-          Step {step} of 3
-        </div>
+    <div className="min-h-screen bg-white text-[#0D1117] font-body">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between px-6 py-4">
+        <img src="/logo.png" alt="SurplusGrid" className="w-[120px]" />
+        <span className="text-[13px] text-[#6B7280]">Step {step} of 3</span>
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="w-full h-[3px] bg-[#E5E7EB]">
+        <div 
+          className="h-full bg-[#2563EB] transition-all duration-300 ease-in-out" 
+          style={{ width: `${progress}%` }} 
+        />
+      </div>
 
+      <div className="max-w-[560px] mx-auto pt-16 px-6 pb-20">
+        
         {step === 1 && (
-          <div>
-            <h2 className="text-2xl font-display font-bold mb-6 text-center">Choose your role</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div 
-                className={`p-6 border rounded cursor-pointer ${role === 'producer' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'}`}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-[24px] font-bold tracking-[-0.01em] mb-2">How will you use SurplusGrid?</h1>
+            <p className="text-[14px] text-[#6B7280] mb-8">Choose your role. You can add more later.</p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {/* Producer Card */}
+              <button 
                 onClick={() => setRole('producer')}
+                className={`text-left p-[24px] rounded-[12px] border-[1.5px] transition-all duration-150 ${role === 'producer' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#E5E7EB] bg-white hover:border-[#93C5FD]'}`}
               >
-                <div className="font-bold text-lg mb-2">I produce renewable energy</div>
-                <div className="text-sm text-gray-600">Solar farms, wind installations, rooftop aggregators</div>
-              </div>
-              <div 
-                className={`p-6 border rounded cursor-pointer ${role === 'consumer' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'}`}
+                <div className="w-[56px] h-[56px] rounded-[12px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB] mb-4">
+                  <Sun size={28} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-[17px] font-bold mb-1">Energy Producer</h3>
+                <p className="text-[13px] text-[#6B7280]">Monetize curtailed surplus energy directly.</p>
+              </button>
+
+              {/* Consumer Card */}
+              <button 
                 onClick={() => setRole('consumer')}
+                className={`text-left p-[24px] rounded-[12px] border-[1.5px] transition-all duration-150 ${role === 'consumer' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#E5E7EB] bg-white hover:border-[#93C5FD]'}`}
               >
-                <div className="font-bold text-lg mb-2">I consume energy at scale</div>
-                <div className="text-sm text-gray-600">Cold storage, textile mills, EV fleets, data centers</div>
-              </div>
+                <div className="w-[56px] h-[56px] rounded-[12px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB] mb-4">
+                  <Factory size={28} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-[17px] font-bold mb-1">C&I Consumer</h3>
+                <p className="text-[13px] text-[#6B7280]">Shift loads to access cheap, clean energy.</p>
+              </button>
             </div>
-            <div className="mt-8 flex justify-end">
-              <button disabled={!role} onClick={() => setStep(2)} className="bg-gray-900 text-white px-6 py-2 rounded font-bold disabled:opacity-50">Next</button>
+            
+            <div className="mt-10">
+              <button 
+                onClick={handleNext}
+                disabled={!role}
+                className="w-full h-[46px] bg-[#2563EB] text-white font-medium text-[15px] rounded-[8px] hover:bg-[#1D4ED8] disabled:opacity-70 disabled:hover:bg-[#2563EB] transition-colors"
+              >
+                Continue
+              </button>
             </div>
           </div>
         )}
 
         {step === 2 && (
-          <div>
-            <h2 className="text-2xl font-display font-bold mb-6">Company details</h2>
-            <div className="space-y-4">
-              <div><label className="block text-sm font-bold mb-1">Company name *</label><input type="text" className="w-full border p-2" value={company} onChange={e=>setCompany(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">State / UT *</label><select className="w-full border p-2" value={state} onChange={e=>setState(e.target.value)}><option value="">Select state...</option><option value="MH">Maharashtra</option><option value="GJ">Gujarat</option><option value="KA">Karnataka</option><option value="DL">Delhi</option></select></div>
-              <div><label className="block text-sm font-bold mb-1">Contact phone *</label><input type="tel" className="w-full border p-2" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">GST number</label><input type="text" className="w-full border p-2" value={gst} onChange={e=>setGst(e.target.value)} /></div>
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-[24px] font-bold tracking-[-0.01em] mb-8">Tell us about your organisation.</h1>
+            
+            <div className="space-y-6">
+              {/* Company Name Autocomplete */}
+              <div className="relative">
+                <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Company name</label>
+                <input 
+                  ref={inputRef}
+                  type="text"
+                  value={search}
+                  onChange={e => {
+                    setSearch(e.target.value);
+                    setCompanyName(e.target.value);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  placeholder="Start typing..."
+                  className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                />
+                
+                {showDropdown && search && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-[#E5E7EB] rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] overflow-hidden">
+                    {filteredCompanies.map(c => (
+                      <div 
+                        key={c}
+                        onClick={() => {
+                          setSearch(c);
+                          setCompanyName(c);
+                          setShowDropdown(false);
+                        }}
+                        className="px-[14px] py-[10px] text-[15px] cursor-pointer hover:bg-[#F9FAFB] border-b border-[#F1F5F9] last:border-0"
+                      >
+                        {c}
+                      </div>
+                    ))}
+                    {!COMPANIES.some(c => c.toLowerCase() === search.toLowerCase()) && (
+                      <div 
+                        onClick={() => {
+                          setCompanyName(search);
+                          setShowDropdown(false);
+                        }}
+                        className="px-[14px] py-[10px] text-[14px] text-[#2563EB] cursor-pointer hover:bg-[#EFF6FF]"
+                      >
+                        Add "{search}" as new company
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* State Dropdown */}
+              <div>
+                <label className="block text-[13px] font-medium text-[#374151] mb-1.5">State / Union Territory</label>
+                <div className="relative">
+                  <select 
+                    value={state}
+                    onChange={e => setState(e.target.value)}
+                    className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow appearance-none bg-white"
+                  >
+                    <option value="" disabled>Select your state</option>
+                    {STATES.map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
+                </div>
+              </div>
             </div>
-            <div className="mt-8 flex justify-between">
-              <button onClick={() => setStep(1)} className="border px-6 py-2 rounded font-bold">Back</button>
-              <button onClick={handleNext2} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Next</button>
+
+            <div className="mt-10 flex gap-4">
+              <button 
+                onClick={() => setStep(1)}
+                className="w-full h-[46px] border border-[#E5E7EB] bg-white text-[#374151] font-medium text-[15px] rounded-[8px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
+              >
+                Back
+              </button>
+              <button 
+                onClick={handleNext}
+                disabled={!companyName || !state}
+                className="w-full h-[46px] bg-[#2563EB] text-white font-medium text-[15px] rounded-[8px] hover:bg-[#1D4ED8] disabled:opacity-70 disabled:hover:bg-[#2563EB] transition-colors"
+              >
+                Continue
+              </button>
             </div>
           </div>
         )}
 
         {step === 3 && role === 'producer' && (
-          <div>
-            <h2 className="text-2xl font-display font-bold mb-6">Producer setup</h2>
-            <div className="space-y-4">
-              <div><label className="block text-sm font-bold mb-1">Farm / installation name *</label><input type="text" className="w-full border p-2" value={farmName} onChange={e=>setFarmName(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">Installed capacity (kW) *</label><input type="number" className="w-full border p-2" value={capacity} onChange={e=>setCapacity(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">Grid connection</label><select className="w-full border p-2" value={connType} onChange={e=>setConnType(e.target.value)}><option>LT</option><option>HT</option><option>EHT</option></select></div>
-              <div><label className="block text-sm font-bold mb-1">SLDC zone</label><select className="w-full border p-2" value={sldcZone} onChange={e=>setSldcZone(e.target.value)}><option>NLDC</option><option>SRLDC</option><option>WRLDC</option><option>ERLDC</option><option>NERLDC</option></select></div>
-              <div><label className="block text-sm font-bold mb-1">Reporting pref</label>
-                <div className="space-x-4">
-                  <label><input type="radio" checked={reportPref==='Manual'} onChange={()=>setReportPref('Manual')} /> Manual entry</label>
-                  <label><input type="radio" checked={reportPref==='API'} onChange={()=>setReportPref('API')} /> API integration</label>
-                  <label><input type="radio" checked={reportPref==='Auto'} onChange={()=>setReportPref('Auto')} /> Auto SLDC pull</label>
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-[24px] font-bold tracking-[-0.01em] mb-8">Infrastructure details</h1>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Total generation capacity (MW)</label>
+                <input 
+                  type="number" 
+                  value={capacity}
+                  onChange={e => setCapacity(e.target.value)}
+                  placeholder="e.g. 50"
+                  className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-[13px] font-medium text-[#374151] mb-3">Grid connectivity zone</label>
+                <div className="space-y-2.5">
+                  {['NRLDC', 'WRLDC', 'SRLDC', 'ERLDC', 'NERLDC'].map(zone => (
+                    <label key={zone} className="flex items-center gap-3 cursor-pointer group">
+                      <div className={`w-[18px] h-[18px] rounded-full border border-[#E5E7EB] flex items-center justify-center bg-white group-hover:border-[#93C5FD] transition-colors ${connectivity === zone ? '!border-[#2563EB]' : ''}`}>
+                        {connectivity === zone && <div className="w-[8px] h-[8px] rounded-full bg-[#2563EB]" />}
+                      </div>
+                      <span className="text-[14px] text-[#374151]">{zone}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="mt-8 flex justify-between">
-              <button onClick={() => setStep(2)} className="border px-6 py-2 rounded font-bold">Back</button>
-              <button onClick={completeProducer} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Complete setup</button>
+
+            <div className="mt-10 flex gap-4">
+              <button 
+                onClick={() => setStep(2)}
+                className="w-full h-[46px] border border-[#E5E7EB] bg-white text-[#374151] font-medium text-[15px] rounded-[8px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
+              >
+                Back
+              </button>
+              <button 
+                onClick={handleFinish}
+                disabled={!capacity || !connectivity || loading}
+                className="w-full h-[46px] bg-[#2563EB] text-white font-medium text-[15px] rounded-[8px] hover:bg-[#1D4ED8] disabled:opacity-70 disabled:hover:bg-[#2563EB] transition-colors flex items-center justify-center"
+              >
+                {loading ? <Loader2 size={18} className="animate-spin" /> : "Complete setup"}
+              </button>
             </div>
           </div>
         )}
 
         {step === 3 && role === 'consumer' && (
-          <div>
-            <h2 className="text-2xl font-display font-bold mb-6">Consumer setup</h2>
-            <div className="space-y-4">
-              <div><label className="block text-sm font-bold mb-1">Facility name *</label><input type="text" className="w-full border p-2" value={facilityName} onChange={e=>setFacilityName(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">Facility type</label><select className="w-full border p-2" value={facilityType} onChange={e=>setFacilityType(e.target.value)}><option>Cold storage</option><option>Textile mill</option><option>EV fleet depot</option><option>Data center</option><option>Other</option></select></div>
-              <div><label className="block text-sm font-bold mb-1">Peak load (kW) *</label><input type="number" className="w-full border p-2" value={peakLoad} onChange={e=>setPeakLoad(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-1">Flexible load (kW) *</label><input type="number" className="w-full border p-2" value={flexLoad} onChange={e=>setFlexLoad(e.target.value)} /></div>
-              <div><label className="block text-sm font-bold mb-2">Shiftable hours</label>
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                  {Array.from({length:24}).map((_,i) => {
-                    const hr = `${String(i).padStart(2,'0')}:00`;
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-[24px] font-bold tracking-[-0.01em] mb-8">Load flexibility</h1>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Peak load (kW)</label>
+                  <input 
+                    type="number" 
+                    value={peakLoad}
+                    onChange={e => setPeakLoad(e.target.value)}
+                    placeholder="e.g. 500"
+                    className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Flexible load (kW)</label>
+                  <input 
+                    type="number" 
+                    value={flexibleLoad}
+                    onChange={e => setFlexibleLoad(e.target.value)}
+                    placeholder="e.g. 150"
+                    className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-[13px] font-medium text-[#374151] mb-1.5">When can you shift load?</label>
+                <p className="text-[12px] text-[#9CA3AF] mb-3">Select the hours you can typically absorb surplus energy.</p>
+                <div className="grid grid-cols-6 gap-2">
+                  {Array.from({length: 24}).map((_, i) => {
+                    const hr = `${String(i).padStart(2, '0')}:00`;
+                    const isSelected = shiftHours.includes(hr);
                     return (
-                      <label key={i} className="flex items-center space-x-1 text-xs border p-1 rounded">
-                        <input type="checkbox" checked={shiftHours.includes(hr)} onChange={() => toggleHour(hr)} />
-                        <span>{hr}</span>
-                      </label>
-                    );
+                      <button
+                        key={hr}
+                        onClick={() => setShiftHours(prev => isSelected ? prev.filter(h => h !== hr) : [...prev, hr])}
+                        className={`py-[6px] rounded-[6px] text-[12px] text-center border transition-colors ${isSelected ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-white text-[#374151] border-[#E5E7EB] hover:border-[#9CA3AF]'}`}
+                      >
+                        {hr}
+                      </button>
+                    )
                   })}
                 </div>
               </div>
             </div>
-            <div className="mt-8 flex justify-between">
-              <button onClick={() => setStep(2)} className="border px-6 py-2 rounded font-bold">Back</button>
-              <button onClick={completeConsumer} className="bg-gray-900 text-white px-6 py-2 rounded font-bold">Complete setup</button>
+
+            <div className="mt-10 flex gap-4">
+              <button 
+                onClick={() => setStep(2)}
+                className="w-full h-[46px] border border-[#E5E7EB] bg-white text-[#374151] font-medium text-[15px] rounded-[8px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
+              >
+                Back
+              </button>
+              <button 
+                onClick={handleFinish}
+                disabled={!peakLoad || !flexibleLoad || shiftHours.length === 0 || loading}
+                className="w-full h-[46px] bg-[#2563EB] text-white font-medium text-[15px] rounded-[8px] hover:bg-[#1D4ED8] disabled:opacity-70 disabled:hover:bg-[#2563EB] transition-colors flex items-center justify-center"
+              >
+                {loading ? <Loader2 size={18} className="animate-spin" /> : "Complete setup"}
+              </button>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
