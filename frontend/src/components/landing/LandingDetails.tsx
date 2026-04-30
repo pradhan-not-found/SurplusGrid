@@ -193,7 +193,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── COMPONENT SHOWCASE ── */}
-      <section className="w-full flex flex-col justify-center items-center py-[80px]">
+      <section id="platform" className="w-full flex flex-col justify-center items-center py-[80px]">
         <motion.div {...fadeUp()} className="w-full flex flex-col justify-center items-center gap-2 max-w-2xl text-center mb-12 px-6">
           <h1 className="text-4xl tracking-tighter font-medium text-[#0D1117]">Intelligent Grid Data.</h1>
           <span className="text-[16px] text-[#6B7280]">
@@ -249,7 +249,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="w-full flex flex-col justify-center items-center py-[80px] px-6">
+      <section id="network" className="w-full flex flex-col justify-center items-center py-[80px] px-6">
         <div className="w-full flex flex-col justify-center items-center gap-2 max-w-3xl text-center mb-12">
           <motion.h1 {...fadeUp()} className="text-3xl lg:text-4xl tracking-tighter font-medium text-[#374151]">
             See what industry leaders are saying about <span className="text-[#0D1117] font-semibold text-4xl">SurplusGrid</span>
@@ -354,7 +354,7 @@ export default function LandingDetails() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section className="bg-white mt-[80px] pb-[120px] px-6">
+      <section id="impact" className="bg-white mt-[80px] pb-[120px] px-6">
         <div className="max-w-[1100px] mx-auto">
           <motion.div {...fadeUp()}
             className="rounded-[24px] bg-[#0D1117] px-10 py-16 text-center relative overflow-hidden"
