@@ -102,7 +102,7 @@ export default function ConsumerSchedule() {
                 <td className="p-[14px_16px] text-[14px] font-bold text-[#16A34A]">₹{s.savings}</td>
                 <td className="p-[14px_16px]">
                   <button onClick={() => handleCancel(s.id)} className="flex items-center gap-1.5 text-[13px] text-[#EF4444] hover:underline">
-                    <Trash2 size={13} strokeWidth={1.5} /> Cancel
+                    <Trash2 size={13} /> Cancel
                   </button>
                 </td>
               </tr>

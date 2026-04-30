@@ -66,7 +66,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
                     ? 'bg-[#F4F4F5] text-[#09090B] font-medium shadow-sm' 
                     : 'text-[#71717A] hover:bg-[#F4F4F5]/50 hover:text-[#27272A]'}`}
               >
-                <Icon size={16} strokeWidth={1.5} className={isActive ? 'text-[#09090B]' : 'text-[#A1A1AA]'} />
+                <Icon size={16} className={isActive ? 'text-[#09090B]' : 'text-[#A1A1AA]'} />
                 <span className="text-[13px]">{link.label}</span>
               </Link>
             );
@@ -87,7 +87,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
             onClick={logout}
             className="w-full flex items-center gap-[10px] px-[28px] py-3 text-[13px] text-[#6B7280] hover:text-[#EF4444] hover:bg-[#F9FAFB] group transition-colors duration-120"
           >
-            <LogOut size={15} strokeWidth={1.5} className="group-hover:text-[#EF4444] transition-colors" />
+            <LogOut size={15} className="group-hover:text-[#EF4444] transition-colors" />
             Sign out
           </button>
         </div>
@@ -104,7 +104,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative w-9 h-9 border border-[#E5E7EB] rounded-[8px] flex items-center justify-center hover:bg-[#F8FAFC] transition-colors"
             >
-              <Bell size={18} strokeWidth={1.5} className="text-[#374151]" />
+              <Bell size={18} className="text-[#374151]" />
               <div className="absolute -top-1.5 -right-1.5 w-[18px] h-[18px] rounded-full bg-[#EF4444] border-2 border-white text-white flex items-center justify-center text-[10px] font-bold">
                 2
               </div>

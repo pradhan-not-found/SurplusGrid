@@ -111,7 +111,7 @@ export default function Onboarding() {
                 className={`text-left p-[24px] rounded-[12px] border-[1.5px] transition-all duration-150 ${role === 'producer' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#E5E7EB] bg-white hover:border-[#93C5FD]'}`}
               >
                 <div className="w-[56px] h-[56px] rounded-[12px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB] mb-4">
-                  <Sun size={28} strokeWidth={1.5} />
+                  <Sun size={28} />
                 </div>
                 <h3 className="text-[17px] font-bold mb-1">Energy Producer</h3>
                 <p className="text-[13px] text-[#6B7280]">Monetize curtailed surplus energy directly.</p>
@@ -123,7 +123,7 @@ export default function Onboarding() {
                 className={`text-left p-[24px] rounded-[12px] border-[1.5px] transition-all duration-150 ${role === 'consumer' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#E5E7EB] bg-white hover:border-[#93C5FD]'}`}
               >
                 <div className="w-[56px] h-[56px] rounded-[12px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB] mb-4">
-                  <Factory size={28} strokeWidth={1.5} />
+                  <Factory size={28} />
                 </div>
                 <h3 className="text-[17px] font-bold mb-1">C&I Consumer</h3>
                 <p className="text-[13px] text-[#6B7280]">Shift loads to access cheap, clean energy.</p>

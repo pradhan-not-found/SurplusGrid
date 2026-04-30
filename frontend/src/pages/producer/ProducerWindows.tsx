@@ -61,7 +61,7 @@ export default function ProducerWindows() {
           onClick={() => setShowForm(!showForm)} 
           className="h-[40px] px-[20px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] flex items-center gap-2 transition-colors"
         >
-          <Plus size={16} strokeWidth={1.5} />
+          <Plus size={16} />
           Add surplus window
         </button>
       </div>
@@ -71,7 +71,7 @@ export default function ProducerWindows() {
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-[15px] font-bold text-[#0D1117]">New surplus window</h3>
             <button onClick={() => setShowForm(false)} className="text-[#6B7280] hover:text-[#0D1117]">
-              <X size={18} strokeWidth={1.5} />
+              <X size={18} />
             </button>
           </div>
 
@@ -152,7 +152,7 @@ export default function ProducerWindows() {
                 </td>
                 <td className="p-[14px_16px]">
                   <button onClick={() => handleDelete(w.id)} className="flex items-center gap-1.5 text-[13px] text-[#EF4444] hover:underline">
-                    <Trash2 size={13} strokeWidth={1.5} /> Delete
+                    <Trash2 size={13} /> Delete
                   </button>
                 </td>
               </tr>

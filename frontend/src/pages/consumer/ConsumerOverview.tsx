@@ -31,7 +31,7 @@ export default function ConsumerOverview() {
         <div className="w-full rounded-[10px] p-[16px_20px] bg-[#FAFAFA] border border-[#E5E7EB] flex items-center justify-between mb-[40px] shadow-sm relative overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#09090B]" />
           <div className="flex items-center gap-4 pl-2">
-            <Zap size={18} strokeWidth={1.5} className="text-[#09090B]" />
+            <Zap size={20} className="text-[#09090B]" />
             <div>
               <span className="text-[14px] font-semibold text-[#09090B] mr-2">Next available window:</span>
               <span className="text-[14px] text-[#3F3F46]">Tomorrow 11:00–14:00 · Estimated savings ₹12,400</span>
@@ -42,7 +42,7 @@ export default function ConsumerOverview() {
               View details <ArrowRight size={14} />
             </Link>
             <button onClick={() => setShowBanner(false)} className="text-[#A1A1AA] hover:text-[#09090B] transition-colors">
-              <X size={16} strokeWidth={1.5} />
+              <X size={16} />
             </button>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default function ConsumerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Savings this month</span>
-            <IndianRupee size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <IndianRupee size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">₹38.7k</span>
@@ -68,7 +68,7 @@ export default function ConsumerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Load shifts completed</span>
-            <CalendarCheck size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <CalendarCheck size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">7</span>
@@ -82,7 +82,7 @@ export default function ConsumerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Clean energy used</span>
-            <Leaf size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <Leaf size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">14.3</span>
@@ -98,7 +98,7 @@ export default function ConsumerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Carbon offset</span>
-            <Wind size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <Wind size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">1,140</span>

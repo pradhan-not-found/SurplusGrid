@@ -42,7 +42,7 @@ export default function ConsumerSavings() {
           <div className="flex justify-between items-start">
             <span className="text-[13px] text-[#6B7280]">Total savings to date</span>
             <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <IndianRupee size={20} strokeWidth={1.5} />
+              <IndianRupee size={20} />
             </div>
           </div>
           <div className="text-[28px] font-bold text-[#16A34A] tracking-[-0.02em] mt-3 mb-1.5">₹1,24,300</div>
@@ -57,7 +57,7 @@ export default function ConsumerSavings() {
           <div className="flex justify-between items-start">
             <span className="text-[13px] text-[#6B7280]">Shifts completed</span>
             <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <CalendarCheck size={20} strokeWidth={1.5} />
+              <CalendarCheck size={20} />
             </div>
           </div>
           <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">31</div>
@@ -71,7 +71,7 @@ export default function ConsumerSavings() {
           <div className="flex justify-between items-start">
             <span className="text-[13px] text-[#6B7280]">Clean energy consumed</span>
             <div className="w-[32px] h-[32px] rounded-[8px] bg-[#F0F7FF] flex items-center justify-center text-[#2563EB]">
-              <Leaf size={20} strokeWidth={1.5} />
+              <Leaf size={20} />
             </div>
           </div>
           <div className="text-[28px] font-bold text-[#0D1117] tracking-[-0.02em] mt-3 mb-1.5">67.4 MWh</div>
@@ -134,7 +134,7 @@ export default function ConsumerSavings() {
           onClick={exportCSV} 
           className="h-[40px] px-[20px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] flex items-center gap-2 transition-colors"
         >
-          <Download size={16} strokeWidth={1.5} /> Export as CSV
+          <Download size={16} /> Export as CSV
         </button>
       </div>
       <div className="bg-white border border-[#E5E7EB] rounded-[12px] overflow-hidden">

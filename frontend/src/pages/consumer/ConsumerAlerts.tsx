@@ -80,7 +80,7 @@ export default function ConsumerAlerts() {
                 <div className="text-[11px] text-[#A1A1AA] uppercase tracking-wider font-semibold mb-1">Surplus Rate</div>
                 <div className="text-[15px] font-medium text-[#09090B]">₹{a.rateSurplus}/unit</div>
               </div>
-              <ArrowRight size={16} strokeWidth={1.5} className="text-[#D4D4D8]" />
+              <ArrowRight size={16} className="text-[#D4D4D8]" />
               <div>
                 <div className="text-[11px] text-[#A1A1AA] uppercase tracking-wider font-semibold mb-1">Grid Rate</div>
                 <div className="text-[15px] font-medium text-[#71717A]">₹{a.rateGrid}/unit</div>
@@ -124,7 +124,7 @@ export default function ConsumerAlerts() {
         {filtered.length === 0 && (
           <div className="py-[60px] text-center bg-white border border-[#E5E7EB] rounded-[8px] shadow-sm">
             <div className="flex flex-col items-center justify-center">
-              <BellRing size={32} strokeWidth={1.5} className="text-[#D4D4D8] mb-4" />
+              <BellRing size={32} className="text-[#D4D4D8] mb-4" />
               <h3 className="text-[14px] font-semibold text-[#09090B] mb-1">No alerts found</h3>
               <p className="text-[13px] text-[#71717A]">You're all caught up on energy windows.</p>
             </div>

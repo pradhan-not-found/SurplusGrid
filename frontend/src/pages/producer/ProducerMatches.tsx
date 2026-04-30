@@ -45,7 +45,7 @@ export default function ProducerMatches() {
         </div>
         <div className="flex gap-2 ml-auto">
           <button className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all flex items-center gap-2">
-            <SlidersHorizontal size={16} strokeWidth={1.5} /> Apply
+            <SlidersHorizontal size={16} /> Apply
           </button>
           <button 
             onClick={() => setStatusFilter('All')} 
@@ -79,7 +79,7 @@ export default function ProducerMatches() {
                   className="border-b border-[#F1F5F9] last:border-0 hover:bg-[#F9FAFB] transition-colors duration-100 cursor-pointer"
                 >
                   <td className="p-[14px_16px] text-[#9CA3AF]">
-                    {expandedRow === i ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />}
+                    {expandedRow === i ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </td>
                   <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB]">{m.id}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117]">{m.consumer}</td>
@@ -108,7 +108,7 @@ export default function ProducerMatches() {
                           <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Confirmed:</strong> {m.date} 08:12 AM</div>
                         </div>
                         <button className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium">
-                          <Download size={13} strokeWidth={1.5} /> Export row as CSV
+                          <Download size={13} /> Export row as CSV
                         </button>
                       </div>
                     </td>

@@ -24,7 +24,7 @@ export default function ProducerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Predicted surplus</span>
-            <Zap size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <Zap size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">4.2</span>
@@ -40,7 +40,7 @@ export default function ProducerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Curtailment avoided</span>
-            <ShieldCheck size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <ShieldCheck size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">18.6</span>
@@ -56,7 +56,7 @@ export default function ProducerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Revenue</span>
-            <IndianRupee size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <IndianRupee size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">₹41.2k</span>
@@ -71,7 +71,7 @@ export default function ProducerOverview() {
         <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <span className="text-[13px] font-medium text-[#71717A]">Active matches</span>
-            <GitMerge size={16} strokeWidth={1.5} className="text-[#A1A1AA]" />
+            <GitMerge size={16} className="text-[#A1A1AA]" />
           </div>
           <div className="flex items-baseline gap-1 mb-1">
             <span className="text-[28px] font-bold text-[#09090B] tracking-tight">3</span>

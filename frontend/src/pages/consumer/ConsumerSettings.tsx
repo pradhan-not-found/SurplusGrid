@@ -75,7 +75,7 @@ export default function ConsumerSettings() {
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>
-            {msg1 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg1}</div>}
+            {msg1 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg1}</div>}
           </div>
         </section>
 
@@ -111,7 +111,7 @@ export default function ConsumerSettings() {
           </div>
           <div className="flex items-center gap-4">
             <button onClick={savePrefs} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save preferences</button>
-            {msg2 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg2}</div>}
+            {msg2 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg2}</div>}
           </div>
         </section>
 
@@ -141,7 +141,7 @@ export default function ConsumerSettings() {
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveNotify} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save</button>
-            {msg3 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg3}</div>}
+            {msg3 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg3}</div>}
           </div>
         </section>
 

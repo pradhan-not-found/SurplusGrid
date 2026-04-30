@@ -83,7 +83,7 @@ export default function ProducerSettings() {
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>
-            {msg1 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg1}</div>}
+            {msg1 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg1}</div>}
           </div>
         </section>
 
@@ -102,10 +102,10 @@ export default function ProducerSettings() {
                 <span className="font-mono text-[14px] text-[#0D1117]">{showKey ? apiKey : '••••••••••••••••••••••••'}</span>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setShowKey(!showKey)} className="text-[#6B7280] hover:text-[#0D1117] p-1">
-                    <Eye size={16} strokeWidth={1.5} />
+                    <Eye size={16} />
                   </button>
                   <button onClick={copyKey} className="text-[#6B7280] hover:text-[#0D1117] p-1" title={copied ? "Copied!" : "Copy"}>
-                    {copied ? <Check size={16} strokeWidth={2} className="text-[#16A34A]" /> : <Copy size={16} strokeWidth={1.5} />}
+                    {copied ? <Check size={16} strokeWidth={2} className="text-[#16A34A]" /> : <Copy size={16} />}
                   </button>
                 </div>
               </div>
@@ -123,9 +123,9 @@ export default function ProducerSettings() {
           <div className="flex items-center gap-4">
             <button onClick={saveApi} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save webhook</button>
             <button onClick={testWebhook} className="h-[40px] px-[20px] bg-white border border-[#E5E7EB] text-[#374151] rounded-[8px] font-medium text-[14px] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] flex items-center gap-2 transition-colors">
-              <Send size={14} strokeWidth={1.5} /> Test webhook
+              <Send size={14} /> Test webhook
             </button>
-            {msg2 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg2}</div>}
+            {msg2 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg2}</div>}
           </div>
         </section>
 
@@ -146,7 +146,7 @@ export default function ProducerSettings() {
           
           <div className="flex items-center gap-4">
             <button onClick={savePrefs} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save preferences</button>
-            {msg3 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} strokeWidth={1.5} /> {msg3}</div>}
+            {msg3 && <div className="flex items-center gap-1.5 text-[12px] text-[#16A34A]"><CheckCircle2 size={13} /> {msg3}</div>}
           </div>
         </section>
 
