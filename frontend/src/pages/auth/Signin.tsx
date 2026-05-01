@@ -19,35 +19,18 @@ export default function Signin() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
     
     setLoading(true);
-    setTimeout(() => {
-      const existingUserStr = localStorage.getItem('surplusgrid_user');
-      let u;
-      if (existingUserStr) {
-        try {
-          u = JSON.parse(existingUserStr);
-        } catch(err) {}
-      }
-      
-      if (u) {
-        login(u);
-        navigate(u.onboardingComplete ? `/dashboard/${u.role}` : '/onboarding');
-      } else {
-        const mockUser = {
-          id: 'mock-1',
-          name: 'Demo User',
-          email,
-          role: null,
-          onboardingComplete: false
-        };
-        login(mockUser);
-        navigate('/onboarding');
-      }
-    }, 800);
+    try {
+      await login(email, password);
+      // AuthContext will automatically redirect once user state is set
+    } catch (err: any) {
+      alert(err.message || 'Failed to sign in');
+      setLoading(false);
+    }
   };
 
   return (

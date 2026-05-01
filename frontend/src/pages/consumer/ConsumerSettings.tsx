@@ -23,13 +23,17 @@ export default function ConsumerSettings() {
     setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
   };
 
-  const savePrefs = () => {
+  const savePrefs = async () => {
     if (Number(flexLoad) > Number(peakLoad)) {
       alert("Flexible load cannot exceed peak load");
       return;
     }
-    updateUser({ peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexLoad), shiftableHours: shiftHours });
-    setMsg2('Saved'); setTimeout(() => setMsg2(''), 3000);
+    try {
+      await updateUser({ peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexLoad), shiftableHours: shiftHours });
+      setMsg2('Saved'); setTimeout(() => setMsg2(''), 3000);
+    } catch (err) {
+      alert('Failed to update preferences');
+    }
   };
 
   const saveNotify = () => {

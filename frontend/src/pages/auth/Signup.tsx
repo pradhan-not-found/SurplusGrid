@@ -4,7 +4,7 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function Signup() {
-  const { user, login } = useAuth();
+  const { user, signup } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,21 +19,18 @@ export default function Signup() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password) return;
     
     setLoading(true);
-    setTimeout(() => {
-      login({
-        id: `usr-${Date.now()}`,
-        name,
-        email,
-        role: null,
-        onboardingComplete: false
-      });
-      navigate('/onboarding');
-    }, 800);
+    try {
+      await signup(email, password, name);
+      // AuthContext will handle setting user and navigation via useEffect
+    } catch (err: any) {
+      alert(err.message || 'Failed to sign up');
+      setLoading(false);
+    }
   };
 
   return (

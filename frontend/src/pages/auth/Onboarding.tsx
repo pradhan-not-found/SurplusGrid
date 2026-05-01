@@ -65,10 +65,10 @@ export default function Onboarding() {
     setStep(s => s + 1);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     setLoading(true);
-    setTimeout(() => {
-      updateUser({
+    try {
+      await updateUser({
         role,
         companyName,
         state,
@@ -76,7 +76,10 @@ export default function Onboarding() {
         ...(role === 'producer' ? { capacityMw: Number(capacity), connectivity } : { peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexibleLoad), shiftableHours: shiftHours })
       });
       navigate(`/dashboard/${role}`);
-    }, 800);
+    } catch (err: any) {
+      alert('Failed to save profile: ' + err.message);
+      setLoading(false);
+    }
   };
 
   const progress = (step / 3) * 100;
