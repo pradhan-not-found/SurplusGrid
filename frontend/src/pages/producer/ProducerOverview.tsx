@@ -1,14 +1,43 @@
 import DashboardLayout from '../../components/DashboardLayout';
 import { Zap, ShieldCheck, IndianRupee, GitMerge, ArrowUpRight } from 'lucide-react';
 
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
+
+interface Window {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  predicted_kw: number;
+  status: string;
+}
+
 export default function ProducerOverview() {
-  const surplusWindows = [
-    { date: 'Today', time: '11:00–14:00', predicted: 4.2, matched: 3.8, status: 'Matched' },
-    { date: 'Today', time: '18:00–20:00', predicted: 2.1, matched: 0.0, status: 'Seeking' },
-    { date: 'Tomorrow', time: '09:00–13:00', predicted: 5.7, matched: 5.7, status: 'Matched' },
-    { date: 'Tomorrow', time: '15:00–17:00', predicted: 1.8, matched: 0.0, status: 'Seeking' },
-    { date: 'May 3', time: '10:00–15:00', predicted: 6.3, matched: 4.1, status: 'Partial' },
-  ];
+  const { user } = useAuth();
+  const [surplusWindows, setSurplusWindows] = useState<Window[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUpcomingWindows();
+    }
+  }, [user]);
+
+  const fetchUpcomingWindows = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('surplus_windows')
+      .select('*')
+      .eq('producer_id', user.id)
+      .order('date', { ascending: true })
+      .order('start_time', { ascending: true })
+      .limit(5);
+
+    if (data) {
+      setSurplusWindows(data);
+    }
+  };
 
   const activeMatches = [
     { consumer: 'Ramesh Cold Storage', type: 'Cold storage', mw: 1.4, time: '11:00–14:00', duration: '3 hrs' },
@@ -96,17 +125,17 @@ export default function ProducerOverview() {
             </tr>
           </thead>
           <tbody>
-            {surplusWindows.map((w, i) => (
-              <tr key={i} className="border-b border-[#F4F4F5] last:border-0 hover:bg-[#FAFAFA] transition-colors duration-150">
+            {surplusWindows.map((w) => (
+              <tr key={w.id} className="border-b border-[#F4F4F5] last:border-0 hover:bg-[#FAFAFA] transition-colors duration-150">
                 <td className="p-[16px_20px] text-[14px] text-[#09090B] font-medium">{w.date}</td>
-                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.time}</td>
-                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.predicted} MW</td>
-                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.matched} MW</td>
-                <td className="p-[16px_20px] text-[14px]">
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.start_time.substring(0, 5)}–{w.end_time.substring(0, 5)}</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.predicted_kw} kW</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">-</td>
+                <td className="p-[16px_20px] text-[14px] capitalize">
                   <span className={`inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium border ${
-                    w.status === 'Matched' ? 'bg-[#ECFDF5] text-[#065F46] border-[#D1FAE5]' :
-                    w.status === 'Seeking' ? 'bg-[#FFFBEB] text-[#92400E] border-[#FEF3C7]' :
-                    w.status === 'Partial' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#DBEAFE]' :
+                    w.status === 'matched' ? 'bg-[#ECFDF5] text-[#065F46] border-[#D1FAE5]' :
+                    w.status === 'seeking' ? 'bg-[#FFFBEB] text-[#92400E] border-[#FEF3C7]' :
+                    w.status === 'partial' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#DBEAFE]' :
                     'bg-[#F4F4F5] text-[#3F3F46] border-[#E4E4E7]'
                   }`}>
                     {w.status}
@@ -114,6 +143,13 @@ export default function ProducerOverview() {
                 </td>
               </tr>
             ))}
+            {surplusWindows.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-[32px] text-center text-[#71717A] text-[14px]">
+                  No upcoming surplus windows.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
