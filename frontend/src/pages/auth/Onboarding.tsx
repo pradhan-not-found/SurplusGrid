@@ -92,7 +92,7 @@ export default function Onboarding() {
 
       const { error } = await supabase
         .from('profiles')
-        .update(payload)
+        .update(payload as any)
         .eq('id', user.id);
 
       if (error) {

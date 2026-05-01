@@ -32,7 +32,7 @@ export default function ConsumerSettings() {
     }
     try {
       if (user) {
-        await supabase.from('profiles').update({ shiftable_hours: shiftHours }).eq('id', user.id);
+        await supabase.from('profiles').update({ shiftable_hours: shiftHours } as any).eq('id', user.id);
       }
       setMsg2('Saved'); setTimeout(() => setMsg2(''), 3000);
     } catch (err) {

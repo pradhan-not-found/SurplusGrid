@@ -4,7 +4,7 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { Eye, Copy, Check, CheckCircle2, Send } from 'lucide-react';
 
 export default function ProducerSettings() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   
   // States
   const [msg1, setMsg1] = useState('');
@@ -74,12 +74,12 @@ export default function ProducerSettings() {
           <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
           
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.name} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email} disabled /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.phone || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.companyName} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.state} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.gst || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.full_name || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email || ''} disabled /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.company_name || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.state_location || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={''} /></div>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>

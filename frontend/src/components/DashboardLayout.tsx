@@ -52,7 +52,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
   const markAllRead = async () => {
     await supabase
       .from('notifications')
-      .update({ is_read: true })
+      .update({ is_read: true } as any)
       .eq('user_id', user.id)
       .eq('is_read', false);
     
