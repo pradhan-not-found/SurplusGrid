@@ -1,36 +1,103 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate, Link } from 'react-router-dom';
-import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, X } from 'lucide-react';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function Signin() {
-  const { user, login } = useAuth();
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [resetBanner, setResetBanner] = useState(false);
+  
+  const [errorMsg, setErrorMsg] = useState('');
+  
+  const [resetMode, setResetMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState('');
+  const [resetError, setResetError] = useState('');
 
-  if (user && user.onboardingComplete) {
-    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  if (user && profile?.onboarding_complete) {
+    return <Navigate to={`/dashboard/${profile.role}`} replace />;
   }
-  if (user && !user.onboardingComplete) {
+  if (user && profile && !profile.onboarding_complete) {
     return <Navigate to="/onboarding" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    setErrorMsg('');
+    if (!email || !password) {
+      setErrorMsg('Please enter both email and password.');
+      return;
+    }
     
     setLoading(true);
-    try {
-      await login(email, password);
-      // AuthContext will automatically redirect once user state is set
-    } catch (err: any) {
-      alert(err.message || 'Failed to sign in');
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      if (error.message.includes('Invalid login credentials')) {
+        setErrorMsg('Incorrect email or password.');
+      } else {
+        setErrorMsg(error.message);
+      }
+      setLoading(false);
+      return;
+    }
+
+    if (data.user) {
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+        
+      if (!userProfile?.onboarding_complete) {
+        navigate('/onboarding');
+      } else {
+        navigate(`/dashboard/${userProfile.role}`);
+      }
+    } else {
       setLoading(false);
     }
+  };
+
+  const handleResetPassword = async () => {
+    setResetSuccess('');
+    setResetError('');
+    if (!resetEmail) {
+      setResetError('Please enter an email address.');
+      return;
+    }
+
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: window.location.origin + '/reset-password'
+    });
+    setResetLoading(false);
+
+    if (error) {
+      setResetError(error.message);
+    } else {
+      setResetSuccess('Reset link sent. Check your inbox.');
+    }
+  };
+
+  const toggleResetMode = () => {
+    if (!resetMode) {
+      setResetEmail(email);
+      setResetSuccess('');
+      setResetError('');
+    }
+    setResetMode(!resetMode);
   };
 
   return (
@@ -102,45 +169,76 @@ export default function Signin() {
                 <label className="block text-[13px] font-semibold text-[#09090B] uppercase tracking-wider">Password</label>
                 <button 
                   type="button" 
-                  onClick={() => setResetBanner(true)}
+                  onClick={toggleResetMode}
                   className="text-[13px] font-medium text-[#71717A] hover:text-[#09090B] transition-colors"
                 >
-                  Forgot?
+                  {resetMode ? 'Cancel reset' : 'Forgot?'}
                 </button>
               </div>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  required
+                  required={!resetMode}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
                   placeholder="••••••••"
+                  disabled={resetMode}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
+                  disabled={resetMode}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
               
-              {resetBanner && (
-                <div className="mt-4 flex items-start justify-between bg-[#F4F4F5] border border-[#E4E4E7] rounded-lg p-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <span className="text-[13px] text-[#09090B] leading-snug">
-                    Password reset is limited. Contact <span className="font-semibold">support@surplusgrid.in</span>
-                  </span>
-                  <button type="button" onClick={() => setResetBanner(false)} className="text-[#A1A1AA] hover:text-[#09090B]">
-                    <X size={16} />
+              {resetMode && (
+                <div className="mt-4 p-4 bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl animate-in fade-in slide-in-from-top-2 duration-200">
+                  <p className="text-[13px] text-[#71717A] mb-3">Enter your email to receive a password reset link.</p>
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={e => setResetEmail(e.target.value)}
+                    className="w-full h-[40px] px-3 mb-3 bg-white border border-[#E4E4E7] rounded-lg text-[14px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B]"
+                    placeholder="name@company.com"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleResetPassword}
+                    disabled={resetLoading}
+                    className="w-full h-[40px] bg-white border border-[#E4E4E7] text-[#09090B] font-medium text-[13px] rounded-lg hover:bg-[#F4F4F5] disabled:opacity-50 flex items-center justify-center transition-all shadow-sm"
+                  >
+                    {resetLoading ? <Loader2 size={16} className="animate-spin" /> : "Send reset link"}
                   </button>
+                  {resetSuccess && (
+                    <div className="flex items-center gap-1.5 mt-3 text-[#16A34A]">
+                      <CheckCircle2 size={14} />
+                      <span className="text-[13px] font-medium">{resetSuccess}</span>
+                    </div>
+                  )}
+                  {resetError && (
+                    <div className="flex items-center gap-1.5 mt-3 text-[#EF4444]">
+                      <AlertTriangle size={14} />
+                      <span className="text-[13px] font-medium">{resetError}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
+            {errorMsg && (
+              <div className="flex items-center gap-2 mt-4 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
+                <AlertTriangle size={16} />
+                <span className="text-[13px] font-medium">{errorMsg}</span>
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || resetMode}
               className="w-full h-[50px] mt-4 bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
             >
               {loading ? <Loader2 size={20} className="animate-spin" /> : "Sign in to Dashboard"}
