@@ -14,12 +14,6 @@ export default function Signin() {
   const [loading, setLoading] = useState(false);
   
   const [errorMsg, setErrorMsg] = useState('');
-  
-  const [resetMode, setResetMode] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetLoading, setResetLoading] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState('');
-  const [resetError, setResetError] = useState('');
 
   if (user && profile?.onboarding_complete) {
     return <Navigate to={`/dashboard/${profile.role}`} replace />;
@@ -68,36 +62,6 @@ export default function Signin() {
     } else {
       setLoading(false);
     }
-  };
-
-  const handleResetPassword = async () => {
-    setResetSuccess('');
-    setResetError('');
-    if (!resetEmail) {
-      setResetError('Please enter an email address.');
-      return;
-    }
-
-    setResetLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: window.location.origin + '/reset-password'
-    });
-    setResetLoading(false);
-
-    if (error) {
-      setResetError(error.message);
-    } else {
-      setResetSuccess('Reset link sent. Check your inbox.');
-    }
-  };
-
-  const toggleResetMode = () => {
-    if (!resetMode) {
-      setResetEmail(email);
-      setResetSuccess('');
-      setResetError('');
-    }
-    setResetMode(!resetMode);
   };
 
   return (
@@ -165,68 +129,24 @@ export default function Signin() {
             </div>
 
             <div>
-              <div className="flex justify-between mb-2 items-end">
-                <label className="block text-[13px] font-semibold text-[#09090B] uppercase tracking-wider">Password</label>
-                <button 
-                  type="button" 
-                  onClick={toggleResetMode}
-                  className="text-[13px] font-medium text-[#71717A] hover:text-[#09090B] transition-colors"
-                >
-                  {resetMode ? 'Cancel reset' : 'Forgot?'}
-                </button>
-              </div>
+              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  required={!resetMode}
+                  required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
                   placeholder="••••••••"
-                  disabled={resetMode}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
-                  disabled={resetMode}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              
-              {resetMode && (
-                <div className="mt-4 p-4 bg-[#F4F4F5] border border-[#E4E4E7] rounded-xl animate-in fade-in slide-in-from-top-2 duration-200">
-                  <p className="text-[13px] text-[#71717A] mb-3">Enter your email to receive a password reset link.</p>
-                  <input
-                    type="email"
-                    value={resetEmail}
-                    onChange={e => setResetEmail(e.target.value)}
-                    className="w-full h-[40px] px-3 mb-3 bg-white border border-[#E4E4E7] rounded-lg text-[14px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B]"
-                    placeholder="name@company.com"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleResetPassword}
-                    disabled={resetLoading}
-                    className="w-full h-[40px] bg-white border border-[#E4E4E7] text-[#09090B] font-medium text-[13px] rounded-lg hover:bg-[#F4F4F5] disabled:opacity-50 flex items-center justify-center transition-all shadow-sm"
-                  >
-                    {resetLoading ? <Loader2 size={16} className="animate-spin" /> : "Send reset link"}
-                  </button>
-                  {resetSuccess && (
-                    <div className="flex items-center gap-1.5 mt-3 text-[#16A34A]">
-                      <CheckCircle2 size={14} />
-                      <span className="text-[13px] font-medium">{resetSuccess}</span>
-                    </div>
-                  )}
-                  {resetError && (
-                    <div className="flex items-center gap-1.5 mt-3 text-[#EF4444]">
-                      <AlertTriangle size={14} />
-                      <span className="text-[13px] font-medium">{resetError}</span>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
 
             {errorMsg && (
@@ -238,7 +158,7 @@ export default function Signin() {
 
             <button
               type="submit"
-              disabled={loading || resetMode}
+              disabled={loading}
               className="w-full h-[50px] mt-4 bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
             >
               {loading ? <Loader2 size={20} className="animate-spin" /> : "Sign in to Dashboard"}
