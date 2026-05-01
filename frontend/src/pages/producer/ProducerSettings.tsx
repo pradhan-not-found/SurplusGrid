@@ -50,7 +50,7 @@ export default function ProducerSettings() {
   };
 
   const Toggle = ({ checked, onChange, label, subLabel }: { checked: boolean, onChange: (v:boolean)=>void, label: string, subLabel?: string }) => (
-    <label className="flex items-start gap-4 cursor-pointer group">
+    <label onClick={() => onChange(!checked)} className="flex items-start gap-4 cursor-pointer group">
       <div className={`relative w-[44px] h-[24px] rounded-full transition-colors duration-150 shrink-0 mt-0.5 ${checked ? 'bg-[#2563EB]' : 'bg-[#E5E7EB]'}`}>
         <div className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-150 shadow-sm ${checked ? 'translate-x-[20px]' : 'translate-x-0'}`} />
       </div>

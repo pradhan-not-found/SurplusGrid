@@ -31,15 +31,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
 
+    const profileData: any = data;
+
     // Map the database profile to the frontend User type
     const currentUser: User = {
-      id: data.id,
-      name: data.full_name || email.split('@')[0],
-      email: data.email,
-      role: data.role as 'producer' | 'consumer' | null,
-      onboardingComplete: data.onboarding_complete || false,
-      companyName: data.company_name || undefined,
-      state: data.state_location || undefined,
+      id: profileData.id,
+      name: profileData.full_name || email.split('@')[0],
+      email: profileData.email,
+      role: profileData.role as 'producer' | 'consumer' | null,
+      onboardingComplete: profileData.onboarding_complete || false,
+      companyName: profileData.company_name || undefined,
+      state: profileData.state_location || undefined,
     };
     return currentUser;
   };
@@ -92,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // The trigger will automatically create the profile, but we can update the name if provided
     if (data?.user && name) {
-      await supabase.from('profiles').update({ full_name: name }).eq('id', data.user.id);
+      await (supabase.from('profiles') as any).update({ full_name: name }).eq('id', data.user.id);
     }
   };
 
@@ -113,8 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.state !== undefined) updates.state_location = data.state;
     if (data.shiftableHours !== undefined) updates.shiftable_hours = data.shiftableHours;
 
-    const { error } = await supabase
-      .from('profiles')
+    const { error } = await (supabase.from('profiles') as any)
       .update(updates)
       .eq('id', user.id);
 

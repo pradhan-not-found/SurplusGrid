@@ -26,7 +26,7 @@ export default function ProducerOverview() {
 
   const fetchUpcomingWindows = async () => {
     if (!user) return;
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('surplus_windows')
       .select('*')
       .eq('producer_id', user.id)

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function Signup() {
   const { user, signup } = useAuth();
-  const navigate = useNavigate();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

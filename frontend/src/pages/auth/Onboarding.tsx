@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Sun, Factory, Loader2, ChevronDown } from 'lucide-react';

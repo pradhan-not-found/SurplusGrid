@@ -65,7 +65,7 @@ export default function ProducerWindows() {
         predicted_kw: Number(surplus),
         notes,
         status: 'seeking'
-      })
+      } as any)
       .select()
       .single();
 
