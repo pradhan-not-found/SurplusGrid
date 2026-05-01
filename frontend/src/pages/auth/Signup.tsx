@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, MailCheck, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export default function Signup() {
@@ -20,8 +20,6 @@ export default function Signup() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState(false);
-  const [resendMsg, setResendMsg] = useState('');
 
   if (user && profile?.onboarding_complete) {
     return <Navigate to={`/dashboard/${profile.role}`} replace />;
@@ -51,7 +49,7 @@ export default function Signup() {
 
     setLoading(true);
     
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -73,21 +71,7 @@ export default function Signup() {
       return;
     }
 
-    if (data.session) {
-      navigate('/onboarding');
-    } else {
-      setSuccessMsg(true);
-    }
-  };
-
-  const handleResend = async () => {
-    setResendMsg('');
-    const { error } = await supabase.auth.resend({ type: 'signup', email });
-    if (error) {
-      setResendMsg('Error resending email.');
-    } else {
-      setResendMsg('Email resent.');
-    }
+    navigate('/onboarding');
   };
 
   return (
@@ -135,30 +119,7 @@ export default function Signup() {
         </Link>
         <div className="w-full max-w-[380px]">
           
-          {successMsg ? (
-            <div className="text-center">
-              <div className="flex justify-center mb-6 text-[#09090B]">
-                <MailCheck size={40} />
-              </div>
-              <h2 className="text-[30px] font-bold text-[#09090B] tracking-[-0.03em] mb-2">
-                Check your inbox
-              </h2>
-              <p className="text-[15px] text-[#71717A] mb-6 tracking-tight leading-relaxed">
-                We sent a confirmation link to <span className="font-medium text-[#09090B]">{email}</span>. Click it to activate your account.
-              </p>
-              <div className="text-[14px] text-[#71717A]">
-                Didn't receive it?{' '}
-                <button onClick={handleResend} className="font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
-                  Resend email
-                </button>
-              </div>
-              {resendMsg && (
-                <div className={`mt-4 text-[13px] font-medium ${resendMsg === 'Email resent.' ? 'text-[#16A34A]' : 'text-[#EF4444]'}`}>
-                  {resendMsg}
-                </div>
-              )}
-            </div>
-          ) : step === 1 ? (
+          {step === 1 ? (
             <div>
               <h2 className="text-[22px] font-bold text-[#09090B] mb-2 font-helvetica">
                 Who are you?
