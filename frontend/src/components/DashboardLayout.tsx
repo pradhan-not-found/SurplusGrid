@@ -3,7 +3,7 @@ import { Navigate, Link, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, Zap, GitMerge, Settings2, 
-  BellRing, CalendarClock, TrendingUp,
+  BellRing, TrendingUp,
   LogOut, Bell, CheckCircle2, User, ChevronRight, AlertTriangle
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';

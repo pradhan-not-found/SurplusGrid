@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/DashboardLayout';
-import { Zap, ShieldCheck, IndianRupee, GitMerge, ArrowUpRight } from 'lucide-react';
+import { Zap, ShieldCheck, IndianRupee, GitMerge } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
