@@ -83,6 +83,7 @@ export default function Onboarding() {
     setErrorMsg('');
     try {
       const payload = {
+        id: user.id,
         role: role,
         company_name: companyName,
         state_location: state,
@@ -92,8 +93,7 @@ export default function Onboarding() {
 
       const { error } = await supabase
         .from('profiles')
-        .update(payload as any)
-        .eq('id', user.id);
+        .upsert(payload as any, { onConflict: 'id' });
 
       if (error) {
         setErrorMsg(error.message);
