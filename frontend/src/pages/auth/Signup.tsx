@@ -20,6 +20,7 @@ export default function Signup() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   if (user && profile?.onboarding_complete) {
     return <Navigate to={`/dashboard/${profile.role}`} replace />;
@@ -73,8 +74,37 @@ export default function Signup() {
       return;
     }
 
-    navigate('/onboarding');
+    setEmailSent(true);
   };
+
+  if (emailSent) {
+    return (
+      <div className="flex min-h-screen bg-white items-center justify-center">
+        <div className="w-full max-w-[400px] text-center p-8">
+          <div className="w-16 h-16 bg-[#F0FDF4] rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              <path d="m16 19 2 2 4-4"/>
+            </svg>
+          </div>
+          <h2 className="text-[26px] font-bold text-[#09090B] tracking-tight mb-3">Check your email</h2>
+          <p className="text-[15px] text-[#71717A] mb-2">
+            We sent a confirmation link to
+          </p>
+          <p className="text-[15px] font-semibold text-[#09090B] mb-8">{email}</p>
+          <p className="text-[13px] text-[#A1A1AA]">
+            Click the link in the email to verify your account. Once confirmed, you'll be taken to onboarding automatically.
+          </p>
+          <div className="mt-8 pt-6 border-t border-[#F4F4F5]">
+            <Link to="/signin" className="text-[14px] font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
+              Back to Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-white">
