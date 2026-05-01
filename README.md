@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="frontend/public/logo.png" alt="SurplusGrid Logo" width="120" />
-</p>
-
 # SurplusGrid ⚡
 ### Decentralized Energy Trading & Grid Optimization Platform
 
