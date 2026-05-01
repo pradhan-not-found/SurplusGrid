@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export default function Signup() {
   const { user, profile } = useAuth();
-  const navigate = useNavigate();
 
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedRole, setSelectedRole] = useState<'producer' | 'consumer' | null>(null);
