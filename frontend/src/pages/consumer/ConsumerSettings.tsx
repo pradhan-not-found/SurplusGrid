@@ -3,16 +3,18 @@ import { useAuth } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
 import { CheckCircle2 } from 'lucide-react';
 
+import { supabase } from '../../lib/supabase';
+
 export default function ConsumerSettings() {
-  const { user, updateUser } = useAuth();
+  const { user, profile } = useAuth();
   
   const [msg1, setMsg1] = useState('');
   const [msg2, setMsg2] = useState('');
   const [msg3, setMsg3] = useState('');
 
-  const [peakLoad, setPeakLoad] = useState(user?.peakLoadKw?.toString() || '');
-  const [flexLoad, setFlexLoad] = useState(user?.flexibleLoadKw?.toString() || '');
-  const [shiftHours, setShiftHours] = useState<string[]>(user?.shiftableHours || []);
+  const [peakLoad, setPeakLoad] = useState('');
+  const [flexLoad, setFlexLoad] = useState('');
+  const [shiftHours, setShiftHours] = useState<string[]>(profile?.shiftable_hours || []);
 
   const [pushNotify, setPushNotify] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(true);
@@ -29,7 +31,9 @@ export default function ConsumerSettings() {
       return;
     }
     try {
-      await updateUser({ peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexLoad), shiftableHours: shiftHours });
+      if (user) {
+        await supabase.from('profiles').update({ shiftable_hours: shiftHours }).eq('id', user.id);
+      }
       setMsg2('Saved'); setTimeout(() => setMsg2(''), 3000);
     } catch (err) {
       alert('Failed to update preferences');
@@ -70,12 +74,12 @@ export default function ConsumerSettings() {
           <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
           
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.name} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email} disabled /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.phone || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.companyName} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Facility type</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.facilityType || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.state} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.full_name || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email || ''} disabled /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.company_name || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Facility type</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.state_location || ''} /></div>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>
@@ -134,7 +138,7 @@ export default function ConsumerSettings() {
             
             {smsAlerts && (
               <div className="pl-[60px] pt-2 animate-in slide-in-from-top-2 duration-200">
-                <input type="tel" className="w-[260px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={user?.phone} placeholder="Phone number" />
+                <input type="tel" className="w-[260px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" placeholder="Phone number" />
               </div>
             )}
             
