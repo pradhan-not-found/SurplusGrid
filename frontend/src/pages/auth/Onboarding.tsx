@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Sun, Factory, Loader2, ChevronDown } from 'lucide-react';
+import { Sun, Factory, Loader2, ChevronDown, AlertTriangle } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 const COMPANIES = [
   "Tata Power", "Adani Green Energy", "ReNew Power", "Greenko Group",
@@ -27,7 +28,7 @@ const STATES = [
 ];
 
 export default function Onboarding() {
-  const { user, updateUser } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   
   const [step, setStep] = useState(1);
@@ -35,6 +36,8 @@ export default function Onboarding() {
   
   const [companyName, setCompanyName] = useState('');
   const [state, setState] = useState('');
+  const [phone, setPhone] = useState('');
+  const [gst, setGst] = useState('');
   
   // Producer fields
   const [capacity, setCapacity] = useState('');
@@ -46,14 +49,24 @@ export default function Onboarding() {
   const [shiftHours, setShiftHours] = useState<string[]>([]);
   
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   
   // Autocomplete state
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (profile) {
+      if (profile.role) {
+        setRole(profile.role);
+        setStep(2);
+      }
+    }
+  }, [profile]);
+
   if (!user) return <Navigate to="/signup" replace />;
-  if (user.onboardingComplete) return <Navigate to={`/dashboard/${user.role}`} replace />;
+  if (profile?.onboarding_complete) return <Navigate to={`/dashboard/${profile.role}`} replace />;
 
   const filteredCompanies = search 
     ? COMPANIES.filter(c => c.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
@@ -67,17 +80,30 @@ export default function Onboarding() {
 
   const handleFinish = async () => {
     setLoading(true);
+    setErrorMsg('');
     try {
-      await updateUser({
-        role,
-        companyName,
-        state,
-        onboardingComplete: true,
-        ...(role === 'producer' ? { capacityMw: Number(capacity), connectivity } : { peakLoadKw: Number(peakLoad), flexibleLoadKw: Number(flexibleLoad), shiftableHours: shiftHours })
-      });
+      const payload = {
+        role: role,
+        company_name: companyName,
+        state_location: state,
+        shiftable_hours: shiftHours,
+        onboarding_complete: true
+      };
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(payload)
+        .eq('id', user.id);
+
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+        return;
+      }
+      
       navigate(`/dashboard/${role}`);
     } catch (err: any) {
-      alert('Failed to save profile: ' + err.message);
+      setErrorMsg('Failed to save profile: ' + err.message);
       setLoading(false);
     }
   };
@@ -105,7 +131,7 @@ export default function Onboarding() {
         {step === 1 && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h1 className="text-[24px] font-bold tracking-[-0.01em] mb-2">How will you use SurplusGrid?</h1>
-            <p className="text-[14px] text-[#6B7280] mb-8">Choose your role. You can add more later.</p>
+            <p className="text-[14px] text-[#6B7280] mb-8">Confirm your role before proceeding.</p>
             
             <div className="grid grid-cols-2 gap-4">
               {/* Producer Card */}
@@ -215,6 +241,29 @@ export default function Onboarding() {
                   <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-medium text-[#374151] mb-1.5">Phone Number</label>
+                  <input 
+                    type="tel"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    placeholder="+91"
+                    className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-medium text-[#374151] mb-1.5">GST Number</label>
+                  <input 
+                    type="text"
+                    value={gst}
+                    onChange={e => setGst(e.target.value)}
+                    placeholder="22AAAAA0000A1Z5"
+                    className="w-full h-[44px] px-[14px] border border-[#E5E7EB] rounded-[8px] text-[15px] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow uppercase"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="mt-10 flex gap-4">
@@ -265,6 +314,13 @@ export default function Onboarding() {
                 </div>
               </div>
             </div>
+
+            {errorMsg && (
+              <div className="flex items-center gap-2 mt-6 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
+                <AlertTriangle size={16} />
+                <span className="text-[13px] font-medium">{errorMsg}</span>
+              </div>
+            )}
 
             <div className="mt-10 flex gap-4">
               <button 
@@ -332,6 +388,13 @@ export default function Onboarding() {
                 </div>
               </div>
             </div>
+
+            {errorMsg && (
+              <div className="flex items-center gap-2 mt-6 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
+                <AlertTriangle size={16} />
+                <span className="text-[13px] font-medium">{errorMsg}</span>
+              </div>
+            )}
 
             <div className="mt-10 flex gap-4">
               <button 
