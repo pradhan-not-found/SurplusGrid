@@ -56,13 +56,13 @@ export default function ProducerOverview() {
     // Query 1: Today's windows
     const todaysWindows = res1.data || [];
     const predictedSumKw = todaysWindows
-      .filter(w => w.status !== 'expired')
-      .reduce((sum, w) => sum + w.predicted_kw, 0);
+      .filter((w: any) => w.status !== 'expired')
+      .reduce((sum: number, w: any) => sum + w.predicted_kw, 0);
     setTodaysPredictedSurplus(predictedSumKw / 1000); // MW
 
     // Query 2: Active Matches
     const matches = res2.data || [];
-    const todaysMatches = matches.filter(m => m.surplus_windows?.date === todayStr);
+    const todaysMatches = matches.filter((m: any) => m.surplus_windows?.date === todayStr);
     setActiveMatchesCount(todaysMatches.length);
     setActiveMatches(matches);
 
@@ -71,7 +71,7 @@ export default function ProducerOverview() {
     let curtailmentKw = 0;
     let revenue = 0;
     
-    monthWindows.forEach(w => {
+    monthWindows.forEach((w: any) => {
       if (w.matches) {
         const matchArr = Array.isArray(w.matches) ? w.matches : [w.matches];
         matchArr.forEach((m: any) => {
