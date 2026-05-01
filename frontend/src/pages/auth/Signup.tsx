@@ -48,8 +48,8 @@ export default function Signup() {
     }
 
     setLoading(true);
-    
-    const { error } = await supabase.auth.signUp({
+
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -60,11 +60,10 @@ export default function Signup() {
       }
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       if (error.status === 429 || error.message.toLowerCase().includes('rate limit')) {
-        setErrorMsg('Security rate limit reached. Please wait a few minutes, or disable the signup rate limit in your Supabase Dashboard.');
+        setErrorMsg('Security rate limit reached. Please wait a few minutes.');
       } else if (error.message.includes('User already registered')) {
         setErrorMsg('An account with this email exists. Sign in instead.');
       } else {
@@ -73,6 +72,17 @@ export default function Signup() {
       return;
     }
 
+    // Create profile row immediately after signup (no DB trigger needed)
+    if (signUpData.user) {
+      await supabase.from('profiles').upsert({
+        id: signUpData.user.id,
+        full_name: name,
+        role: selectedRole,
+        onboarding_complete: false
+      }, { onConflict: 'id' });
+    }
+
+    setLoading(false);
     navigate('/onboarding');
   };
 
