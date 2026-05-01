@@ -1,35 +1,92 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate, Link } from 'react-router-dom';
-import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, MailCheck, AlertTriangle } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function Signup() {
-  const { user, signup } = useAuth();
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+
+  const [step, setStep] = useState<1 | 2>(1);
+  const [selectedRole, setSelectedRole] = useState<'producer' | 'consumer' | null>(null);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  if (user && user.onboardingComplete) {
-    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState(false);
+  const [resendMsg, setResendMsg] = useState('');
+
+  if (user && profile?.onboarding_complete) {
+    return <Navigate to={`/dashboard/${profile.role}`} replace />;
   }
-  if (user && !user.onboardingComplete) {
+  if (user && profile && !profile.onboarding_complete) {
     return <Navigate to="/onboarding" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password) return;
+    setErrorMsg('');
     
+    if (!name || !email || !password || !confirmPassword) {
+      setErrorMsg('All fields are required.');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      setErrorMsg('Passwords do not match.');
+      return;
+    }
+    
+    if (password.length < 8) {
+      setErrorMsg('Password must be at least 8 characters long.');
+      return;
+    }
+
     setLoading(true);
-    try {
-      await signup(email, password, name);
-      // AuthContext will handle setting user and navigation via useEffect
-    } catch (err: any) {
-      alert(err.message || 'Failed to sign up');
-      setLoading(false);
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          role: selectedRole
+        }
+      }
+    });
+
+    setLoading(false);
+
+    if (error) {
+      if (error.message.includes('User already registered')) {
+        setErrorMsg('An account with this email exists. Sign in instead.');
+      } else {
+        setErrorMsg(error.message);
+      }
+      return;
+    }
+
+    if (data.session) {
+      navigate('/onboarding');
+    } else {
+      setSuccessMsg(true);
+    }
+  };
+
+  const handleResend = async () => {
+    setResendMsg('');
+    const { error } = await supabase.auth.resend({ type: 'signup', email });
+    if (error) {
+      setResendMsg('Error resending email.');
+    } else {
+      setResendMsg('Email resent.');
     }
   };
 
@@ -73,77 +130,210 @@ export default function Signup() {
       {/* Right Panel */}
       <div className="w-full md:w-[55%] flex items-center justify-center p-8 bg-white relative">
         <Link to="/" className="absolute top-8 left-10 flex items-center gap-2 text-[13px] font-medium text-[#6B7280] hover:text-[#09090B] transition-colors group">
-          <svg className="group-hover:-translate-x-0.5 transition-transform" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <ChevronLeft className="group-hover:-translate-x-0.5 transition-transform" size={16} strokeWidth={2.5} />
           Back to home
         </Link>
         <div className="w-full max-w-[380px]">
-          <h2 className="text-[30px] font-bold text-[#09090B] tracking-[-0.03em] mb-2">
-            Create your account
-          </h2>
-          <p className="text-[15px] text-[#71717A] mb-10 tracking-tight">
-            Join the network and start optimising your energy.
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Full Name</label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
-                placeholder="Arjun Kumar"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Email Address</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
-                placeholder="name@company.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Password</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          
+          {successMsg ? (
+            <div className="text-center">
+              <div className="flex justify-center mb-6 text-[#09090B]">
+                <MailCheck size={40} />
+              </div>
+              <h2 className="text-[30px] font-bold text-[#09090B] tracking-[-0.03em] mb-2">
+                Check your inbox
+              </h2>
+              <p className="text-[15px] text-[#71717A] mb-6 tracking-tight leading-relaxed">
+                We sent a confirmation link to <span className="font-medium text-[#09090B]">{email}</span>. Click it to activate your account.
+              </p>
+              <div className="text-[14px] text-[#71717A]">
+                Didn't receive it?{' '}
+                <button onClick={handleResend} className="font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
+                  Resend email
                 </button>
               </div>
+              {resendMsg && (
+                <div className={`mt-4 text-[13px] font-medium ${resendMsg === 'Email resent.' ? 'text-[#16A34A]' : 'text-[#EF4444]'}`}>
+                  {resendMsg}
+                </div>
+              )}
             </div>
+          ) : step === 1 ? (
+            <div>
+              <h2 className="text-[22px] font-bold text-[#09090B] mb-2 font-helvetica">
+                Who are you?
+              </h2>
+              <p className="text-[14px] text-[#6B7280] mb-8 font-helvetica">
+                Select your role to get started. This cannot be changed later.
+              </p>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-[50px] mt-4 bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
-            >
-              {loading ? <Loader2 size={20} className="animate-spin" /> : "Create your free account"}
-            </button>
-          </form>
+              <div className="space-y-4 mb-8">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('producer')}
+                  className={`w-full flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${
+                    selectedRole === 'producer' 
+                      ? 'border-[#2563EB] bg-[#EFF6FF]' 
+                      : 'border-[#E5E7EB] hover:border-[#D1D5DB] bg-white'
+                  }`}
+                >
+                  <div className={`mt-0.5 ${selectedRole === 'producer' ? 'text-[#2563EB]' : 'text-[#6B7280]'}`}>
+                    <Sun size={20} />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-[#09090B] text-[15px] mb-1">Energy Producer</div>
+                    <div className="text-[13px] text-[#6B7280]">Solar farms, wind farms, rooftop aggregators</div>
+                  </div>
+                </button>
 
-          <div className="mt-10 pt-8 border-t border-[#F4F4F5] text-center">
-            <span className="text-[14px] text-[#71717A]">Already have an account? </span>
-            <Link to="/signin" className="text-[14px] font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
-              Sign in
-            </Link>
-          </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('consumer')}
+                  className={`w-full flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${
+                    selectedRole === 'consumer' 
+                      ? 'border-[#2563EB] bg-[#EFF6FF]' 
+                      : 'border-[#E5E7EB] hover:border-[#D1D5DB] bg-white'
+                  }`}
+                >
+                  <div className={`mt-0.5 ${selectedRole === 'consumer' ? 'text-[#2563EB]' : 'text-[#6B7280]'}`}>
+                    <Factory size={20} />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-[#09090B] text-[15px] mb-1">Energy Consumer</div>
+                    <div className="text-[13px] text-[#6B7280]">Cold storage, textile mills, EV fleets, data centers</div>
+                  </div>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                disabled={!selectedRole}
+                onClick={() => setStep(2)}
+                className="w-full h-[50px] bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
+              >
+                Continue →
+              </button>
+
+              <div className="mt-8 text-center">
+                <span className="text-[14px] text-[#71717A]">Already have an account? </span>
+                <Link to="/signin" className="text-[14px] font-semibold text-[#09090B] hover:underline decoration-2 underline-offset-4">
+                  Sign in
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <button 
+                type="button"
+                onClick={() => setStep(1)}
+                className="mb-6 flex items-center gap-1.5 text-[13px] font-medium text-[#6B7280] hover:text-[#09090B] transition-colors"
+              >
+                <ChevronLeft size={16} />
+                Back
+              </button>
+
+              <h2 className="text-[30px] font-bold text-[#09090B] tracking-[-0.03em] mb-6">
+                Create your account
+              </h2>
+              
+              <div className="mb-8 flex items-center justify-between bg-[#F4F4F5] px-4 py-3 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] text-[#71717A]">Signing up as:</span>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider ${
+                    selectedRole === 'producer' ? 'bg-[#ECFDF5] text-[#059669]' : 'bg-[#EFF6FF] text-[#2563EB]'
+                  }`}>
+                    Energy {selectedRole === 'producer' ? 'Producer' : 'Consumer'}
+                  </span>
+                </div>
+                <button onClick={() => setStep(1)} className="text-[13px] font-medium text-[#09090B] hover:underline">
+                  Change
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
+                    placeholder="Arjun Kumar"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full h-[46px] px-4 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
+                    placeholder="name@company.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Confirm Password</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      className="w-full h-[46px] px-4 pr-12 bg-white border border-[#E4E4E7] rounded-xl text-[15px] text-[#09090B] placeholder:text-[#A1A1AA] outline-none focus:border-[#09090B] focus:ring-[4px] focus:ring-[#09090B]/5 transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A1A1AA] hover:text-[#09090B] transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                {errorMsg && (
+                  <div className="flex items-center gap-2 mt-4 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
+                    <AlertTriangle size={16} />
+                    <span className="text-[13px] font-medium">{errorMsg}</span>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-[50px] mt-2 bg-[#09090B] text-white font-semibold text-[15px] rounded-xl hover:bg-[#27272A] disabled:opacity-50 disabled:hover:bg-[#09090B] flex items-center justify-center transition-all active:scale-[0.98] shadow-sm"
+                >
+                  {loading ? <Loader2 size={20} className="animate-spin" /> : "Create account"}
+                </button>
+              </form>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
