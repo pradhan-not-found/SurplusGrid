@@ -63,7 +63,9 @@ export default function Signup() {
     setLoading(false);
 
     if (error) {
-      if (error.message.includes('User already registered')) {
+      if (error.status === 429 || error.message.toLowerCase().includes('rate limit')) {
+        setErrorMsg('Security rate limit reached. Please wait a few minutes, or disable the signup rate limit in your Supabase Dashboard.');
+      } else if (error.message.includes('User already registered')) {
         setErrorMsg('An account with this email exists. Sign in instead.');
       } else {
         setErrorMsg(error.message);
