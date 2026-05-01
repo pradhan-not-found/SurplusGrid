@@ -42,48 +42,55 @@ export default function Signup() {
       return;
     }
     
-    if (password.length < 8) {
-      setErrorMsg('Password must be at least 8 characters long.');
+    if (password.length < 6) {
+      setErrorMsg('Password must be at least 6 characters long.');
       return;
     }
 
     setLoading(true);
 
-    const { data: signUpData, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name,
-          role: selectedRole
+    try {
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            role: selectedRole
+          }
         }
-      }
-    });
+      });
 
-    if (error) {
+      if (error) {
+        setLoading(false);
+        const errorText = error.message || '';
+        if (error.status === 429 || errorText.toLowerCase().includes('rate limit')) {
+          setErrorMsg('Please wait a few minutes before trying again.');
+        } else if (errorText.toLowerCase().includes('already registered')) {
+          setErrorMsg('An account with this email already exists. Please sign in.');
+        } else {
+          setErrorMsg(errorText || 'Failed to sign up. Please check your details.');
+        }
+        return;
+      }
+
+      // Create profile row immediately after signup
+      if (signUpData.user) {
+        await supabase.from('profiles').upsert({
+          id: signUpData.user.id,
+          full_name: name,
+          role: selectedRole,
+          onboarding_complete: false
+        }, { onConflict: 'id' });
+      }
+
       setLoading(false);
-      if (error.status === 429 || error.message.toLowerCase().includes('rate limit')) {
-        setErrorMsg('Security rate limit reached. Please wait a few minutes.');
-      } else if (error.message.includes('User already registered')) {
-        setErrorMsg('An account with this email exists. Sign in instead.');
-      } else {
-        setErrorMsg(error.message);
-      }
-      return;
+      navigate('/onboarding');
+      
+    } catch (err: any) {
+      setLoading(false);
+      setErrorMsg(err.message || 'An unexpected error occurred.');
     }
-
-    // Create profile row immediately after signup (no DB trigger needed)
-    if (signUpData.user) {
-      await supabase.from('profiles').upsert({
-        id: signUpData.user.id,
-        full_name: name,
-        role: selectedRole,
-        onboarding_complete: false
-      }, { onConflict: 'id' });
-    }
-
-    setLoading(false);
-    navigate('/onboarding');
   };
 
   return (
