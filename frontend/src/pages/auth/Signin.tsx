@@ -5,7 +5,7 @@ import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle } fro
 import { supabase } from '../../lib/supabase';
 
 export default function Signin() {
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -15,11 +15,14 @@ export default function Signin() {
   
   const [errorMsg, setErrorMsg] = useState('');
 
-  if (user && profile?.onboarding_complete) {
-    return <Navigate to={`/dashboard/${profile.role}`} replace />;
-  }
-  if (user && profile && !profile.onboarding_complete) {
-    return <Navigate to="/onboarding" replace />;
+  // Wait for auth to resolve before redirecting
+  if (!authLoading) {
+    if (user && profile?.onboarding_complete) {
+      return <Navigate to={`/dashboard/${profile.role}`} replace />;
+    }
+    if (user && (!profile || !profile.onboarding_complete)) {
+      return <Navigate to="/onboarding" replace />;
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,6 +57,7 @@ export default function Signin() {
         .eq('id', data.user.id)
         .single();
         
+      setLoading(false);
       if (!userProfile?.onboarding_complete) {
         navigate('/onboarding');
       } else {
