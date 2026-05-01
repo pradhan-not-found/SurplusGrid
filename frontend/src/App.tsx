@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Landing from './pages/Landing';
 import Signin from './pages/auth/Signin';
 import Signup from './pages/auth/Signup';
@@ -18,29 +18,67 @@ import ConsumerSettings from './pages/consumer/ConsumerSettings';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/onboarding" element={<Onboarding />} />
-          
-          <Route path="/dashboard/producer" element={<ProducerOverview />} />
-          <Route path="/dashboard/producer/windows" element={<ProducerWindows />} />
-          <Route path="/dashboard/producer/matches" element={<ProducerMatches />} />
-          <Route path="/dashboard/producer/settings" element={<ProducerSettings />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/onboarding" element={
+          <ProtectedRoute>
+            <Onboarding />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/dashboard/producer" element={
+          <ProtectedRoute>
+            <ProducerOverview />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/producer/windows" element={
+          <ProtectedRoute>
+            <ProducerWindows />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/producer/matches" element={
+          <ProtectedRoute>
+            <ProducerMatches />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/producer/settings" element={
+          <ProtectedRoute>
+            <ProducerSettings />
+          </ProtectedRoute>
+        } />
 
-          <Route path="/dashboard/consumer" element={<ConsumerOverview />} />
-          <Route path="/dashboard/consumer/alerts" element={<ConsumerAlerts />} />
-          <Route path="/dashboard/consumer/schedule" element={<ConsumerSchedule />} />
-          <Route path="/dashboard/consumer/savings" element={<ConsumerSavings />} />
-          <Route path="/dashboard/consumer/settings" element={<ConsumerSettings />} />
+        <Route path="/dashboard/consumer" element={
+          <ProtectedRoute>
+            <ConsumerOverview />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/consumer/alerts" element={
+          <ProtectedRoute>
+            <ConsumerAlerts />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/consumer/schedule" element={
+          <ProtectedRoute>
+            <ConsumerSchedule />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/consumer/savings" element={
+          <ProtectedRoute>
+            <ConsumerSavings />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/consumer/settings" element={
+          <ProtectedRoute>
+            <ConsumerSettings />
+          </ProtectedRoute>
+        } />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
