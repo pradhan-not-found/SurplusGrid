@@ -8,6 +8,7 @@ interface AuthContextType {
   profile: any | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,17 +19,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-    if (error || !data) {
-      console.error('Error fetching profile:', error);
+      if (error || !data) {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+      return data;
+    } catch (err) {
+      console.error('Exception fetching profile:', err);
       return null;
     }
-    return data;
   };
 
   useEffect(() => {
@@ -56,13 +62,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/signin';
+  const refreshProfile = async () => {
+    if (user) {
+      const prof = await fetchProfile(user.id);
+      setProfile(prof);
+    }
+  };
+
+  const value = {
+    user,
+    profile,
+    loading,
+    signOut: async () => { 
+      await supabase.auth.signOut();
+      window.location.href = '/signin';
+    },
+    refreshProfile
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

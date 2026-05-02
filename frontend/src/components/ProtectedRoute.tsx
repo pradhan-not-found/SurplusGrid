@@ -18,11 +18,15 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     return <Navigate to="/signin" replace />;
   }
 
-  if (profile && !profile.onboarding_complete) {
+  if (profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
 
   if (profile && profile.onboarding_complete) {
+    if (location.pathname === '/onboarding') {
+      return <Navigate to={`/dashboard/${profile.role}`} replace />;
+    }
+    
     const isProducerRoute = location.pathname.startsWith('/dashboard/producer');
     const isConsumerRoute = location.pathname.startsWith('/dashboard/consumer');
 

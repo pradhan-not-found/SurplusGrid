@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export default function Signin() {
@@ -12,16 +12,16 @@ export default function Signin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Wait for auth to resolve before redirecting
-  if (!authLoading) {
-    if (user && profile?.onboarding_complete) {
-      return <Navigate to={`/dashboard/${profile.role}`} replace />;
-    }
-    if (user && (!profile || !profile.onboarding_complete)) {
-      return <Navigate to="/onboarding" replace />;
+  if (!authLoading && !loading) {
+    if (user) {
+      if (profile?.onboarding_complete) {
+        return <Navigate to={`/dashboard/${profile.role}`} replace />;
+      } else {
+        return <Navigate to="/onboarding" replace />;
+      }
     }
   }
 
@@ -34,36 +34,39 @@ export default function Signin() {
     }
     
     setLoading(true);
-    
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        setErrorMsg('Incorrect email or password.');
-      } else {
-        setErrorMsg(error.message);
+      if (error) {
+        if (error.status === 400 || error.message?.toLowerCase().includes('credentials')) {
+          setErrorMsg('Invalid email or password. Please try again.');
+        } else if (error.status === 429 || error.message?.toLowerCase().includes('rate limit')) {
+          setErrorMsg('Rate limit exceeded. Please try again later.');
+        } else {
+          setErrorMsg(error.message || 'Failed to sign in');
+        }
+        return;
       }
-      setLoading(false);
-      return;
-    }
 
-    if (data.user) {
-      const { data: userProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-        
-      setLoading(false);
-      if (!userProfile?.onboarding_complete) {
-        navigate('/onboarding');
-      } else {
-        navigate(`/dashboard/${userProfile.role}`);
+      if (data.user) {
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle();
+          
+        if (!userProfile?.onboarding_complete) {
+          navigate('/onboarding');
+        } else {
+          navigate(`/dashboard/${userProfile.role}`);
+        }
       }
-    } else {
+    } catch (err: any) {
+      setErrorMsg(err.message || 'An unexpected error occurred during signin.');
+    } finally {
       setLoading(false);
     }
   };
@@ -120,6 +123,17 @@ export default function Signin() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {errorMsg && (
+              <div className="flex items-start justify-between bg-red-50/50 border border-red-200 rounded-lg p-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                <span className="text-[13px] text-red-600 leading-snug font-medium">
+                  {errorMsg}
+                </span>
+                <button type="button" onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-600">
+                  <X size={16} />
+                </button>
+              </div>
+            )}
+            
             <div>
               <label className="block text-[13px] font-semibold text-[#09090B] mb-2 uppercase tracking-wider">Email Address</label>
               <input

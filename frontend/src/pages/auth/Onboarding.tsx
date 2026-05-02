@@ -28,7 +28,7 @@ const STATES = [
 ];
 
 export default function Onboarding() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   
   const [step, setStep] = useState(1);
@@ -83,17 +83,21 @@ export default function Onboarding() {
     setErrorMsg('');
     try {
       const payload = {
-        id: user.id,
         role: role,
         company_name: companyName,
         state_location: state,
         shiftable_hours: shiftHours,
+        capacity_mw: capacity ? parseFloat(capacity) : null,
+        grid_connectivity: connectivity || null,
+        peak_load_kw: peakLoad ? parseFloat(peakLoad) : null,
+        flexible_load_kw: flexibleLoad ? parseFloat(flexibleLoad) : null,
         onboarding_complete: true
       };
 
       const { error } = await supabase
         .from('profiles')
-        .upsert(payload as any, { onConflict: 'id' });
+        .update(payload)
+        .eq('id', user.id);
 
       if (error) {
         setErrorMsg(error.message);
@@ -101,6 +105,7 @@ export default function Onboarding() {
         return;
       }
       
+      await refreshProfile();
       navigate(`/dashboard/${role}`);
     } catch (err: any) {
       setErrorMsg('Failed to save profile: ' + err.message);
@@ -115,7 +120,15 @@ export default function Onboarding() {
       {/* Top Bar */}
       <div className="flex items-center justify-between px-6 py-4">
         <img src="/logo.png" alt="SurplusGrid" className="w-[120px]" />
-        <span className="text-[13px] text-[#6B7280]">Step {step} of 3</span>
+        <div className="flex items-center gap-4">
+          <span className="text-[13px] text-[#6B7280]">Step {step} of 3</span>
+          <button 
+            onClick={() => supabase.auth.signOut()} 
+            className="text-[13px] text-[#EF4444] hover:underline font-medium"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
       
       {/* Progress Bar */}
@@ -195,11 +208,12 @@ export default function Onboarding() {
                 />
                 
                 {showDropdown && search && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-[#E5E7EB] rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] overflow-hidden">
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-[#E5E7EB] rounded-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.08)] overflow-hidden">
                     {filteredCompanies.map(c => (
                       <div 
                         key={c}
-                        onClick={() => {
+                        onMouseDown={(e) => {
+                          e.preventDefault();
                           setSearch(c);
                           setCompanyName(c);
                           setShowDropdown(false);
@@ -211,7 +225,8 @@ export default function Onboarding() {
                     ))}
                     {!COMPANIES.some(c => c.toLowerCase() === search.toLowerCase()) && (
                       <div 
-                        onClick={() => {
+                        onMouseDown={(e) => {
+                          e.preventDefault();
                           setCompanyName(search);
                           setShowDropdown(false);
                         }}

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, Sun, Factory, ChevronLeft, AlertTriangle, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export default function Signup() {
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState<1 | 2>(1);
@@ -17,20 +17,23 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  if (user && profile?.onboarding_complete) {
-    return <Navigate to={`/dashboard/${profile.role}`} replace />;
-  }
-  if (user && profile && !profile.onboarding_complete) {
-    return <Navigate to="/onboarding" replace />;
+  // Wait for auth to resolve before redirecting
+  if (!authLoading && !loading) {
+    if (user) {
+      if (profile?.onboarding_complete) {
+        return <Navigate to={`/dashboard/${profile.role}`} replace />;
+      } else {
+        return <Navigate to="/onboarding" replace />;
+      }
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
+    setErrorMsg(null);
     
     if (!name || !email || !password || !confirmPassword) {
       setErrorMsg('All fields are required.');
@@ -48,9 +51,8 @@ export default function Signup() {
     }
 
     setLoading(true);
-
     try {
-      const { data: signUpData, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -62,34 +64,21 @@ export default function Signup() {
       });
 
       if (error) {
-        setLoading(false);
-        const errorText = error.message || '';
-        if (error.status === 429 || errorText.toLowerCase().includes('rate limit')) {
-          setErrorMsg('Please wait a few minutes before trying again.');
-        } else if (errorText.toLowerCase().includes('already registered')) {
-          setErrorMsg('An account with this email already exists. Please sign in.');
+        if (error.status === 429 || error.message?.toLowerCase().includes('rate limit')) {
+          setErrorMsg('Security rate limit reached. Please wait a few minutes, or disable the signup rate limit in your Supabase Dashboard.');
+        } else if (error.message?.includes('User already registered')) {
+          setErrorMsg('An account with this email exists. Sign in instead.');
         } else {
-          setErrorMsg(errorText || 'Failed to sign up. Please check your details.');
+          setErrorMsg(error.message || 'Signup failed');
         }
         return;
       }
 
-      // Create profile row immediately after signup
-      if (signUpData.user) {
-        await supabase.from('profiles').upsert({
-          id: signUpData.user.id,
-          full_name: name,
-          role: selectedRole,
-          onboarding_complete: false
-        }, { onConflict: 'id' });
-      }
-
-      setLoading(false);
       navigate('/onboarding');
-      
     } catch (err: any) {
+      setErrorMsg(err.message || 'An unexpected error occurred during signup.');
+    } finally {
       setLoading(false);
-      setErrorMsg(err.message || 'An unexpected error occurred.');
     }
   };
 
@@ -297,9 +286,16 @@ export default function Signup() {
                 </div>
 
                 {errorMsg && (
-                  <div className="flex items-center gap-2 mt-4 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
-                    <AlertTriangle size={16} />
-                    <span className="text-[13px] font-medium">{errorMsg}</span>
+                  <div className="flex items-start justify-between bg-red-50/50 border border-red-200 rounded-lg p-3.5 animate-in fade-in slide-in-from-top-1 duration-200 mt-4">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle size={16} className="text-red-600" />
+                      <span className="text-[13px] text-red-600 leading-snug font-medium">
+                        {errorMsg}
+                      </span>
+                    </div>
+                    <button type="button" onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-600">
+                      <X size={16} />
+                    </button>
                   </div>
                 )}
 
