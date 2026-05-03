@@ -9,7 +9,10 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 5173,
+    watch: {
+      usePolling: true,
+    }
   }
 })
