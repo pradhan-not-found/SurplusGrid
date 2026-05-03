@@ -34,41 +34,21 @@ export default function Signin() {
     }
     
     setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) {
-        if (error.status === 400 || error.message?.toLowerCase().includes('credentials')) {
-          setErrorMsg('Invalid email or password. Please try again.');
-        } else if (error.status === 429 || error.message?.toLowerCase().includes('rate limit')) {
-          setErrorMsg('Rate limit exceeded. Please try again later.');
-        } else {
-          setErrorMsg(error.message || 'Failed to sign in');
-        }
-        return;
-      }
-
-      if (data.user) {
-        const { data: userProfile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .maybeSingle();
-          
-        if (!userProfile?.onboarding_complete) {
-          navigate('/onboarding');
-        } else {
-          navigate(`/dashboard/${userProfile.role}`);
-        }
-      }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'An unexpected error occurred during signin.');
-    } finally {
+    
+    // Simulate an 800ms network delay
+    setTimeout(() => {
+      // Save a mock user to localStorage
+      localStorage.setItem('surplusgrid_user', JSON.stringify({ 
+        id: "mock-1", 
+        email: email, 
+        role: "Consumer", 
+        onboardingComplete: true 
+      }));
+      
       setLoading(false);
-    }
+      // Redirect to dashboard
+      navigate('/dashboard/consumer');
+    }, 800);
   };
 
   return (

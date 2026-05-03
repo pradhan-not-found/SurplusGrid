@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Factory, LogOut, Activity, Grid2X2, Settings, Bell, CheckCircle2, Zap, BarChart2, CalendarDays, Sparkles } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { DemandForecastWidget } from '../components/DemandForecastWidget';
 
 const mockCostData = [
   { month: 'Jan', grid: 85000, surplus: 62000 },
@@ -204,6 +205,8 @@ export default function ConsumerDashboard() {
                     </div>
                   </form>
                 </div>
+
+                <DemandForecastWidget />
 
               </div>
 

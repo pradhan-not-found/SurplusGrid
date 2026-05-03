@@ -41,6 +41,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
+    // Check mock user first
+    const mockUserStr = localStorage.getItem('surplusgrid_user');
+    if (mockUserStr) {
+      try {
+        const parsed = JSON.parse(mockUserStr);
+        setUser(parsed as any);
+        setProfile({ role: parsed.role.toLowerCase(), onboarding_complete: parsed.onboardingComplete });
+        setLoading(false);
+        return;
+      } catch (e) {}
+    }
+
     supabase.auth.getSession().then(async ({ data: { session }, error }) => {
       if (!mounted) return;
       if (error) {
@@ -94,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     loading,
     signOut: async () => { 
+      localStorage.removeItem('surplusgrid_user');
       await supabase.auth.signOut();
       window.location.href = '/signin';
     },
