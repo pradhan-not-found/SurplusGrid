@@ -28,8 +28,8 @@ export default function ConsumerOverview() {
   return (
     <DashboardLayout title="Overview">
       {showBanner && (
-        <div className="w-full rounded-[10px] p-[16px_20px] bg-[#FAFAFA] border border-[#E5E7EB] flex items-center justify-between mb-[40px] shadow-sm relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#09090B]" />
+        <div className="w-full rounded-[10px] p-[16px_20px] bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-between mb-[40px] shadow-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#2563EB]" />
           <div className="flex items-center gap-4 pl-2">
             <Zap size={20} className="text-[#09090B]" />
             <div>
@@ -139,7 +139,7 @@ export default function ConsumerOverview() {
                       Scheduled
                     </span>
                   ) : (
-                    <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#09090B] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#27272A] transition-colors shadow-sm">
+                    <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#2563EB] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#1D4ED8] transition-colors shadow-sm">
                       Accept shift
                     </button>
                   )}
@@ -172,7 +172,7 @@ export default function ConsumerOverview() {
                 <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">₹{s.rate}</td>
                 <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{s.savings.toLocaleString()}</td>
                 <td className="p-[16px_20px]">
-                  <span className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[#ECFDF5] text-[#065F46] border border-[#D1FAE5]">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[#DCFCE7] text-[#166534] border border-[#BBF7D0]">
                     Completed
                   </span>
                 </td>

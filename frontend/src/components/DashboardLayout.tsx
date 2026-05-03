@@ -81,12 +81,11 @@ export default function DashboardLayout({ children, title }: { children: React.R
   return (
     <div className="flex h-screen bg-[#F8FAFC] font-body text-[#0D1117]">
       {/* Sidebar */}
-      <div className="w-[240px] bg-white flex flex-col border-r border-[#E5E7EB] shrink-0">
+      <div className="w-[240px] bg-[#0D1117] text-[#94A3B8] flex flex-col shrink-0 border-r border-[#1E293B]">
         <div className="pt-[24px] px-[20px] pb-[8px]">
           <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-5" />
-          <div className="flex items-center gap-2 mt-1">
-            <div className="h-3 w-[2px] bg-[#E5E7EB] rounded-full" />
-            <span className="text-[10px] font-medium text-[#9CA3AF] tracking-[0.1em] uppercase">
+          <div className="mt-2">
+            <span className="bg-[#1E2E4A] text-[#60A5FA] border border-[#1D4ED8] font-['Helvetica'] text-[11px] py-[3px] px-[10px] rounded-[100px] uppercase inline-block">
               {profile.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
             </span>
           </div>
@@ -106,12 +105,12 @@ export default function DashboardLayout({ children, title }: { children: React.R
               <Link 
                 key={link.path} 
                 to={link.path}
-                className={`flex items-center gap-3 h-[36px] px-3 rounded-[6px] transition-all duration-150
+                className={`flex items-center gap-3 h-[36px] px-3 transition-all duration-150 relative
                   ${isActive 
-                    ? 'bg-[#F4F4F5] text-[#09090B] font-medium shadow-sm' 
-                    : 'text-[#71717A] hover:bg-[#F4F4F5]/50 hover:text-[#27272A]'}`}
+                    ? 'bg-[rgba(37,99,235,0.15)] text-[#94A3B8] font-medium border-l-[2px] border-[#2563EB]' 
+                    : 'text-[#94A3B8] hover:bg-white/5 hover:text-white border-l-[2px] border-transparent'}`}
               >
-                <Icon size={16} className={isActive ? 'text-[#09090B]' : 'text-[#A1A1AA]'} />
+                <Icon size={16} className={isActive ? 'text-[#3B82F6]' : 'text-[#64748B]'} />
                 <span className="text-[13px]">{link.label}</span>
               </Link>
             );
