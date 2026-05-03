@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User } from '@supabase/supabase-js';
@@ -17,6 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const currentUserId = useRef<string | null>(null);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -40,13 +41,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
       if (!mounted) return;
+      if (error) {
+        console.error('Error fetching session:', error);
+      }
       if (session?.user) {
+        currentUserId.current = session.user.id;
         setUser(session.user);
         const prof = await fetchProfile(session.user.id);
         if (mounted) setProfile(prof);
       }
+      if (mounted) setLoading(false);
+    }).catch((err) => {
+      console.error('Unexpected error fetching session:', err);
       if (mounted) setLoading(false);
     });
 
@@ -54,10 +62,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!mounted || _event === 'INITIAL_SESSION') return;
       
       if (session?.user) {
-        setUser(session.user);
-        const prof = await fetchProfile(session.user.id);
-        if (mounted) setProfile(prof);
+        if (currentUserId.current !== session.user.id) {
+          currentUserId.current = session.user.id;
+          setUser(session.user);
+          const prof = await fetchProfile(session.user.id);
+          if (mounted) setProfile(prof);
+        }
       } else {
+        currentUserId.current = null;
         setUser(null);
         setProfile(null);
       }

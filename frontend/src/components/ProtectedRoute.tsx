@@ -18,6 +18,10 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     return <Navigate to="/signin" replace />;
   }
 
+  if (user && !profile && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   if (profile && !profile.onboarding_complete && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }

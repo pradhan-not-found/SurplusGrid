@@ -31,7 +31,7 @@ export default function ProducerWindows() {
     if (user) {
       fetchWindows();
     }
-  }, [user]);
+  }, [user?.id]);
 
   const fetchWindows = async () => {
     if (!user) return;

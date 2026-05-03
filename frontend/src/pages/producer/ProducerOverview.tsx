@@ -22,80 +22,85 @@ export default function ProducerOverview() {
     if (user) {
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user?.id]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
     
     setLoading(true);
-    const todayStr = format(new Date(), 'yyyy-MM-dd');
-    const firstDayOfMonthStr = format(startOfMonth(new Date()), 'yyyy-MM-dd');
+    try {
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
+      const firstDayOfMonthStr = format(startOfMonth(new Date()), 'yyyy-MM-dd');
 
-    const p1 = supabase.from('surplus_windows')
-      .select('*')
-      .eq('producer_id', user.id)
-      .eq('date', todayStr)
-      .order('start_time');
+      const p1 = supabase.from('surplus_windows')
+        .select('*')
+        .eq('producer_id', user.id)
+        .eq('date', todayStr)
+        .order('start_time');
 
-    const p2 = supabase.from('matches')
-      .select(`
-        *,
-        surplus_windows!inner(producer_id, date, start_time, end_time, predicted_kw),
-        profiles!consumer_id(full_name, company_name)
-      `)
-      .eq('surplus_windows.producer_id', user.id)
-      .eq('status', 'accepted');
+      const p2 = supabase.from('matches')
+        .select(`
+          *,
+          surplus_windows!inner(producer_id, date, start_time, end_time, predicted_kw),
+          profiles!consumer_id(full_name, company_name)
+        `)
+        .eq('surplus_windows.producer_id', user.id)
+        .eq('status', 'accepted');
 
-    const p3 = supabase.from('surplus_windows')
-      .select('*, matches(producer_revenue_inr, status, matched_kw)')
-      .eq('producer_id', user.id)
-      .gte('date', firstDayOfMonthStr);
+      const p3 = supabase.from('surplus_windows')
+        .select('*, matches(producer_revenue_inr, status, matched_kw)')
+        .eq('producer_id', user.id)
+        .gte('date', firstDayOfMonthStr);
 
-    const [res1, res2, res3] = await Promise.all([p1, p2, p3]);
+      const [res1, res2, res3] = await Promise.all([p1, p2, p3]);
 
-    // Query 1: Today's windows
-    const todaysWindows = res1.data || [];
-    const predictedSumKw = todaysWindows
-      .filter((w: any) => w.status !== 'expired')
-      .reduce((sum: number, w: any) => sum + w.predicted_kw, 0);
-    setTodaysPredictedSurplus(predictedSumKw / 1000); // MW
+      // Query 1: Today's windows
+      const todaysWindows = res1.data || [];
+      const predictedSumKw = todaysWindows
+        .filter((w: any) => w.status !== 'expired')
+        .reduce((sum: number, w: any) => sum + w.predicted_kw, 0);
+      setTodaysPredictedSurplus(predictedSumKw / 1000); // MW
 
-    // Query 2: Active Matches
-    const matches = res2.data || [];
-    const todaysMatches = matches.filter((m: any) => m.surplus_windows?.date === todayStr);
-    setActiveMatchesCount(todaysMatches.length);
-    setActiveMatches(matches);
+      // Query 2: Active Matches
+      const matches = res2.data || [];
+      const todaysMatches = matches.filter((m: any) => m.surplus_windows?.date === todayStr);
+      setActiveMatchesCount(todaysMatches.length);
+      setActiveMatches(matches);
 
-    // Query 3: This month's data
-    const monthWindows = res3.data || [];
-    let curtailmentKw = 0;
-    let revenue = 0;
-    
-    monthWindows.forEach((w: any) => {
-      if (w.matches) {
-        const matchArr = Array.isArray(w.matches) ? w.matches : [w.matches];
-        matchArr.forEach((m: any) => {
-          if (m.status === 'accepted') {
-            curtailmentKw += (m.matched_kw || 0);
-            revenue += (m.producer_revenue_inr || 0);
-          }
-        });
-      }
-    });
-    setCurtailmentAvoided(curtailmentKw / 1000); // MWh
-    setRevenueThisMonth(revenue);
-
-    // Fetch Upcoming Windows table
-    const { data: upcomingData } = await supabase.from('surplus_windows')
-      .select('*')
-      .eq('producer_id', user.id)
-      .gte('date', todayStr)
-      .order('date')
-      .order('start_time')
-      .limit(10);
+      // Query 3: This month's data
+      const monthWindows = res3.data || [];
+      let curtailmentKw = 0;
+      let revenue = 0;
       
-    setUpcomingWindows(upcomingData || []);
-    setLoading(false);
+      monthWindows.forEach((w: any) => {
+        if (w.matches) {
+          const matchArr = Array.isArray(w.matches) ? w.matches : [w.matches];
+          matchArr.forEach((m: any) => {
+            if (m.status === 'accepted') {
+              curtailmentKw += (m.matched_kw || 0);
+              revenue += (m.producer_revenue_inr || 0);
+            }
+          });
+        }
+      });
+      setCurtailmentAvoided(curtailmentKw / 1000); // MWh
+      setRevenueThisMonth(revenue);
+
+      // Fetch Upcoming Windows table
+      const { data: upcomingData } = await supabase.from('surplus_windows')
+        .select('*')
+        .eq('producer_id', user.id)
+        .gte('date', todayStr)
+        .order('date')
+        .order('start_time')
+        .limit(10);
+        
+      setUpcomingWindows(upcomingData || []);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatCurrency = (val: number) => {

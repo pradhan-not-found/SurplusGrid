@@ -43,7 +43,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
       }
     };
     fetchNotifications();
-  }, [user]);
+  }, [user?.id]);
 
   if (!user || !profile) {
     return <Navigate to="/signin" replace />;
