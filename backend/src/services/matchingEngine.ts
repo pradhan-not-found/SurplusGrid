@@ -91,7 +91,10 @@ export async function detectOverlaps(windowId: string) {
 
             const savings = matchedKw * (gridRate - surplusRate);
             const revenue = matchedKw * surplusRate;
-
+            const carbonOffset = matchedKw * 0.77; // 0.77kg CO2 saved per kW matched
+            
+            console.log(`💰 PRICING DEBUG: Grid=${gridRate}, Surplus=${surplusRate}, SavingsPerKw=${gridRate - surplusRate}`);
+            console.log(`🌿 SUSTAINABILITY DEBUG: Carbon Offset = ${carbonOffset.toFixed(2)} kg`);
 
             // 4. Create the match record
             const { error: matchError } = await supabase
@@ -103,8 +106,10 @@ export async function detectOverlaps(windowId: string) {
                     consumer_savings_inr: savings,
                     producer_revenue_inr: revenue,
                     status: 'pending',
-                    confidence_score: 'High'
+                    confidence_score: 'High',
+                    carbon_offset_kg: carbonOffset
                 });
+
 
             if (matchError) {
                 console.error('[MatchingEngine] Error creating match:', matchError);

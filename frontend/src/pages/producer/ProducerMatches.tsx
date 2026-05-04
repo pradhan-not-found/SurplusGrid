@@ -110,6 +110,7 @@ export default function ProducerMatches() {
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">kW Matched</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Revenue (₹)</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Impact (CO₂ kg)</th>
             </tr>
           </thead>
           <tbody>
@@ -143,6 +144,9 @@ export default function ProducerMatches() {
                   </td>
                   <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">
                     ₹{(m.producer_revenue_inr || 0).toLocaleString()}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] text-[#2563EB] font-medium border border-[#E5E7EB]">
+                    {m.carbon_offset_kg?.toFixed(1) || 0} kg
                   </td>
                 </tr>
                 {expandedRow === m.id && (

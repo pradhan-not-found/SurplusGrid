@@ -72,11 +72,11 @@ export default function ConsumerOverview() {
 
       const allMatches = matches || [];
       
-      // 2. Calculate Stats
+       // 2. Calculate Stats
       const savings = allMatches.reduce((sum, m) => sum + (m.consumer_savings_inr || 0), 0);
       const cleanEnergy = allMatches.reduce((sum, m) => sum + (m.matched_kw || 0), 0);
       const shiftsCompleted = allMatches.filter(m => m.status === 'accepted' || m.status === 'completed').length;
-      const carbonOffset = cleanEnergy * 0.82; 
+      const carbonOffset = allMatches.reduce((sum, m) => sum + (m.carbon_offset_kg || 0), 0);
 
       setStats({
         savings,
