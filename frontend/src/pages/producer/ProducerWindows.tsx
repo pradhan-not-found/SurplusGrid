@@ -101,6 +101,17 @@ export default function ProducerWindows() {
     }
 
     if (data) {
+      // AUTO-TRIGGER: Tell the backend to start matching instantly
+      try {
+        fetch('http://localhost:5001/api/trigger-match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ windowId: data.id })
+        });
+      } catch (err) {
+        console.error('Auto-trigger failed, but window was created:', err);
+      }
+
       setWindows([data, ...windows]);
       setSuccess(true);
       setDate(''); setStart(''); setEnd(''); setSurplus(''); setNotes('');
@@ -110,6 +121,7 @@ export default function ProducerWindows() {
         setShowForm(false);
       }, 2000);
     }
+
   };
 
   const handleDelete = async (id: string) => {
