@@ -1,0 +1,132 @@
+import { supabase } from '../lib/supabase';
+
+interface SurplusWindow {
+    id: string;
+    producer_id: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    predicted_kw: number;
+    available_kw: number;
+    status: string;
+}
+
+interface ConsumerProfile {
+    id: string;
+    state_location: string;
+    flexible_load_kw: number;
+    shiftable_hours: string[]; // e.g. ["09:00", "10:00", "11:00"]
+}
+
+export async function detectOverlaps(windowId: string) {
+    console.log(`[MatchingEngine] Starting overlap detection for window: ${windowId}`);
+
+    // 1. Fetch the surplus window details
+    const { data: window, error: windowError } = await supabase
+        .from('surplus_windows')
+        .select('*, producer:producer_id(state_location)')
+        .eq('id', windowId)
+        .single();
+
+    if (windowError || !window) {
+        console.error('[MatchingEngine] Error fetching window:', windowError);
+        return;
+    }
+
+    // Fallback: If available_kw is null, initialize it with predicted_kw
+    if (window.available_kw === null || window.available_kw === undefined) {
+        console.log('[MatchingEngine] available_kw was null, initializing with predicted_kw');
+        window.available_kw = window.predicted_kw;
+        
+        // Save this initialization back to the DB so the UI stays in sync
+        await supabase
+            .from('surplus_windows')
+            .update({ available_kw: window.predicted_kw })
+            .eq('id', window.id);
+    }
+
+    if (window.available_kw <= 0 || window.status === 'expired') {
+        console.log('[MatchingEngine] Window is not available for matching.');
+        return;
+    }
+
+    const producerLocation = (window.producer as any).state_location;
+
+    // 2. Fetch potential consumers in the same location
+    const { data: consumers, error: consumersError } = await supabase
+        .from('profiles')
+        .select('id, state_location, flexible_load_kw, shiftable_hours')
+        .eq('role', 'consumer')
+        .eq('state_location', producerLocation);
+
+    if (consumersError) {
+        console.error('[MatchingEngine] Error fetching consumers:', consumersError);
+        return;
+    }
+
+    console.log(`[MatchingEngine] Found ${consumers?.length} potential consumers in ${producerLocation}`);
+
+    for (const consumer of consumers as ConsumerProfile[]) {
+        if (window.available_kw <= 0) break;
+
+        // Normalize times to HH:mm for reliable string comparison
+        const winStart = window.start_time.substring(0, 5);
+        const winEnd = window.end_time.substring(0, 5);
+
+        const isTimeMatch = consumer.shiftable_hours.some(hour => {
+            const h = hour.substring(0, 5);
+            return h >= winStart && h < winEnd;
+        });
+
+        if (isTimeMatch) {
+            console.log(`[MatchingEngine] Match found! Consumer: ${consumer.id}`);
+
+            const matchedKw = Math.min(window.available_kw, consumer.flexible_load_kw);
+            
+            // Calculate Savings (Dummy rates for now, can be moved to env/config)
+            const gridRate = Number(process.env.GRID_PRICE_INR_PER_KW) || 8.5;
+            const surplusRate = Number(process.env.SURPLUS_PRICE_INR_PER_KW) || 6.0;
+            const savings = matchedKw * (gridRate - surplusRate);
+            const revenue = matchedKw * surplusRate;
+
+            // 4. Create the match record
+            const { error: matchError } = await supabase
+                .from('matches')
+                .insert({
+                    window_id: window.id,
+                    consumer_id: consumer.id,
+                    matched_kw: matchedKw,
+                    consumer_savings_inr: savings,
+                    producer_revenue_inr: revenue,
+                    status: 'pending',
+                    confidence_score: 'High'
+                });
+
+            if (matchError) {
+                console.error('[MatchingEngine] Error creating match:', matchError);
+                continue;
+            }
+
+            // 5. Update window availability
+            const newAvailableKw = window.available_kw - matchedKw;
+            const newStatus = newAvailableKw <= 0 ? 'matched' : 'partial';
+
+            const { error: updateError } = await supabase
+                .from('surplus_windows')
+                .update({ 
+                    available_kw: newAvailableKw,
+                    status: newStatus
+                })
+                .eq('id', window.id);
+
+            if (updateError) {
+                console.error('[MatchingEngine] Error updating window:', updateError);
+            } else {
+                window.available_kw = newAvailableKw;
+                console.log(`[MatchingEngine] Window updated: ${newStatus}, Remaining: ${newAvailableKw}kW`);
+            }
+        }
+    }
+
+    console.log(`[MatchingEngine] Finished matching for window: ${windowId}`);
+}
