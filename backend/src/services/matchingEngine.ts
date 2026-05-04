@@ -128,5 +128,16 @@ export async function detectOverlaps(windowId: string) {
         }
     }
 
+    // FINAL SYNC: Ensure the final status is accurately reflected after checking all consumers
+    const finalStatus = window.available_kw <= 0 
+        ? 'matched' 
+        : (window.available_kw < window.predicted_kw ? 'partial' : 'seeking');
+
+    await supabase
+        .from('surplus_windows')
+        .update({ status: finalStatus })
+        .eq('id', window.id);
+
+    console.log(`[MatchingEngine] Final automation sync: Window status set to '${finalStatus}'`);
     console.log(`[MatchingEngine] Finished matching for window: ${windowId}`);
 }
