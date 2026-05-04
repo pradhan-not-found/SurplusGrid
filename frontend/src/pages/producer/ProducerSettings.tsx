@@ -16,6 +16,7 @@ export default function ProducerSettings() {
   const [companyName, setCompanyName] = useState(profile?.company_name || '');
   const [phone, setPhone] = useState(user?.user_metadata?.phone || '');
   const [stateLoc, setStateLoc] = useState(profile?.state_location || '');
+  const [energySource, setEnergySource] = useState(profile?.energy_source || 'Solar');
   const [gstNumber, setGstNumber] = useState(user?.user_metadata?.gst_number || '');
 
   const [apiKey, setApiKey] = useState('');
@@ -46,7 +47,8 @@ export default function ProducerSettings() {
       await supabase.from('profiles').update({
         full_name: fullName,
         company_name: companyName,
-        state_location: stateLoc
+        state_location: stateLoc,
+        energy_source: energySource
       }).eq('id', user.id);
       
       await supabase.auth.updateUser({
@@ -120,6 +122,18 @@ export default function ProducerSettings() {
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={companyName} onChange={e=>setCompanyName(e.target.value)} /></div>
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={stateLoc} onChange={e=>setStateLoc(e.target.value)} /></div>
+            <div>
+              <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Energy Source</label>
+              <select 
+                className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                value={energySource}
+                onChange={e=>setEnergySource(e.target.value)}
+              >
+                <option value="Solar">Solar ☀️</option>
+                <option value="Wind">Wind 💨</option>
+                <option value="Hydro">Hydro 🌊</option>
+              </select>
+            </div>
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={gstNumber} onChange={e=>setGstNumber(e.target.value)} /></div>
           </div>
           <div className="flex items-center gap-4">
