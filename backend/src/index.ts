@@ -36,6 +36,13 @@ app.post('/api/trigger-match', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`⚡ [SurplusGrid Backend] Running on http://localhost:${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`⚡ [SurplusGrid Backend] Running on http://localhost:${PORT}`);
+    });
+}
+
+// Export for Vercel
+export default app;
+
