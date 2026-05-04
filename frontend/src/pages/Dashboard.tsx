@@ -17,13 +17,8 @@ export default function Dashboard() {
               <Link to="/" className="text-gray-500 hover:text-gray-900 transition-colors">
                 <ArrowLeft size={20} />
               </Link>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold shadow-lg shadow-teal-500/30">
-                  S
-                </div>
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-teal-900">
-                  SurplusGrid
-                </span>
+              <div className="flex items-center">
+                <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
               </div>
             </div>
             <div className="flex bg-gray-100 p-1 rounded-lg">

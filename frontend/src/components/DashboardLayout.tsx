@@ -84,10 +84,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
       <div className="w-[260px] bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
         <div className="pt-[32px] px-[24px] pb-[12px]">
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-[#09090B] rounded-lg flex items-center justify-center">
-              <Zap size={18} className="text-white" />
-            </div>
-            <span className="text-[18px] font-bold text-[#09090B] tracking-tight">SurplusGrid</span>
+            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
           </div>
           
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F4F4F5] text-[#71717A] border border-[#E5E7EB] mb-6">

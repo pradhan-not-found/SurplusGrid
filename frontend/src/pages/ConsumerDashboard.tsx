@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { Factory, LogOut, Activity, Grid2X2, Settings, Bell, CheckCircle2, Zap, BarChart2, CalendarDays, Sparkles } from 'lucide-react';
+import { Factory, LogOut, Activity, Grid2X2, Settings, Bell, CheckCircle2, Zap, BarChart2, CalendarDays } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { DemandForecastWidget } from '../components/DemandForecastWidget';
 
@@ -48,9 +48,8 @@ export default function ConsumerDashboard() {
       {/* Sidebar */}
       <div className="w-[240px] bg-white border-r border-gray-200 flex flex-col fixed h-full z-10 shadow-sm">
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <Sparkles size={20} className="text-gray-900" />
-            <span className="font-display font-semibold tracking-tight text-gray-900">SurplusGrid</span>
+          <div className="flex items-center">
+            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
           </div>
         </div>
         <div className="flex-1 py-6 flex flex-col gap-1 px-4">
