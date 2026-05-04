@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle, X } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
 
 export default function Signin() {
   const { user, profile, loading: authLoading } = useAuth();

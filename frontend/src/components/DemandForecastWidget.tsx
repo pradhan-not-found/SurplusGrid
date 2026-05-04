@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // 1. Tell TypeScript what the Python data looks like
 interface ForecastData {
