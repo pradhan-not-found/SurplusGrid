@@ -1,20 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { SlidersHorizontal, ChevronDown, ChevronUp, Download, GitMerge } from 'lucide-react';
+import { SlidersHorizontal, ChevronDown, ChevronUp, Download, GitMerge, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProducerMatches() {
+  const { user } = useAuth();
   const [statusFilter, setStatusFilter] = useState('All');
-  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [matches, setMatches] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const mockMatches = [
-    { id: 'M-101', consumer: 'Ramesh Cold Storage', type: 'Cold storage', date: '2026-05-01', time: '11:00–14:00', mw: 1.4, status: 'Active', savings: 4200 },
-    { id: 'M-102', consumer: 'Arvind Textiles', type: 'Textile mill', date: '2026-05-01', time: '11:00–14:00', mw: 1.2, status: 'Active', savings: 3600 },
-    { id: 'M-103', consumer: 'BlueStar EV Depot', type: 'EV fleet', date: '2026-04-30', time: '09:00–13:00', mw: 1.2, status: 'Completed', savings: 4800 },
-    { id: 'M-104', consumer: 'Acme Data', type: 'Data center', date: '2026-04-29', time: '15:00–18:00', mw: 2.0, status: 'Completed', savings: 6000 },
-    { id: 'M-105', consumer: 'Zeta Manufacturing', type: 'Other', date: '2026-04-25', time: '10:00–12:00', mw: 0.8, status: 'Expired', savings: 0 },
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchMatches();
 
-  const filtered = statusFilter === 'All' ? mockMatches : mockMatches.filter(m => m.status === statusFilter);
+      // Realtime listener for new matches
+      const channel = supabase
+        .channel('realtime-producer-matches')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'matches' },
+          () => {
+            console.log('⚡ New match detected! Refreshing list...');
+            fetchMatches();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [user?.id]);
+
+  const fetchMatches = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from('matches')
+        .select(`
+          *,
+          consumer:consumer_id(full_name, company_name),
+          surplus_windows(date, start_time, end_time)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setMatches(data || []);
+    } catch (err) {
+      console.error('Error fetching matches:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtered = statusFilter === 'All' ? matches : matches.filter(m => m.status.toLowerCase() === statusFilter.toLowerCase());
+
+  if (loading) {
+    return (
+      <DashboardLayout title="Matches">
+        <div className="flex items-center justify-center h-[400px]">
+          <Loader2 className="animate-spin text-[#2563EB]" size={32} />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout title="Matches">
@@ -28,20 +79,12 @@ export default function ProducerMatches() {
               className="w-[180px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 appearance-none transition-shadow"
             >
               <option>All</option>
-              <option>Active</option>
+              <option>Pending</option>
+              <option>Accepted</option>
               <option>Completed</option>
-              <option>Expired</option>
             </select>
             <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
           </div>
-        </div>
-        <div>
-          <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Date From</label>
-          <input type="date" className="w-[160px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" />
-        </div>
-        <div>
-          <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Date To</label>
-          <input type="date" className="w-[160px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" />
         </div>
         <div className="flex gap-2 ml-auto">
           <button className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all flex items-center gap-2">
@@ -61,51 +104,55 @@ export default function ProducerMatches() {
           <thead>
             <tr className="bg-[#F8FAFC]">
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB] w-10"></th>
-              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Match ID</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Consumer</th>
-              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Facility type</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Date</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Time window</th>
-              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">MW</th>
+              <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">kW Matched</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
               <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Revenue (₹)</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((m, i) => (
+            {filtered.map((m) => (
               <React.Fragment key={m.id}>
                 <tr 
-                  onClick={() => setExpandedRow(expandedRow === i ? null : i)}
+                  onClick={() => setExpandedRow(expandedRow === m.id ? null : m.id)}
                   className="hover:bg-[#F9FAFB] transition-colors duration-100 cursor-pointer"
                 >
                   <td className="p-[14px_16px] text-[#9CA3AF] border border-[#E5E7EB]">
-                    {expandedRow === i ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    {expandedRow === m.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </td>
-                  <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB] border border-[#E5E7EB]">{m.id}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.consumer}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.type}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.date}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.time}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.mw}</td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    {m.consumer?.company_name || m.consumer?.full_name || 'Anonymous Consumer'}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    {m.surplus_windows?.date}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    {m.surplus_windows?.start_time?.substring(0, 5)}–{m.surplus_windows?.end_time?.substring(0, 5)}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.matched_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
-                    <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border ${
-                      m.status === 'Completed' || m.status === 'Active' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
-                      m.status === 'Expired' ? 'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]' :
-                      'bg-[#DBEAFE] text-[#1E40AF] border-[#BFDBFE]'
+                    <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
+                      m.status === 'accepted' || m.status === 'completed' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
+                      m.status === 'pending' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
+                      'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
                     }`}>
                       {m.status}
                     </span>
                   </td>
-                  <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">₹{m.savings}</td>
+                  <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">
+                    ₹{(m.producer_revenue_inr || 0).toLocaleString()}
+                  </td>
                 </tr>
-                {expandedRow === i && (
+                {expandedRow === m.id && (
                   <tr className="bg-[#F8FAFC]">
-                    <td colSpan={9} className="p-[20px_24px] border border-[#E5E7EB]">
+                    <td colSpan={7} className="p-[20px_24px] border border-[#E5E7EB]">
                       <div className="flex justify-between items-center text-[13px]">
                         <div className="text-[#374151] space-y-2">
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Contact:</strong> Rajesh K. (+91 9876543210)</div>
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Zone:</strong> WRLDC</div>
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Confirmed:</strong> {m.date} 08:12 AM</div>
+                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Match ID:</strong> {m.id}</div>
+                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Consumer ID:</strong> {m.consumer_id}</div>
+                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Confirmed:</strong> {new Date(m.created_at).toLocaleString()}</div>
                         </div>
                         <button className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium">
                           <Download size={13} /> Export row as CSV
@@ -118,11 +165,11 @@ export default function ProducerMatches() {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} className="p-[48px] text-center border border-[#E5E7EB]">
+                <td colSpan={7} className="p-[48px] text-center border border-[#E5E7EB]">
                   <div className="flex flex-col items-center justify-center text-[#6B7280]">
                     <GitMerge size={48} strokeWidth={1} className="text-[#D1D5DB] mb-4" />
                     <h3 className="text-[16px] font-medium text-[#374151] mb-1">No matches yet</h3>
-                    <p className="text-[14px] text-[#9CA3AF]">Your first surplus window is being matched. Check back soon.</p>
+                    <p className="text-[14px] text-[#9CA3AF]">Matches will appear here as soon as a consumer claims your surplus energy.</p>
                   </div>
                 </td>
               </tr>
@@ -133,3 +180,4 @@ export default function ProducerMatches() {
     </DashboardLayout>
   );
 }
+

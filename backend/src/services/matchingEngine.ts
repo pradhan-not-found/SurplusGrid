@@ -83,11 +83,15 @@ export async function detectOverlaps(windowId: string) {
 
             const matchedKw = Math.min(currentAvailable, consumer.flexible_load_kw);
             
-            // Calculate Savings (Dummy rates for now, can be moved to env/config)
+            // Calculate Savings (using env variables)
             const gridRate = Number(process.env.GRID_PRICE_INR_PER_KW) || 8.5;
             const surplusRate = Number(process.env.SURPLUS_PRICE_INR_PER_KW) || 6.0;
+            
+            console.log(`💰 PRICING DEBUG: Grid=${gridRate}, Surplus=${surplusRate}, SavingsPerKw=${gridRate - surplusRate}`);
+
             const savings = matchedKw * (gridRate - surplusRate);
             const revenue = matchedKw * surplusRate;
+
 
             // 4. Create the match record
             const { error: matchError } = await supabase
