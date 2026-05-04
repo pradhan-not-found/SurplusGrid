@@ -28,10 +28,33 @@ export default function ProducerWindows() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      fetchWindows();
-    }
+    if (!user) return;
+    
+    fetchWindows();
+
+    // Set up Realtime listener for this producer's windows
+    const channel = supabase
+      .channel('realtime-producer-windows')
+      .on(
+        'postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'surplus_windows',
+          filter: `producer_id=eq.${user.id}`
+        }, 
+        () => {
+          console.log('⚡ Surplus window update detected! Refreshing list...');
+          fetchWindows();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user?.id]);
+
 
   const fetchWindows = async () => {
     if (!user) return;

@@ -33,19 +33,19 @@ export async function detectOverlaps(windowId: string) {
         return;
     }
 
-    // Fallback: If available_kw is null, initialize it with predicted_kw
-    if (window.available_kw === null || window.available_kw === undefined) {
+    // 1.5 Initialize available_kw if null or undefined
+    let currentAvailable = window.available_kw;
+    if (currentAvailable === null || currentAvailable === undefined) {
         console.log('[MatchingEngine] available_kw was null, initializing with predicted_kw');
-        window.available_kw = window.predicted_kw;
+        currentAvailable = window.predicted_kw;
         
-        // Save this initialization back to the DB so the UI stays in sync
         await supabase
             .from('surplus_windows')
-            .update({ available_kw: window.predicted_kw })
+            .update({ available_kw: currentAvailable })
             .eq('id', window.id);
     }
 
-    if (window.available_kw <= 0 || window.status === 'expired') {
+    if (currentAvailable <= 0 || window.status === 'expired') {
         console.log('[MatchingEngine] Window is not available for matching.');
         return;
     }
@@ -67,7 +67,7 @@ export async function detectOverlaps(windowId: string) {
     console.log(`[MatchingEngine] Found ${consumers?.length} potential consumers in ${producerLocation}`);
 
     for (const consumer of consumers as ConsumerProfile[]) {
-        if (window.available_kw <= 0) break;
+        if (currentAvailable <= 0) break;
 
         // Normalize times to HH:mm for reliable string comparison
         const winStart = window.start_time.substring(0, 5);
@@ -81,7 +81,7 @@ export async function detectOverlaps(windowId: string) {
         if (isTimeMatch) {
             console.log(`[MatchingEngine] Match found! Consumer: ${consumer.id}`);
 
-            const matchedKw = Math.min(window.available_kw, consumer.flexible_load_kw);
+            const matchedKw = Math.min(currentAvailable, consumer.flexible_load_kw);
             
             // Calculate Savings (Dummy rates for now, can be moved to env/config)
             const gridRate = Number(process.env.GRID_PRICE_INR_PER_KW) || 8.5;
@@ -108,34 +108,29 @@ export async function detectOverlaps(windowId: string) {
             }
 
             // 5. Update window availability
-            const newAvailableKw = window.available_kw - matchedKw;
-            const newStatus = newAvailableKw <= 0 ? 'matched' : 'partial';
-
-            const { error: updateError } = await supabase
+            currentAvailable = currentAvailable - matchedKw;
+            
+            // Temporary update inside loop
+            await supabase
                 .from('surplus_windows')
-                .update({ 
-                    available_kw: newAvailableKw,
-                    status: newStatus
-                })
+                .update({ available_kw: currentAvailable })
                 .eq('id', window.id);
-
-            if (updateError) {
-                console.error('[MatchingEngine] Error updating window:', updateError);
-            } else {
-                window.available_kw = newAvailableKw;
-                console.log(`[MatchingEngine] Window updated: ${newStatus}, Remaining: ${newAvailableKw}kW`);
-            }
+                
+            console.log(`[MatchingEngine] Match recorded, Remaining: ${currentAvailable}kW`);
         }
     }
 
     // FINAL SYNC: Ensure the final status is accurately reflected after checking all consumers
-    const finalStatus = window.available_kw <= 0 
+    const finalStatus = currentAvailable <= 0 
         ? 'matched' 
-        : (window.available_kw < window.predicted_kw ? 'partial' : 'seeking');
+        : (currentAvailable < window.predicted_kw ? 'partial' : 'seeking');
 
     await supabase
         .from('surplus_windows')
-        .update({ status: finalStatus })
+        .update({ 
+            status: finalStatus,
+            available_kw: currentAvailable 
+        })
         .eq('id', window.id);
 
     console.log(`[MatchingEngine] Final automation sync: Window status set to '${finalStatus}'`);

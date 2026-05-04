@@ -21,10 +21,34 @@ export default function ConsumerOverview() {
   const [shifts, setShifts] = useState<any[]>([]);
 
   useEffect(() => {
-    if (user) {
-      fetchConsumerData();
-    }
+    if (!user) return;
+    
+    // Initial fetch
+    fetchConsumerData();
+
+    // Set up Realtime listener for this consumer's matches
+    const channel = supabase
+      .channel('realtime-matches')
+      .on(
+        'postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'matches',
+          filter: `consumer_id=eq.${user.id}`
+        }, 
+        () => {
+          console.log('⚡ Realtime match update detected! Refreshing data...');
+          fetchConsumerData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user?.id]);
+
 
   const fetchConsumerData = async () => {
     if (!user) return;
