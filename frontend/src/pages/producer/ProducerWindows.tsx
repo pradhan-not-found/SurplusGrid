@@ -10,6 +10,7 @@ interface Window {
   start_time: string;
   end_time: string;
   predicted_kw: number;
+  available_kw: number;
   status: string;
 }
 
@@ -220,7 +221,8 @@ export default function ProducerWindows() {
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Date</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Start</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">End</th>
-                <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Surplus (kW)</th>
+                <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Total (kW)</th>
+                <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Available (kW)</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Action</th>
               </tr>
@@ -232,6 +234,7 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.end_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.predicted_kw}</td>
+                  <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB] border border-[#E5E7EB]">{w.available_kw ?? w.predicted_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
                     <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
                       w.status === 'matched' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
