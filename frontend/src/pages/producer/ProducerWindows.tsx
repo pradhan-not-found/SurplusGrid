@@ -103,7 +103,11 @@ export default function ProducerWindows() {
     if (data) {
       // AUTO-TRIGGER: Tell the backend to start matching instantly
       try {
-        fetch('http://localhost:5001/api/trigger-match', {
+        const apiUrl = import.meta.env.PROD 
+          ? '/api/trigger-match' 
+          : 'http://localhost:5001/api/trigger-match';
+
+        fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ windowId: data.id })
@@ -111,6 +115,7 @@ export default function ProducerWindows() {
       } catch (err) {
         console.error('Auto-trigger failed, but window was created:', err);
       }
+
 
       setWindows([data, ...windows]);
       setSuccess(true);
