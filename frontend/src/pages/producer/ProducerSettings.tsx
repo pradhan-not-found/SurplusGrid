@@ -1,33 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
 import { Eye, Copy, Check, CheckCircle2, Send } from 'lucide-react';
 
+import { supabase } from '../../lib/supabase';
+
 export default function ProducerSettings() {
   const { user, profile } = useAuth();
   
-  // States
   const [msg1, setMsg1] = useState('');
   const [msg2, setMsg2] = useState('');
   const [msg3, setMsg3] = useState('');
 
-  const [apiKey, setApiKey] = useState('sk_live_1234567890abcdef');
+  const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [companyName, setCompanyName] = useState(profile?.company_name || '');
+  const [phone, setPhone] = useState(user?.user_metadata?.phone || '');
+  const [stateLoc, setStateLoc] = useState(profile?.state_location || '');
+  const [gstNumber, setGstNumber] = useState(user?.user_metadata?.gst_number || '');
+
+  const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [webhook, setWebhook] = useState('https://api.myfarm.com/surplus-webhook');
+  const [webhook, setWebhook] = useState(user?.user_metadata?.webhook_url || '');
 
   const [emailAlerts, setEmailAlerts] = useState(true);
-  const [smsAlerts, setSmsAlerts] = useState(true);
-  const [dailyDigest, setDailyDigest] = useState(true);
-  const [weeklySummary, setWeeklySummary] = useState(false);
+  const [smsAlerts, setSmsAlerts] = useState(user?.user_metadata?.sms_alerts ?? true);
+  const [dailyDigest, setDailyDigest] = useState(user?.user_metadata?.daily_digest ?? true);
+  const [weeklySummary, setWeeklySummary] = useState(user?.user_metadata?.weekly_summary ?? false);
 
-  // Handlers
-  const saveDetails = () => {
-    setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
+  useEffect(() => {
+    if (!user) return;
+    const fetchSettings = async () => {
+      const { data } = await supabase.from('user_settings').select('*').eq('user_id', user.id).single();
+      if (data) {
+        setEmailAlerts(data.email_alerts_enabled);
+        if (data.api_key) setApiKey(data.api_key);
+      }
+    };
+    fetchSettings();
+  }, [user]);
+
+  const saveDetails = async () => {
+    if (!user) return;
+    try {
+      await supabase.from('profiles').update({
+        full_name: fullName,
+        company_name: companyName,
+        state_location: stateLoc
+      }).eq('id', user.id);
+      
+      await supabase.auth.updateUser({
+        data: { phone, gst_number: gstNumber }
+      });
+      
+      setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
+    } catch (e) {
+      alert('Error saving details');
+    }
   };
 
-  const regenKey = () => {
-    setApiKey('sk_live_' + Math.random().toString(36).substring(2, 15));
+  const regenKey = async () => {
+    if (!user) return;
+    const newKey = 'sk_live_' + Math.random().toString(36).substring(2, 15);
+    setApiKey(newKey);
+    await supabase.from('user_settings').update({ api_key: newKey }).eq('user_id', user.id);
     alert('Old key is now invalid');
   };
 
@@ -37,7 +73,9 @@ export default function ProducerSettings() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const saveApi = () => {
+  const saveApi = async () => {
+    if (!user) return;
+    await supabase.auth.updateUser({ data: { webhook_url: webhook } });
     setMsg2('Webhook URL saved'); setTimeout(() => setMsg2(''), 3000);
   };
 
@@ -45,7 +83,10 @@ export default function ProducerSettings() {
     setMsg2('POST sent · 200 OK'); setTimeout(() => setMsg2(''), 3000);
   };
 
-  const savePrefs = () => {
+  const savePrefs = async () => {
+    if (!user) return;
+    await supabase.from('user_settings').update({ email_alerts_enabled: emailAlerts }).eq('user_id', user.id);
+    await supabase.auth.updateUser({ data: { sms_alerts: smsAlerts, daily_digest: dailyDigest, weekly_summary: weeklySummary } });
     setMsg3('Preferences saved'); setTimeout(() => setMsg3(''), 3000);
   };
 
@@ -63,7 +104,7 @@ export default function ProducerSettings() {
 
   return (
     <DashboardLayout title="Settings">
-      <div className="max-w-[720px]">
+      <div className="max-w-[720px] pb-[40px]">
         
         {/* Section 1 */}
         <section className="bg-white p-[24px] border border-[#E5E7EB] rounded-[12px] mb-[20px] shadow-none">
@@ -74,12 +115,12 @@ export default function ProducerSettings() {
           <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
           
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.full_name || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email || ''} disabled /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.company_name || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.state_location || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={fullName} onChange={e=>setFullName(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" value={user?.email || ''} disabled /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={companyName} onChange={e=>setCompanyName(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={stateLoc} onChange={e=>setStateLoc(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">GST number</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={gstNumber} onChange={e=>setGstNumber(e.target.value)} /></div>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>

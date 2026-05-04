@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
 import { CheckCircle2 } from 'lucide-react';
@@ -12,36 +12,84 @@ export default function ConsumerSettings() {
   const [msg2, setMsg2] = useState('');
   const [msg3, setMsg3] = useState('');
 
-  const [peakLoad, setPeakLoad] = useState('');
-  const [flexLoad, setFlexLoad] = useState('');
+  const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [companyName, setCompanyName] = useState(profile?.company_name || '');
+  const [phone, setPhone] = useState(user?.user_metadata?.phone || '');
+  const [facilityType, setFacilityType] = useState(user?.user_metadata?.facility_type || '');
+  const [stateLoc, setStateLoc] = useState(profile?.state_location || '');
+
+  const [peakLoad, setPeakLoad] = useState(profile?.peak_load_kw || '');
+  const [flexLoad, setFlexLoad] = useState(profile?.flexible_load_kw || '');
   const [shiftHours, setShiftHours] = useState<string[]>(profile?.shiftable_hours || []);
 
-  const [pushNotify, setPushNotify] = useState(true);
+  const [pushNotify, setPushNotify] = useState(user?.user_metadata?.push_notify ?? true);
   const [emailAlerts, setEmailAlerts] = useState(true);
-  const [smsAlerts, setSmsAlerts] = useState(false);
-  const [threshold, setThreshold] = useState('5000');
+  const [smsAlerts, setSmsAlerts] = useState(user?.user_metadata?.sms_alerts ?? false);
+  const [threshold, setThreshold] = useState(user?.user_metadata?.threshold || '5000');
 
-  const saveDetails = () => {
-    setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
+  useEffect(() => {
+    if (!user) return;
+    const fetchSettings = async () => {
+      const { data } = await supabase.from('user_settings').select('*').eq('user_id', user.id).single();
+      if (data) {
+        setEmailAlerts(data.email_alerts_enabled);
+      }
+    };
+    fetchSettings();
+  }, [user]);
+
+  const saveDetails = async () => {
+    if (!user) return;
+    try {
+      await supabase.from('profiles').update({
+        full_name: fullName,
+        company_name: companyName,
+        state_location: stateLoc
+      }).eq('id', user.id);
+      
+      await supabase.auth.updateUser({
+        data: { phone, facility_type: facilityType }
+      });
+      
+      setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
+    } catch (e) {
+      alert('Error saving details');
+    }
   };
 
   const savePrefs = async () => {
+    if (!user) return;
     if (Number(flexLoad) > Number(peakLoad)) {
       alert("Flexible load cannot exceed peak load");
       return;
     }
     try {
-      if (user) {
-        await supabase.from('profiles').update({ shiftable_hours: shiftHours } as any).eq('id', user.id);
-      }
+      await supabase.from('profiles').update({ 
+        peak_load_kw: Number(peakLoad),
+        flexible_load_kw: Number(flexLoad),
+        shiftable_hours: shiftHours 
+      }).eq('id', user.id);
       setMsg2('Saved'); setTimeout(() => setMsg2(''), 3000);
     } catch (err) {
       alert('Failed to update preferences');
     }
   };
 
-  const saveNotify = () => {
-    setMsg3('Saved'); setTimeout(() => setMsg3(''), 3000);
+  const saveNotify = async () => {
+    if (!user) return;
+    try {
+      await supabase.from('user_settings').update({
+        email_alerts_enabled: emailAlerts
+      }).eq('user_id', user.id);
+
+      await supabase.auth.updateUser({
+        data: { push_notify: pushNotify, sms_alerts: smsAlerts, threshold }
+      });
+      
+      setMsg3('Saved'); setTimeout(() => setMsg3(''), 3000);
+    } catch (e) {
+      alert('Error saving notifications');
+    }
   };
 
   const toggleHour = (hr: string) => {
@@ -74,12 +122,12 @@ export default function ConsumerSettings() {
           <div className="h-[1px] bg-[#F1F5F9] mb-[16px]" />
           
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.full_name || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" defaultValue={user?.email || ''} disabled /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.company_name || ''} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Facility type</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue={profile?.state_location || ''} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Full name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={fullName} onChange={e=>setFullName(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" value={user?.email || ''} disabled /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={companyName} onChange={e=>setCompanyName(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Facility type</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={facilityType} onChange={e=>setFacilityType(e.target.value)} /></div>
+            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={stateLoc} onChange={e=>setStateLoc(e.target.value)} /></div>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={saveDetails} className="h-[40px] px-[20px] bg-[#2563EB] text-white rounded-[8px] font-medium text-[14px] hover:bg-[#1D4ED8] active:scale-98 transition-all">Save changes</button>
@@ -138,7 +186,7 @@ export default function ConsumerSettings() {
             
             {smsAlerts && (
               <div className="pl-[60px] pt-2 animate-in slide-in-from-top-2 duration-200">
-                <input type="tel" className="w-[260px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" defaultValue="" placeholder="Phone number" />
+                <input type="tel" className="w-[260px] h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Phone number" />
               </div>
             )}
             
