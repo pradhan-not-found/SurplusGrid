@@ -75,7 +75,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
 
   const links = profile.role === 'producer' ? producerLinks : consumerLinks;
   
-  const userName = profile.full_name || 'User';
+  const userName = profile?.full_name || user?.user_metadata?.full_name || profile?.company_name || 'User';
   const initials = userName.split(' ').map((n: string) => n[0]).join('').substring(0,2).toUpperCase();
 
   return (
@@ -83,8 +83,8 @@ export default function DashboardLayout({ children, title }: { children: React.R
       {/* Sidebar */}
       <div className="w-[260px] bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
         <div className="pt-[32px] px-[24px] pb-[12px]">
-          <div className="flex items-center gap-2 mb-6">
-            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
+          <div className="flex items-center mb-6">
+            <img src="/logo.png" alt="SurplusGrid" className="w-[130px] h-auto object-contain" />
           </div>
           
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F4F4F5] text-[#71717A] border border-[#E5E7EB] mb-6">

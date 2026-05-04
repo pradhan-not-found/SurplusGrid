@@ -49,7 +49,7 @@ export default function ConsumerDashboard() {
       <div className="w-[240px] bg-white border-r border-gray-200 flex flex-col fixed h-full z-10 shadow-sm">
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
           <div className="flex items-center">
-            <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
+            <img src="/logo.png" alt="SurplusGrid" className="w-[130px] h-auto object-contain" />
           </div>
         </div>
         <div className="flex-1 py-6 flex flex-col gap-1 px-4">

@@ -18,7 +18,7 @@ export default function Dashboard() {
                 <ArrowLeft size={20} />
               </Link>
               <div className="flex items-center">
-                <img src="/logo.png" alt="SurplusGrid" className="w-[140px] object-contain" />
+                <img src="/logo.png" alt="SurplusGrid" className="w-[130px] h-auto object-contain" />
               </div>
             </div>
             <div className="flex bg-gray-100 p-1 rounded-lg">
