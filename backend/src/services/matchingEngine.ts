@@ -21,10 +21,10 @@ interface ConsumerProfile {
 export async function detectOverlaps(windowId: string) {
     console.log(`[MatchingEngine] Starting overlap detection for window: ${windowId}`);
 
-    // 1. Fetch the surplus window details
+    // 1. Fetch the surplus window details with producer source info
     const { data: window, error: windowError } = await supabase
         .from('surplus_windows')
-        .select('*, producer:producer_id(state_location)')
+        .select('*, producer:producer_id(state_location, energy_source)')
         .eq('id', windowId)
         .single();
 
@@ -32,6 +32,9 @@ export async function detectOverlaps(windowId: string) {
         console.error('[MatchingEngine] Error fetching window:', windowError);
         return;
     }
+
+    const energySource = (window.producer as any).energy_source || 'Solar';
+    const carbonMultiplier = energySource === 'Wind' ? 0.81 : (energySource === 'Solar' ? 0.78 : 0.75);
 
     // 1.5 Initialize available_kw if null or undefined
     let currentAvailable = window.available_kw;
@@ -79,22 +82,20 @@ export async function detectOverlaps(windowId: string) {
         });
 
         if (isTimeMatch) {
-            console.log(`[MatchingEngine] Match found! Consumer: ${consumer.id}`);
+            console.log(`[MatchingEngine] Match found! Consumer: ${consumer.id} (Source: ${energySource})`);
 
             const matchedKw = Math.min(currentAvailable, consumer.flexible_load_kw);
             
             // Calculate Savings (using env variables)
             const gridRate = Number(process.env.GRID_PRICE_INR_PER_KW) || 8.5;
-            const surplusRate = Number(process.env.SURPLUS_PRICE_INR_PER_KW) || 6.0;
+            const surplusRate = Number(process.env.SURPLUS_PRICE_INR_PER_KW) || 4.0;
             
-            console.log(`💰 PRICING DEBUG: Grid=${gridRate}, Surplus=${surplusRate}, SavingsPerKw=${gridRate - surplusRate}`);
-
             const savings = matchedKw * (gridRate - surplusRate);
             const revenue = matchedKw * surplusRate;
-            const carbonOffset = matchedKw * 0.77; // 0.77kg CO2 saved per kW matched
+            const carbonOffset = matchedKw * carbonMultiplier;
             
             console.log(`💰 PRICING DEBUG: Grid=${gridRate}, Surplus=${surplusRate}, SavingsPerKw=${gridRate - surplusRate}`);
-            console.log(`🌿 SUSTAINABILITY DEBUG: Carbon Offset = ${carbonOffset.toFixed(2)} kg`);
+            console.log(`🌿 SUSTAINABILITY DEBUG: Source=${energySource}, Offset=${carbonOffset.toFixed(2)} kg`);
 
             // 4. Create the match record
             const { error: matchError } = await supabase
@@ -109,6 +110,7 @@ export async function detectOverlaps(windowId: string) {
                     confidence_score: 'High',
                     carbon_offset_kg: carbonOffset
                 });
+
 
 
             if (matchError) {
