@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Zap, TrendingUp, Eye, EyeOff, Loader2, AlertTriangle, X } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function Signin() {
   const { user, profile, loading: authLoading } = useAuth();
@@ -34,20 +35,20 @@ export default function Signin() {
     
     setLoading(true);
     
-    // Simulate an 800ms network delay
-    setTimeout(() => {
-      // Save a mock user to localStorage
-      localStorage.setItem('surplusgrid_user', JSON.stringify({ 
-        id: "mock-1", 
-        email: email, 
-        role: "Consumer", 
-        onboardingComplete: true 
-      }));
-      
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setErrorMsg(error.message);
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || 'An unexpected error occurred during signin.');
+    } finally {
       setLoading(false);
-      // Redirect to dashboard
-      navigate('/dashboard/consumer');
-    }, 800);
+    }
   };
 
   return (
