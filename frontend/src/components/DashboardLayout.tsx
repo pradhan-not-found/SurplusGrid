@@ -81,19 +81,21 @@ export default function DashboardLayout({ children, title }: { children: React.R
   return (
     <div className="flex h-screen bg-[#F8FAFC] font-body text-[#0D1117]">
       {/* Sidebar */}
-      <div className="w-[240px] bg-[#0D1117] text-[#94A3B8] flex flex-col shrink-0 border-r border-[#1E293B]">
-        <div className="pt-[24px] px-[20px] pb-[8px]">
-          <img src="/logo.png" alt="SurplusGrid" className="w-[120px] mb-5" />
-          <div className="mt-2">
-            <span className="bg-[#1E2E4A] text-[#60A5FA] border border-[#1D4ED8] font-['Helvetica'] text-[11px] py-[3px] px-[10px] rounded-[100px] uppercase inline-block">
-              {profile.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
-            </span>
+      <div className="w-[260px] bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
+        <div className="pt-[32px] px-[24px] pb-[12px]">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-[#09090B] rounded-lg flex items-center justify-center">
+              <Zap size={18} className="text-white" />
+            </div>
+            <span className="text-[18px] font-bold text-[#09090B] tracking-tight">SurplusGrid</span>
+          </div>
+          
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F4F4F5] text-[#71717A] border border-[#E5E7EB] mb-6">
+            {profile.role === 'producer' ? 'Energy Producer' : 'C&I Consumer'}
           </div>
         </div>
         
-        <div className="h-[1px] bg-[#F1F5F9] mx-5 my-4" />
-        
-        <div className="px-5 mb-3 text-[11px] font-semibold text-[#A1A1AA] tracking-wider uppercase">
+        <div className="px-6 mb-3 text-[11px] font-semibold text-[#A1A1AA] tracking-wider uppercase">
           Platform
         </div>
 
@@ -105,36 +107,38 @@ export default function DashboardLayout({ children, title }: { children: React.R
               <Link 
                 key={link.path} 
                 to={link.path}
-                className={`flex items-center gap-3 h-[36px] px-3 transition-all duration-150 relative
+                className={`flex items-center gap-3 h-[40px] px-4 rounded-[8px] transition-all duration-150
                   ${isActive 
-                    ? 'bg-[rgba(37,99,235,0.15)] text-[#94A3B8] font-medium border-l-[2px] border-[#2563EB]' 
-                    : 'text-[#94A3B8] hover:bg-white/5 hover:text-white border-l-[2px] border-transparent'}`}
+                    ? 'bg-[#F4F4F5] text-[#09090B] font-semibold shadow-sm' 
+                    : 'text-[#71717A] hover:bg-[#FAFAFA] hover:text-[#09090B]'}`}
               >
-                <Icon size={16} className={isActive ? 'text-[#3B82F6]' : 'text-[#64748B]'} />
-                <span className="text-[13px]">{link.label}</span>
+                <Icon size={18} className={isActive ? 'text-[#09090B]' : 'text-[#A1A1AA]'} />
+                <span className="text-[14px]">{link.label}</span>
               </Link>
             );
           })}
         </nav>
 
+
         <div className="border-t border-[#E5E7EB] mt-auto">
-          <div className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#F0F7FF] text-[#2563EB] flex items-center justify-center text-[13px] font-medium shrink-0">
+          <div className="p-5 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#F4F4F5] text-[#09090B] flex items-center justify-center text-[13px] font-bold shrink-0 border border-[#E5E7EB]">
               {initials}
             </div>
             <div className="overflow-hidden">
-              <div className="text-[13px] font-medium text-[#0D1117] truncate">{userName}</div>
-              <div className="text-[11px] text-[#6B7280] truncate">{user.email}</div>
+              <div className="text-[13px] font-semibold text-[#09090B] truncate">{userName}</div>
+              <div className="text-[11px] text-[#71717A] truncate">{user.email}</div>
             </div>
           </div>
           <button 
             onClick={signOut}
-            className="w-full flex items-center gap-[10px] px-[28px] py-3 text-[13px] text-[#6B7280] hover:text-[#EF4444] hover:bg-[#F9FAFB] group transition-colors duration-120"
+            className="w-full flex items-center gap-[10px] px-5 py-4 text-[13px] text-[#71717A] hover:text-[#EF4444] hover:bg-[#FFF5F5] group transition-colors border-t border-[#F4F4F5]"
           >
-            <LogOut size={15} className="group-hover:text-[#EF4444] transition-colors" />
+            <LogOut size={16} className="group-hover:text-[#EF4444] transition-colors" />
             Sign out
           </button>
         </div>
+
       </div>
 
       {/* Main Content */}
