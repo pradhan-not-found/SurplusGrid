@@ -27,7 +27,8 @@ export default function Signin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
+    setErrorMsg(null);
+    
     if (!email || !password) {
       setErrorMsg('Please enter both email and password.');
       return;
@@ -36,20 +37,25 @@ export default function Signin() {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        setErrorMsg(error.message);
-      }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'An unexpected error occurred during signin.');
+      if (error) throw error;
+
+      // The redirect will be handled by the useEffect/Navigate logic at the top of the component
+      // which monitors the 'user' state from AuthContext.
+      
+    } catch (error: any) {
+      console.error('Login error:', error);
+      setErrorMsg(error.message || 'Failed to sign in. Please check your credentials.');
     } finally {
       setLoading(false);
     }
+
   };
+
 
   return (
     <div className="flex min-h-screen bg-white">
