@@ -29,6 +29,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
 
   useEffect(() => {
     if (!user) return;
+    
     const fetchNotifications = async () => {
       const { data, error } = await supabase
         .from('notifications')
@@ -36,13 +37,36 @@ export default function DashboardLayout({ children, title }: { children: React.R
         .eq('user_id', user.id)
         .eq('is_read', false)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
       if (!error && data) {
         setNotifications(data);
       }
     };
+
     fetchNotifications();
+
+    // ⚡ REALTIME NOTIFICATIONS
+    const channel = supabase
+      .channel(`user-notifications-${user.id}`)
+      .on(
+        'postgres_changes',
+        { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('🔔 New notification received!', payload.new);
+          setNotifications(prev => [payload.new, ...prev].slice(0, 10));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user?.id]);
 
   if (!user || !profile) {

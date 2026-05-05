@@ -119,6 +119,9 @@ export async function detectOverlaps(windowId: string) {
                 continue;
             }
 
+            // 📢 NOTIFICATION TRIGGER: Alert the consumer immediately
+            await NotificationService.notifyNewMatch(consumer.id, matchedKw, savings);
+
             // 5. Update window availability
             currentAvailable = currentAvailable - matchedKw;
             

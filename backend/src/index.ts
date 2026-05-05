@@ -7,6 +7,7 @@ import { BlockchainService } from './services/blockchainService';
 import { ExpiryService } from './services/expiryService';
 import { IotService } from './services/iotService';
 import { ReportService } from './services/reportService';
+import { NotificationService } from './services/notificationService';
 
 dotenv.config();
 
@@ -41,6 +42,18 @@ supabase
                         })
                         .eq('id', match.id);
                     console.log(`🔒 Oracle: Contract LOCKED for Match ${match.id}`);
+
+                    // 📢 NOTIFICATION: Alert the producer about blockchain verification
+                    // We fetch the producer ID from the window (linked via window_id)
+                    const { data: win } = await supabase.from('surplus_windows').select('producer_id').eq('id', match.window_id).single();
+                    if (win) {
+                        await NotificationService.send(
+                            win.producer_id,
+                            '🔒 Trade Blockchain-Verified',
+                            `Match #${match.id.substring(0, 8)} has been immutably recorded. Revenue is now guaranteed.`,
+                            'match'
+                        );
+                    }
                 }
             }
         }
