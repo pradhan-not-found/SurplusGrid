@@ -10,6 +10,7 @@ import { ReportService } from './services/reportService';
 import { NotificationService } from './services/notificationService';
 import { OptimizationService } from './services/optimizationService';
 import { WeatherService } from './services/weatherService';
+import { CronService } from './services/cronService';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ BlockchainService.init();
 ExpiryService.start();
 IotService.start();
 ReportService.start();
+CronService.startScheduler();
 
 // ⛓️ BLOCKCHAIN CONTRACT ORACLE
 // Listens for 'accepted' status and executes the Smart Contract
