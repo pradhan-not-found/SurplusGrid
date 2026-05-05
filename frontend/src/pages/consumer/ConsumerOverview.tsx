@@ -55,7 +55,19 @@ export default function ConsumerOverview() {
     setLoading(true);
 
     try {
-      // 1. Fetch all matches for this consumer
+      // 1. Try to fetch pre-calculated report first
+      const { data: report } = await supabase
+        .from('reports')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('report_type', 'monthly_summary')
+        .single();
+
+      if (report && report.heatmap_data) {
+        setHeatmap(report.heatmap_data);
+      }
+
+      // 2. Fetch all matches for this consumer
       const { data: matches, error } = await supabase
         .from('matches')
         .select(`
@@ -211,6 +223,43 @@ export default function ConsumerOverview() {
           </div>
         </div>
       </div>
+
+      {Object.keys(heatmap).length > 0 && (
+        <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-6 mb-[40px] shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight">Grid Intelligence</h3>
+              <p className="text-[13px] text-[#71717A]">Your peak energy trading hours over the last 30 days.</p>
+            </div>
+            <div className="flex items-center gap-2 text-[12px] font-medium text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#D1FAE5]">
+              <Zap size={14} /> Analytics Live
+            </div>
+          </div>
+          <div className="flex items-end justify-between h-[120px] gap-1 px-2 border-b border-[#F4F4F5] pb-2">
+            {Array.from({ length: 24 }).map((_, hour) => {
+              const count = heatmap[hour] || 0;
+              const max = Math.max(...Object.values(heatmap));
+              const height = max > 0 ? (count / max) * 100 : 0;
+              return (
+                <div key={hour} className="group relative flex-1 flex flex-col items-center">
+                  <div 
+                    className="w-full bg-[#09090B] rounded-t-[2px] transition-all duration-500 ease-out hover:bg-[#2563EB]"
+                    style={{ height: `${Math.max(height, 2)}%`, minHeight: count > 0 ? '4px' : '0' }}
+                  />
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#09090B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    {hour}:00 · {count} matches
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-between mt-2 px-2">
+            <span className="text-[10px] font-medium text-[#A1A1AA]">00:00</span>
+            <span className="text-[10px] font-medium text-[#A1A1AA]">12:00</span>
+            <span className="text-[10px] font-medium text-[#A1A1AA]">23:00</span>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight">Pending alerts</h3>

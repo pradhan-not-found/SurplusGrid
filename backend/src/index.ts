@@ -6,6 +6,7 @@ import { detectOverlaps } from './services/matchingEngine';
 import { BlockchainService } from './services/blockchainService';
 import { ExpiryService } from './services/expiryService';
 import { IotService } from './services/iotService';
+import { ReportService } from './services/reportService';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ dotenv.config();
 BlockchainService.init();
 ExpiryService.start();
 IotService.start();
+ReportService.start();
 
 // ⛓️ BLOCKCHAIN CONTRACT ORACLE
 // Listens for 'accepted' status and executes the Smart Contract
