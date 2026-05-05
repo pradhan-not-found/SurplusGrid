@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { BlockchainService } from './blockchainService';
+import { NotificationService } from './notificationService';
 
 interface SurplusWindow {
     id: string;

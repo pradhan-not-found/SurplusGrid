@@ -47,6 +47,7 @@ export default function DashboardLayout({ children, title }: { children: React.R
     fetchNotifications();
 
     // ⚡ REALTIME NOTIFICATIONS
+    console.log('🔌 Initiating Realtime for User:', user.id);
     const channel = supabase
       .channel(`user-notifications-${user.id}`)
       .on(
@@ -58,13 +59,16 @@ export default function DashboardLayout({ children, title }: { children: React.R
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          console.log('🔔 New notification received!', payload.new);
+          console.log('🔔 LIVE: New notification received!', payload.new);
           setNotifications(prev => [payload.new, ...prev].slice(0, 10));
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Subscription Status:', status);
+      });
 
     return () => {
+      console.log('🔌 Closing Realtime Channel');
       supabase.removeChannel(channel);
     };
   }, [user?.id]);

@@ -60,6 +60,27 @@ supabase
     )
     .subscribe();
 
+// ⚡ AUTOMATIC MATCHING ENGINE
+// Listens for new Surplus Windows and triggers the matching engine instantly
+supabase
+    .channel('autonomous-matching')
+    .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'surplus_windows' },
+        async (payload) => {
+            const window = payload.new;
+            console.log(`🚀 Autonomous Engine: New window detected (${window.id}). Finding matches...`);
+            
+            try {
+                // Run matching logic automatically
+                await detectOverlaps(window.id);
+            } catch (error) {
+                console.error(`❌ Autonomous Engine Error for window ${window.id}:`, error);
+            }
+        }
+    )
+    .subscribe();
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
