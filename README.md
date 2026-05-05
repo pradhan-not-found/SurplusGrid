@@ -96,6 +96,68 @@ The UI/UX is built on the **ZeroUI Design System**, prioritizing data density an
 
 ---
 
+## 🗺️ Problem Statement Alignment & Team Roadmap
+
+### 1. Problem Statement Alignment Report
+
+#### ✅ What is Perfectly Aligned (We Nailed This)
+**The Core Loop:**
+* Producers report surplus windows (`ProducerWindows.tsx`).
+* Consumers define flexible load schedules (`ConsumerSchedule.tsx`).
+* The backend matching logic automatically pairs supply with demand.
+* The Consumer gets a notification ("Save ₹X this week") inside `ConsumerAlerts.tsx`.
+* Dashboards prove the business saved money and the producer avoided curtailment.
+
+**Week 3 & Week 4 Action Plan:** You have a complete dual-login system (Producer/Consumer dashboards) and a rule-based matching engine, exactly as the PS outlined ("Start rule-based, not ML").
+
+**The Moat (Carbon Credits):** We heavily focused on the transaction data translating to Carbon Offset (kg/TCO2) on both dashboards, proving grid impact.
+
+#### 🌟 What is EXTRA (Overachieved)
+You went beyond the basic PS to make the platform enterprise-grade and transparent:
+* **Blockchain Oracle / Smart Contracts:** The PS only mentioned "transaction data for carbon credits". We actually built a simulated on-chain verification system (`blockchain_tx_hash` and `LOCKED` states) with glowing "Blockchain Verified" badges. This makes the Carbon Credit claim 10x stronger for judges.
+* **IoT Edge Simulation:** We added real-time latency checks and "IoT Triggered" states to simulate real-world physical machinery shifting its load.
+* **High-Fidelity Apple/Enterprise UI:** The design aesthetics far exceed a standard hackathon MVP.
+
+#### ⚠️ What is "Missing" or Different (Needs your decision)
+* **The Backend Tech Stack (Python/FastAPI vs. Node.js):**
+  * *PS says:* Backend: FastAPI (Python), ML Layer: Prophet/LSTM.
+  * *What we have:* We built a Node.js backend using a Rule-Based algorithm.
+  * *Why it's okay:* The PS explicitly states in Week 3: "Start rule-based, not ML." So for the MVP, our Node.js rule-based engine is perfectly acceptable.
+* **Twilio SMS / Firebase Push Notifications:**
+  * *PS says:* Twilio SMS for factory floor managers.
+  * *What we have:* We built a "Communication Engine" table in the UI that shows SMS/Emails were delivered, but it doesn't actually ping a real phone number via the Twilio API.
+* **Real Weather/POSOCO APIs:**
+  * *PS says:* Connect to Open Energy Data / Weather APIs.
+  * *What we have:* We built a simulated backend endpoint (`/api/weather/Maharashtra`) that returns realistic mock data so the demo never crashes during a pitch.
+
+---
+
+### 2. Division of Work (Easy Language Roadmap)
+
+Here is a simple breakdown of what each team member should focus on to move from this MVP to the final Phase 2 Product.
+
+#### 🗄️ Database (DB) Role
+* **Done:** Built the tables for matches and users in Supabase. Set up real-time updates so the dashboard refreshes automatically without clicking reload.
+* **To Do Next:** Move the heavy energy data to **TimescaleDB**. Set up automatic backups so we don't lose data.
+* **The Cool Extra Stuff:** Manage the "Blockchain Hash" columns so every transaction is locked in securely for Carbon Credits.
+
+#### 💻 Frontend Role
+* **Done:** Built the beautiful screens for Producers and Consumers. Added glowing buttons, real-time charts, and the ability to download CSV files.
+* **To Do Next:** Make sure the app works perfectly on mobile phones so factory managers can check it while walking the floor. Connect the charts to the new AI data when it's ready.
+* **The Cool Extra Stuff:** Added the "Blockchain Verified" neon badges and IoT connection status indicators to wow the judges.
+
+#### 🤖 AI (Machine Learning) Role
+* **Done:** Nothing right now! The app currently uses a simple "if/then" rule-based system as requested for the Week 3 MVP.
+* **To Do Next:** Build a new mini-server using **Python and FastAPI**. Create a model (Prophet or LSTM) that looks at tomorrow's weather to predict solar energy surplus 6 hours in advance.
+* **The Cool Extra Stuff:** Write an algorithm that calculates exactly how many Carbon Credits were saved based on local grid pollution levels.
+
+#### ⚙️ Backend Role
+* **Done:** Built the Node.js server that matches buyers and sellers. Created the mock APIs for weather and edge-latency so the demo looks completely real.
+* **To Do Next:** Sign up for **Twilio** and write the code so that when a match happens, a real text message pings the factory manager's phone. Connect to the real POSOCO grid API instead of using our mock fallback.
+* **The Cool Extra Stuff:** Write the actual Smart Contract logic so the trades are literally pushed to a testnet blockchain.
+
+---
+
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
