@@ -9,6 +9,7 @@ import { IotService } from './services/iotService';
 import { ReportService } from './services/reportService';
 import { NotificationService } from './services/notificationService';
 import { OptimizationService } from './services/optimizationService';
+import { WeatherService } from './services/weatherService';
 
 dotenv.config();
 
@@ -105,6 +106,15 @@ app.post('/api/trigger-curtailment', async (req, res) => {
     try {
         await OptimizationService.triggerCurtailmentAlert(location || 'Maharashtra');
         res.json({ message: `Grid Curtailment broadcasted to ${location || 'Maharashtra'}` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/weather/:location', async (req, res) => {
+    try {
+        const data = await WeatherService.getWeatherData(req.params.location);
+        res.json(data);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

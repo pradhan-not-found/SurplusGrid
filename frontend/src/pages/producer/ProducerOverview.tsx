@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/DashboardLayout';
-import { Zap, ShieldCheck, IndianRupee, GitMerge } from 'lucide-react';
+import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
@@ -9,6 +9,7 @@ export default function ProducerOverview() {
   const { user } = useAuth();
   
   const [loading, setLoading] = useState(true);
+  const [weather, setWeather] = useState<any>(null);
   
   const [todaysPredictedSurplus, setTodaysPredictedSurplus] = useState(0);
   const [curtailmentAvoided, setCurtailmentAvoided] = useState(0);
@@ -21,8 +22,17 @@ export default function ProducerOverview() {
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+      fetchWeather();
     }
   }, [user?.id]);
+
+  const fetchWeather = async () => {
+    try {
+      const res = await fetch('http://localhost:5001/api/weather/Maharashtra');
+      const data = await res.json();
+      setWeather(data);
+    } catch (e) {}
+  };
 
   const fetchDashboardData = async () => {
     if (!user) return;
@@ -131,6 +141,57 @@ export default function ProducerOverview() {
 
   return (
     <DashboardLayout title="Overview">
+      {/* AI Context Pipeline */}
+      <div className="mb-8 bg-white rounded-[16px] border border-[#BFDBFE] p-6 shadow-[0_4px_24px_rgba(37,99,235,0.05)]">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center">
+              <Cloud size={20} />
+            </div>
+            <div>
+              <h3 className="text-[16px] font-bold text-[#0D1117]">AI Meteorological Context</h3>
+              <p className="text-[12px] text-[#64748B]">Real-time data pipeline for solar/wind forecasting</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1 bg-[#F8FAFC] rounded-full border border-[#E2E8F0]">
+            <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Pipeline Active</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-6">
+          <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] rounded-[12px] border border-[#F1F5F9]">
+            <div className="text-[#F59E0B]">
+              {weather?.condition === 'Sunny' ? <Sun size={32} /> : <Cloud size={32} />}
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-0.5">Sky Condition</p>
+              <p className="text-[15px] font-bold text-[#0D1117]">{weather?.condition || 'Analyzing...'}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] rounded-[12px] border border-[#F1F5F9]">
+            <div className="text-[#2563EB]">
+              <Thermometer size={32} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-0.5">Regional Temp</p>
+              <p className="text-[15px] font-bold text-[#0D1117]">{weather?.temp || '--'}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 p-4 bg-[#EFF6FF] rounded-[12px] border border-[#DBEAFE]">
+            <div className="text-[#2563EB]">
+              <Info size={32} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider mb-0.5">AI Yield Insight</p>
+              <p className="text-[13px] font-medium text-[#1E40AF] leading-tight">{weather?.advice || 'Processing data streams...'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-4 gap-5 mb-[40px]">
         
         {/* Stat 1 */}
