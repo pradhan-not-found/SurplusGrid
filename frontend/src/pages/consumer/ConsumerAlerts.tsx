@@ -12,7 +12,6 @@ export default function ConsumerAlerts() {
   const [msg, setMsg] = useState('');
 
 
-
   const fetchMatches = async () => {
     if (!user) return;
     setLoading(true);
