@@ -102,22 +102,34 @@ Here is a simple breakdown of what each team member has done, what needs to be d
 
 ### 🗄️ Database (DB) Role
 * **What is done:** Created the basic tables (users, matches, surplus windows) in Supabase with real-time updates.
-* **What needs to be done:** Move the heavy time-series energy data to **TimescaleDB** (as requested in the prompt).
+* **What needs to be done (Deep Dive):** 
+  * **Migrate to TimescaleDB:** Right now, energy data is sitting in standard relational tables. You need to spin up a TimescaleDB instance specifically designed to handle high-frequency time-series energy data (e.g., tracking kilowatt output every 5 minutes). 
+  * **Build Data Pipelines:** You must create ETL (Extract, Transform, Load) scripts that continuously pull historical POSOCO grid data and format it into tables so the AI team can easily query it for training their models.
+  * **Automate Backups:** Ensure scheduled database backups are running so no transaction records are lost.
 * **What was overachieved (Needs to be removed):** Remove the "Blockchain Hash" columns. Blockchain is outside the scope of the core MVP and adds unnecessary complexity right now.
 
 ### 💻 Frontend Role
 * **What is done:** Built the dashboard screens for Producers and Consumers, including real-time charts and match alerts.
-* **What needs to be done:** Connect the frontend charts to the new AI prediction data (once the AI team builds it) instead of using mock data.
+* **What needs to be done (Deep Dive):** 
+  * **Dynamic API Integration:** Currently, the predictive charts on the dashboard use static/mock data. You need to rewrite the fetching logic to pull live forecasts directly from the AI team's new FastAPI microservice.
+  * **Mobile-First Optimization:** Factory floor managers (Consumers) will not be sitting at desktop computers. You need to meticulously test and optimize the Consumer Dashboard (`ConsumerAlerts.tsx`, `ConsumerSchedule.tsx`) so the tables and buttons render flawlessly on mobile phone screens.
+  * **Error Handling:** Add robust loading states and fallback UIs in case the external weather or grid APIs go down.
 * **What was overachieved (Needs to be removed):** Remove the glowing "Blockchain Verified" badges and the "IoT Triggered" statuses. Keep the UI focused strictly on demand matching.
 
 ### 🤖 AI (Machine Learning) Role
 * **What is done:** Nothing yet. The app currently uses a simple rule-based system for the Week 3 MVP.
-* **What needs to be done:** Build a Python/FastAPI server with a Prophet or LSTM model. It needs to predict solar energy surplus 6 hours in advance using weather APIs.
+* **What needs to be done (Deep Dive):** 
+  * **Build the Prediction Server:** Set up a lightweight Python server using **FastAPI**.
+  * **Develop the Model:** Create a time-series forecasting model using Facebook Prophet or LSTM. The model needs to predict exactly how much surplus energy a specific solar farm will generate **6 hours into the future**.
+  * **Ingest Weather APIs:** Your model must automatically fetch live weather data (like solar irradiance, cloud cover, and temperature) from OpenWeather or similar APIs, and combine that with historical POSOCO grid data to make accurate predictions.
 * **What was overachieved (Needs to be removed):** None. Just focus on building the prediction model.
 
 ### ⚙️ Backend Role
 * **What is done:** Built the Node.js server that matches buyers and sellers using rule-based scheduling.
-* **What needs to be done:** Add real **Twilio SMS** integration so factory managers get actual text messages when a match occurs. Connect to real POSOCO grid APIs.
+* **What needs to be done (Deep Dive):** 
+  * **Real SMS Integration:** Ditch the mock UI notifications. You need to create an account with **Twilio**, get API keys, and write a backend controller that physically sends an SMS to the Consumer's phone number the second a match is accepted in the database.
+  * **Live Grid Data Polling:** You need to write cron jobs or background workers that continuously fetch live grid frequency and pricing data from State Load Dispatch Centers (SLDC) APIs to determine exactly when the grid is overloaded.
+  * **Push Notifications:** Integrate Firebase Admin SDK to push real-time alerts directly to the user's browser or device.
 * **What was overachieved (Needs to be removed):** Remove the simulated Smart Contract / Oracle execution logs from the backend. Stick to standard database matching.
 
 ## 📄 License
