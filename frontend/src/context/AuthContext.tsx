@@ -25,13 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      if (error || !data) {
+      if (error) {
         console.error('Error fetching profile:', error);
         return null;
       }
-      return data;
+      return data; // null if no row exists yet — handled downstream by ProtectedRoute → /onboarding
     } catch (err) {
       console.error('Exception fetching profile:', err);
       return null;
