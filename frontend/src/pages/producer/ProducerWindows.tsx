@@ -11,6 +11,7 @@ interface Window {
   end_time: string;
   predicted_kw: number;
   available_kw: number;
+  price_per_kw: number;
   status: string;
 }
 
@@ -87,6 +88,7 @@ export default function ProducerWindows() {
         start_time: start,
         end_time: end,
         predicted_kw: Number(surplus),
+        price_per_kw: Number(askingPrice),
         notes,
         status: 'seeking'
       } as any)
@@ -194,6 +196,18 @@ export default function ProducerWindows() {
                     <input type="number" required value={surplus} onChange={e=>setSurplus(e.target.value)} placeholder="e.g. 5000" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" />
                   </div>
                   <div>
+                    <div className="flex justify-between mb-[6px]">
+                      <label className="block text-[13px] font-medium text-[#374151]">Asking Price (₹/kW)</label>
+                      {Number(askingPrice) > gridPrice ? (
+                        <span className="text-[11px] font-bold text-[#EF4444]">⚠️ Above Market</span>
+                      ) : (
+                        <span className="text-[11px] font-bold text-[#10B981]">✓ Competitive</span>
+                      )}
+                    </div>
+                    <input type="number" step="0.1" required value={askingPrice} onChange={e=>setAskingPrice(e.target.value)} className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" />
+                    <p className="text-[10px] text-[#6B7280] mt-1">Grid Price: ₹{gridPrice.toFixed(2)}</p>
+                  </div>
+                  <div>
                     <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Notes (optional)</label>
                     <textarea rows={1} value={notes} onChange={e=>setNotes(e.target.value)} className="w-full min-h-[40px] px-[12px] py-2 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow resize-y" />
                   </div>
@@ -222,6 +236,7 @@ export default function ProducerWindows() {
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Start</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">End</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Total (kW)</th>
+                <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Price (₹)</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Available (kW)</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Action</th>
@@ -234,6 +249,7 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.end_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.predicted_kw}</td>
+                  <td className="p-[14px_16px] text-[14px] font-semibold text-[#0D1117] border border-[#E5E7EB]">₹{w.price_per_kw || '4.0'}</td>
                   <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB] border border-[#E5E7EB]">{w.available_kw ?? w.predicted_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
                     <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${

@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase';
 import { BlockchainService } from './blockchainService';
 import { NotificationService } from './notificationService';
+import { PriceService } from './priceService';
 
 interface SurplusWindow {
     id: string;
@@ -88,9 +89,9 @@ export async function detectOverlaps(windowId: string) {
 
             const matchedKw = Math.min(currentAvailable, consumer.flexible_load_kw);
             
-            // Calculate Savings (using env variables)
-            const gridRate = Number(process.env.GRID_PRICE_INR_PER_KW) || 8.5;
-            const surplusRate = Number(process.env.SURPLUS_PRICE_INR_PER_KW) || 4.0;
+            // 💰 LIVE PRICING: Fetch real-time grid rate for the region
+            const gridRate = await PriceService.getGridPrice(producerLocation);
+            const surplusRate = Number(window.price_per_kw) || 4.0;
             
             const savings = matchedKw * (gridRate - surplusRate);
             const revenue = matchedKw * surplusRate;
