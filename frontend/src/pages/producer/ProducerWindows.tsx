@@ -93,32 +93,31 @@ export default function ProducerWindows() {
         price_per_kw: Number(askingPrice),
         notes,
         status: 'seeking'
-      } as any)
+      })
       .select()
       .single();
-
-    setLoading(false);
 
     if (error) {
       console.error('Error inserting window:', error);
       alert('Failed to add window: ' + error.message);
+      setLoading(false);
       return;
     }
 
     if (data) {
-      // AUTO-TRIGGER: Tell the backend to start matching instantly
+      // 🔔 AUTONOMOUS WEBHOOK SIGNAL
+      // This tells the backend a new window was added, triggering the reactive engine
       try {
-        const apiUrl = import.meta.env.PROD 
-          ? '/api/trigger-match' 
-          : 'http://localhost:5001/api/trigger-match';
-
-        fetch(apiUrl, {
+        fetch('http://localhost:5001/api/webhooks/surplus-window', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ windowId: data.id })
+          body: JSON.stringify({ 
+            type: 'INSERT', 
+            record: { id: data.id, producer_id: user.id } 
+          })
         });
       } catch (err) {
-        console.error('Auto-trigger failed, but window was created:', err);
+        console.error('Webhook signal failed:', err);
       }
 
 

@@ -141,6 +141,27 @@ app.post('/api/edge-simulation', async (req, res) => {
     });
 });
 
+app.post('/api/webhooks/surplus-window', async (req, res) => {
+    const { record, type } = req.body;
+    
+    console.log(`\n🔔 [WEBHOOK RECEIVED] Event: ${type} | Table: surplus_windows`);
+    console.log(`📝 Record ID: ${record?.id} | Producer: ${record?.producer_id}`);
+    
+    if (type === 'INSERT') {
+        console.log(`🚀 [AUTONOMOUS MATCH] Triggering engine for new surplus window...`);
+        try {
+            const { MatchingEngine } = require('./services/matchingEngine');
+            // Run the matching engine immediately
+            await MatchingEngine.detectOverlaps();
+            console.log(`✅ [MATCHING COMPLETE] Automated overlap detection finished.`);
+        } catch (error) {
+            console.error(`❌ [WEBHOOK ERROR] Matching engine failed:`, error);
+        }
+    }
+    
+    res.json({ status: 'processed', event: type });
+});
+
 app.get('/health', (req, res) => {
     res.json({ status: 'operational', timestamp: new Date().toISOString() });
 });
