@@ -57,6 +57,23 @@ export default function ProducerMatches() {
 
   const filtered = statusFilter === 'All' ? matches : matches.filter(m => m.status.toLowerCase() === statusFilter.toLowerCase());
 
+  const exportRowCSV = (m: any) => {
+    const header = "Match ID,Consumer,Date,Time Window,kW Matched,Status,Revenue (INR),Impact (CO2 kg),Blockchain Hash\n";
+    const consumerName = m.consumer?.company_name || m.consumer?.full_name || 'Anonymous Consumer';
+    const timeWindow = `${m.surplus_windows?.start_time?.substring(0, 5)}-${m.surplus_windows?.end_time?.substring(0, 5)}`;
+    const row = `${m.id},"${consumerName}",${m.surplus_windows?.date},${timeWindow},${m.matched_kw},${m.status},${m.producer_revenue_inr || 0},${m.carbon_offset_kg || 0},${m.blockchain_tx_hash || 'Pending'}`;
+    const csvContent = header + row;
+    
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `match_${m.id}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <DashboardLayout title="Matches">
@@ -179,7 +196,7 @@ export default function ProducerMatches() {
                             </span>
                           </div>
                         </div>
-                        <button className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium ml-4">
+                        <button onClick={() => exportRowCSV(m)} className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium ml-4">
                           <Download size={13} /> Export row as CSV
                         </button>
                       </div>

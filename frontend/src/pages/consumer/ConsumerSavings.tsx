@@ -61,7 +61,7 @@ export default function ConsumerSavings() {
     const rows = history.map(h => `${h.date},${h.time},${h.units},${h.rate},${h.grid},${h.savings}`).join("\n");
     const csvContent = header + rows;
     
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
