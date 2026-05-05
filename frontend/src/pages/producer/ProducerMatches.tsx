@@ -134,13 +134,20 @@ export default function ProducerMatches() {
                   </td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.matched_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
-                    <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
-                      m.status === 'accepted' || m.status === 'completed' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
-                      m.status === 'pending' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
-                      'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
-                    }`}>
-                      {m.status}
-                    </span>
+                    <div className="flex flex-col gap-1.5">
+                      <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize w-fit ${
+                        m.status === 'accepted' || m.status === 'completed' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
+                        m.status === 'pending' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
+                        'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
+                      }`}>
+                        {m.status}
+                      </span>
+                      {m.contract_status === 'LOCKED' && (
+                        <span className="inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full text-[10px] font-bold bg-[#EFF6FF] text-[#1E40AF] border border-[#DBEAFE] uppercase w-fit">
+                          🔒 Locked
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">
                     ₹{(m.producer_revenue_inr || 0).toLocaleString()}

@@ -10,6 +10,37 @@ dotenv.config();
 // Initialize Services
 BlockchainService.init();
 
+// ⛓️ BLOCKCHAIN CONTRACT ORACLE
+// Listens for 'accepted' status and executes the Smart Contract
+supabase
+    .channel('contract-oracle')
+    .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'matches' },
+        async (payload) => {
+            const match = payload.new;
+            // Only trigger if status changed to 'accepted' AND contract isn't locked yet
+            if (match.status === 'accepted' && match.contract_status !== 'LOCKED') {
+                console.log(`⛓️ Oracle: Match ${match.id} accepted. Executing Smart Contract...`);
+                
+                // Execute Blockchain Contract
+                const txHash = await BlockchainService.logTrade(match.id, match.matched_kw, 4.0);
+                
+                if (txHash) {
+                    await supabase
+                        .from('matches')
+                        .update({ 
+                            contract_status: 'LOCKED',
+                            blockchain_tx_hash: txHash 
+                        })
+                        .eq('id', match.id);
+                    console.log(`🔒 Oracle: Contract LOCKED for Match ${match.id}`);
+                }
+            }
+        }
+    )
+    .subscribe();
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 

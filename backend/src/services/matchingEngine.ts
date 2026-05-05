@@ -119,15 +119,6 @@ export async function detectOverlaps(windowId: string) {
                 continue;
             }
 
-            // ⛓️ BLOCKCHAIN LOGGING
-            const txHash = await BlockchainService.logTrade(newMatch.id, matchedKw, surplusRate);
-            if (txHash) {
-                await supabase
-                    .from('matches')
-                    .update({ blockchain_tx_hash: txHash })
-                    .eq('id', newMatch.id);
-            }
-
             // 5. Update window availability
             currentAvailable = currentAvailable - matchedKw;
             
