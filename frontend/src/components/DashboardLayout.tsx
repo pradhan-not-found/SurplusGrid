@@ -206,8 +206,9 @@ export default function DashboardLayout({ children, title }: { children: React.R
                              <Zap size={14} />}
                           </div>
                           <div>
-                            <p className="text-[13px] text-[#0D1117] leading-snug">{n.message}</p>
-                            <p className="text-[11px] text-[#9CA3AF] mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+                            <p className="text-[13px] font-bold text-[#0D1117] mb-0.5">{n.title}</p>
+                            <p className="text-[12px] text-[#71717A] leading-snug">{n.message}</p>
+                            <p className="text-[11px] text-[#A1A1AA] mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
                           </div>
                         </div>
                       </div>
