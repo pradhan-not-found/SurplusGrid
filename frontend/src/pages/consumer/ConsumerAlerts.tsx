@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { BellRing, ArrowRight, CheckCircle2, Loader2, Clock, XCircle } from 'lucide-react';
+import { BellRing, ArrowRight, CheckCircle2, Loader2, Clock, XCircle, Link } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -40,14 +40,38 @@ export default function ConsumerAlerts() {
         producer: m.surplus_windows?.producers?.full_name || 'Solar Farm',
         zone: 'WRLDC',
         confidence: m.confidence_score || 'High',
-        status: m.status === 'pending' ? 'Pending' : (m.status === 'accepted' ? 'Accepted' : 'Expired')
+        status: m.status === 'pending' ? 'Pending' : (m.status === 'accepted' ? 'Accepted' : 'Expired'),
+        contract_status: m.contract_status
       })));
     }
     setLoading(false);
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchMatches();
+
+    const channel = supabase
+      .channel('realtime-consumer-alerts')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'matches',
+          filter: `consumer_id=eq.${user.id}`
+        },
+        () => {
+          setMsg("New Energy Match Found!");
+          fetchMatches();
+          setTimeout(() => setMsg(''), 4000);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const accept = async (id: string) => {
@@ -117,6 +141,11 @@ export default function ConsumerAlerts() {
                     {a.status === 'Expired' && <XCircle size={10} />}
                     {a.status}
                   </span>
+                  {a.contract_status === 'LOCKED' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-[#000000] text-[#4ADE80] border border-[#4ADE80] shadow-[0_0_8px_rgba(74,222,128,0.4)] tracking-wider">
+                      <Link size={10} /> Blockchain Verified
+                    </span>
+                  )}
                 </div>
                 <div className="text-[13px] text-[#71717A] flex items-center gap-2">
                   <span>{a.producer}</span>

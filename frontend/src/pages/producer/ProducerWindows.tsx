@@ -82,6 +82,12 @@ export default function ProducerWindows() {
     if (!user || !date || !start || !end || !surplus) return;
     setLoading(true);
     
+    if (end <= start) {
+      alert("Invalid Time Range: End time must be after start time");
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('surplus_windows')
       .insert({
@@ -92,7 +98,8 @@ export default function ProducerWindows() {
         predicted_kw: Number(surplus),
         price_per_kw: Number(askingPrice),
         notes,
-        status: 'seeking'
+        status: 'seeking',
+        zone: 'WRLDC'
       })
       .select()
       .single();

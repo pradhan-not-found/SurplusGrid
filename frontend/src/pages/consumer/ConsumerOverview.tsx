@@ -85,11 +85,22 @@ export default function ConsumerOverview() {
 
       const allMatches = matches || [];
       
-       // 2. Calculate Stats
-      const savings = allMatches.reduce((sum, m) => sum + (m.consumer_savings_inr || 0), 0);
-      const cleanEnergy = allMatches.reduce((sum, m) => sum + (m.matched_kw || 0), 0);
-      const shiftsCompleted = allMatches.filter(m => m.status === 'accepted' || m.status === 'completed').length;
-      const carbonOffset = allMatches.reduce((sum, m) => sum + (m.carbon_offset_kg || 0), 0);
+      let savings = 0;
+      let cleanEnergy = 0;
+      let shiftsCompleted = 0;
+      let carbonOffset = 0;
+
+      if (report) {
+        savings = report.total_savings_inr || 0;
+        cleanEnergy = report.total_kw || 0;
+        carbonOffset = report.total_carbon_offset_kg || 0;
+      } else {
+        savings = allMatches.reduce((sum, m) => sum + (m.consumer_savings_inr || 0), 0);
+        cleanEnergy = allMatches.reduce((sum, m) => sum + (m.matched_kw || 0), 0);
+        carbonOffset = allMatches.reduce((sum, m) => sum + (m.carbon_offset_kg || 0), 0);
+      }
+      
+      shiftsCompleted = allMatches.filter(m => m.status === 'accepted' || m.status === 'completed').length;
 
       setStats({
         savings,
