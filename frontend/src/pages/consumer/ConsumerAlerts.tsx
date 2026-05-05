@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { BellRing, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { BellRing, ArrowRight, CheckCircle2, Loader2, Clock, XCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -110,11 +110,14 @@ export default function ConsumerAlerts() {
               <div>
                 <div className="flex items-center gap-3 mb-1">
                   <h3 className="text-[15px] font-semibold text-[#09090B] tracking-tight">{a.time}</h3>
-                  <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border ${
                     a.status === 'Pending' ? 'bg-[#FFFBEB] text-[#92400E] border-[#FEF3C7]' :
                     a.status === 'Accepted' ? 'bg-[#ECFDF5] text-[#065F46] border-[#D1FAE5]' :
                     'bg-[#F4F4F5] text-[#3F3F46] border-[#E4E4E7]'
                   }`}>
+                    {a.status === 'Pending' && <Clock size={10} />}
+                    {a.status === 'Accepted' && <CheckCircle2 size={10} />}
+                    {a.status === 'Expired' && <XCircle size={10} />}
                     {a.status}
                   </span>
                 </div>

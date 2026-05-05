@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/DashboardLayout';
-import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info, Activity, CheckCircle2, AlertTriangle, AlertCircle, Wifi } from 'lucide-react';
+import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info, Activity, CheckCircle2, AlertTriangle, AlertCircle, Wifi, Search, PieChart, XCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
@@ -353,12 +353,17 @@ export default function ProducerOverview() {
                 <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.start_time.substring(0, 5)}–{w.end_time.substring(0, 5)}</td>
                 <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{w.predicted_kw} kW</td>
                 <td className="p-[16px_20px] text-[14px] capitalize">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium border ${
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium border ${
                     w.status === 'matched' ? 'bg-[#ECFDF5] text-[#065F46] border-[#D1FAE5]' :
                     w.status === 'seeking' ? 'bg-[#FFFBEB] text-[#92400E] border-[#FEF3C7]' :
                     w.status === 'partial' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#DBEAFE]' :
                     'bg-[#F4F4F5] text-[#3F3F46] border-[#E4E4E7]'
                   }`}>
+                    {w.status === 'matched' && <CheckCircle2 size={12} />}
+                    {w.status === 'seeking' && <Search size={12} />}
+                    {w.status === 'expired' && <XCircle size={12} />}
+                    {w.status === 'partial' && <PieChart size={12} />}
+                    {w.status !== 'matched' && w.status !== 'seeking' && w.status !== 'expired' && w.status !== 'partial' && <AlertCircle size={12} />}
                     {w.status}
                   </span>
                 </td>

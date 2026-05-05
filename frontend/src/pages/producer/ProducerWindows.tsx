@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { Plus, X, Loader2, Trash2, Zap } from 'lucide-react';
+import { Plus, X, Loader2, Trash2, Zap, CheckCircle2, Search, XCircle, PieChart, AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -253,13 +253,18 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] font-semibold text-[#0D1117] border border-[#E5E7EB]">₹{w.price_per_kw || '4.0'}</td>
                   <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB] border border-[#E5E7EB]">{w.available_kw ?? w.predicted_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
-                    <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
+                    <span className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
                       w.status === 'matched' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
                       w.status === 'seeking' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
                       w.status === 'expired' ? 'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]' :
                       w.status === 'partial' ? 'bg-[#DBEAFE] text-[#1D4ED8] border-[#BFDBFE]' :
                       'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]'
                     }`}>
+                      {w.status === 'matched' && <CheckCircle2 size={12} />}
+                      {w.status === 'seeking' && <Search size={12} />}
+                      {w.status === 'expired' && <XCircle size={12} />}
+                      {w.status === 'partial' && <PieChart size={12} />}
+                      {w.status !== 'matched' && w.status !== 'seeking' && w.status !== 'expired' && w.status !== 'partial' && <AlertCircle size={12} />}
                       {w.status}
                     </span>
                   </td>

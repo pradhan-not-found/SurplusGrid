@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
-import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X, Mail, Smartphone } from 'lucide-react';
+import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X, Mail, Smartphone, CheckCircle2, Calendar, Activity } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -325,10 +325,10 @@ export default function ConsumerOverview() {
                 <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{s.load} kW</td>
                 <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{s.savings.toLocaleString()}</td>
                 <td className="p-[16px_20px]">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium border ${
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium border ${
                     s.status === 'accepted' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#DBEAFE]' : 'bg-[#ECFDF5] text-[#065F46] border-[#D1FAE5]'
                   }`}>
-                    {s.status === 'accepted' ? 'Scheduled' : 'Completed'}
+                    {s.status === 'accepted' ? <><Calendar size={12} /> Scheduled</> : <><CheckCircle2 size={12} /> Completed</>}
                   </span>
                 </td>
               </tr>
@@ -344,7 +344,7 @@ export default function ConsumerOverview() {
 
       <div className="flex items-center gap-3 mb-4">
         <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight">Communication Engine</h3>
-        <span className="px-2 py-0.5 bg-[#ECFDF5] text-[#10B981] text-[10px] font-bold uppercase rounded border border-[#D1FAE5]">Live Audit</span>
+        <span className="flex items-center gap-1 px-2 py-0.5 bg-[#ECFDF5] text-[#10B981] text-[10px] font-bold uppercase rounded border border-[#D1FAE5]"><Activity size={10} /> Live Audit</span>
       </div>
       <div className="bg-white border border-[#E5E7EB] rounded-[10px] shadow-sm overflow-hidden mb-10">
         <table className="w-full text-left border-collapse">
@@ -377,8 +377,8 @@ export default function ConsumerOverview() {
                   <td className="p-[16px_20px] text-[13px] text-[#3F3F46]">Verified Device/SMTP</td>
                   <td className="p-[16px_20px] text-[13px] text-[#3F3F46] max-w-[250px] truncate">{alert.message}</td>
                   <td className="p-[16px_20px]">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#065F46] text-[11px] font-medium border border-[#D1FAE5]">
-                      Delivered
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#065F46] text-[11px] font-medium border border-[#D1FAE5]">
+                      <CheckCircle2 size={12} /> Delivered
                     </span>
                   </td>
                   <td className="p-[16px_20px] text-right text-[12px] text-[#71717A]">

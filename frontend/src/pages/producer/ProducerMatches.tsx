@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { SlidersHorizontal, ChevronDown, ChevronUp, Download, GitMerge, Loader2 } from 'lucide-react';
+import { SlidersHorizontal, ChevronDown, ChevronUp, Download, GitMerge, Loader2, CheckCircle2, Clock, XCircle, Lock, Zap } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -135,21 +135,24 @@ export default function ProducerMatches() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{m.matched_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
                     <div className="flex flex-col gap-1.5">
-                      <span className={`inline-flex px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize w-fit ${
+                      <span className={`inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize w-fit ${
                         m.status === 'accepted' || m.status === 'completed' ? 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]' :
                         m.status === 'pending' ? 'bg-[#FEF9C3] text-[#854D0E] border-[#FEF08A]' :
                         'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
                       }`}>
+                        {(m.status === 'accepted' || m.status === 'completed') && <CheckCircle2 size={10} />}
+                        {m.status === 'pending' && <Clock size={10} />}
+                        {m.status !== 'accepted' && m.status !== 'completed' && m.status !== 'pending' && <XCircle size={10} />}
                         {m.status}
                       </span>
                       {m.contract_status === 'LOCKED' && (
                         <span className="inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full text-[10px] font-bold bg-[#EFF6FF] text-[#1E40AF] border border-[#DBEAFE] uppercase w-fit">
-                          🔒 Locked
+                          <Lock size={10} /> Locked
                         </span>
                       )}
                       {m.iot_status === 'TRIGGERED' && (
                         <span className="inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full text-[10px] font-bold bg-[#FFF7ED] text-[#9A3412] border border-[#FFEDD5] uppercase w-fit animate-pulse">
-                          ⚡ IoT Triggered
+                          <Zap size={10} /> IoT Triggered
                         </span>
                       )}
                     </div>
