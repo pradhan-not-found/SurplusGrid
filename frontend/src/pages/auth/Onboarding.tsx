@@ -102,7 +102,6 @@ export default function Onboarding() {
 
       if (error) {
         setErrorMsg(error.message);
-        setLoading(false);
         return;
       }
       
@@ -110,6 +109,7 @@ export default function Onboarding() {
       navigate(`/dashboard/${role}`);
     } catch (err: any) {
       setErrorMsg('Failed to save profile: ' + err.message);
+    } finally {
       setLoading(false);
     }
   };
