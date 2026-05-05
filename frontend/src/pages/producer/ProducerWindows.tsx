@@ -26,7 +26,7 @@ export default function ProducerWindows() {
   const [end, setEnd] = useState('');
   const [surplus, setSurplus] = useState('');
   const [askingPrice, setAskingPrice] = useState('4.0');
-  const [gridPrice, setGridPrice] = useState(8.5);
+  const [gridPrice] = useState(8.5);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

@@ -63,6 +63,18 @@ export default function ConsumerAlerts() {
     setTimeout(() => setMsg(''), 4000);
   };
 
+  const filtered = activeTab === 'All' ? alerts : alerts.filter(a => a.status === activeTab);
+
+  if (loading) {
+    return (
+      <DashboardLayout title="Energy Alerts">
+        <div className="flex items-center justify-center py-[60px]">
+          <Loader2 size={32} className="text-[#A1A1AA] animate-spin" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout title="Energy Alerts">
       {/* Tabs */}

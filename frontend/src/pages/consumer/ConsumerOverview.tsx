@@ -19,7 +19,7 @@ export default function ConsumerOverview() {
 
   const [alerts, setAlerts] = useState<any[]>([]);
   const [shifts, setShifts] = useState<any[]>([]);
-  const [heatmap, setHeatmap] = useState<Record<number, number>>({});
+  const [heatmap, setHeatmap] = useState<Record<string | number, number>>({});
 
   useEffect(() => {
     if (!user) return;
