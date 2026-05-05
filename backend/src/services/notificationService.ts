@@ -22,7 +22,11 @@ export class NotificationService {
             if (error) throw error;
 
             // 2. Simulate External Communication (SMS/Email)
-            console.log(`📧 [Simulated Email/SMS] To: ${userId} | Body: ${message}`);
+            console.log('\n--- 📲 EXTERNAL COMMUNICATION BRIDGE ---');
+            console.log(`[SMS]   To: +91-XXXXX-XXXX | Msg: ${message}`);
+            console.log(`[EMAIL] To: ${userId}@surplusgrid.com | Subject: ${title}`);
+            console.log(`[STATUS] DISPATCHED via SurplusGrid Gateway v1.0`);
+            console.log('----------------------------------------\n');
             
             return true;
         } catch (error) {

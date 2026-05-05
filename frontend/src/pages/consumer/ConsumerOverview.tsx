@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
-import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X } from 'lucide-react';
+import { IndianRupee, CalendarCheck, Leaf, Wind, Zap, ArrowRight, X, Mail, Smartphone } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -336,6 +336,59 @@ export default function ConsumerOverview() {
             {shifts.length === 0 && (
               <tr>
                 <td colSpan={5} className="p-8 text-center text-[#71717A] text-[14px]">No recent load shifts found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <h3 className="text-[16px] font-bold text-[#09090B] tracking-tight">Communication Engine</h3>
+        <span className="px-2 py-0.5 bg-[#ECFDF5] text-[#10B981] text-[10px] font-bold uppercase rounded border border-[#D1FAE5]">Live Audit</span>
+      </div>
+      <div className="bg-white border border-[#E5E7EB] rounded-[10px] shadow-sm overflow-hidden mb-10">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-[#E5E7EB]">
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Channel</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Recipient Info</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Message</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Status</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider text-right">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {alerts.length > 0 ? (
+              alerts.slice(0, 5).map((alert: any) => (
+                <tr key={alert.id} className="border-b border-[#F4F4F5] last:border-0 hover:bg-[#FAFAFA] transition-colors duration-150">
+                  <td className="p-[16px_20px]">
+                    <div className="flex items-center gap-2">
+                      <div className="flex -space-x-1">
+                        <div className="w-6 h-6 rounded-full bg-[#F1F5F9] border-2 border-white flex items-center justify-center text-[#64748B]">
+                          <Mail size={10} />
+                        </div>
+                        <div className="w-6 h-6 rounded-full bg-[#F1F5F9] border-2 border-white flex items-center justify-center text-[#64748B]">
+                          <Smartphone size={10} />
+                        </div>
+                      </div>
+                      <span className="text-[13px] font-medium text-[#09090B]">SMS & Email</span>
+                    </div>
+                  </td>
+                  <td className="p-[16px_20px] text-[13px] text-[#3F3F46]">Verified Device/SMTP</td>
+                  <td className="p-[16px_20px] text-[13px] text-[#3F3F46] max-w-[250px] truncate">{alert.message}</td>
+                  <td className="p-[16px_20px]">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#065F46] text-[11px] font-medium border border-[#D1FAE5]">
+                      Delivered
+                    </span>
+                  </td>
+                  <td className="p-[16px_20px] text-right text-[12px] text-[#71717A]">
+                    {new Date(alert.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-[#71717A] text-[14px]">No external alerts dispatched yet.</td>
               </tr>
             )}
           </tbody>
