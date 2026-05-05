@@ -10,6 +10,7 @@ export default function ProducerOverview() {
   
   const [loading, setLoading] = useState(true);
   const [weather, setWeather] = useState<any>(null);
+  const [edgeStatus, setEdgeStatus] = useState<any>(null);
   
   const [todaysPredictedSurplus, setTodaysPredictedSurplus] = useState(0);
   const [curtailmentAvoided, setCurtailmentAvoided] = useState(0);
@@ -23,8 +24,21 @@ export default function ProducerOverview() {
     if (user) {
       fetchDashboardData();
       fetchWeather();
+      fetchEdgeStatus();
     }
   }, [user?.id]);
+
+  const fetchEdgeStatus = async () => {
+    try {
+      const res = await fetch('http://localhost:5001/api/edge-simulation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ region: 'Maharashtra' })
+      });
+      const data = await res.json();
+      setEdgeStatus(data);
+    } catch (e) {}
+  };
 
   const fetchWeather = async () => {
     try {
@@ -154,6 +168,28 @@ export default function ProducerOverview() {
 
   return (
     <DashboardLayout title="Overview">
+      {/* Edge Layer Status */}
+      <div className="mb-4 flex items-center justify-between px-4 py-2 bg-[#0F172A] rounded-[8px] text-white">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#94A3B8]">Edge Layer: Connected</span>
+          </div>
+          <div className="h-4 w-[1px] bg-[#334155]" />
+          <div className="text-[12px] font-medium text-[#CBD5E1]">
+            Node: <span className="text-[#38BDF8]">{edgeStatus?.node || 'Locating...'}</span>
+          </div>
+          <div className="text-[12px] font-medium text-[#CBD5E1]">
+            Latency: <span className="text-[#38BDF8]">{edgeStatus?.latency || '--'}</span>
+          </div>
+        </div>
+        <div className="text-[12px] font-bold text-[#F1F5F9]">
+          System Intelligence: <span className={edgeStatus?.stressFactor === 'HIGH' ? 'text-[#F87171]' : 'text-[#34D399]'}>
+            {edgeStatus?.recommendation || 'Analyzing...'}
+          </span>
+        </div>
+      </div>
+
       {/* AI Context Pipeline */}
       <div className="mb-8 bg-white rounded-[16px] border border-[#BFDBFE] p-6 shadow-[0_4px_24px_rgba(37,99,235,0.05)]">
         <div className="flex items-center justify-between mb-6">
