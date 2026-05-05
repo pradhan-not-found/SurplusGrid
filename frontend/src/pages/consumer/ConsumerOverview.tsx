@@ -248,12 +248,12 @@ export default function ConsumerOverview() {
               const displayHeight = count > 0 ? Math.max(height, 8) : 2;
               
               return (
-                <div key={hour} className="group relative flex-1 flex flex-col items-center">
+                <div key={hour} className="group relative flex-1 h-full flex flex-col justify-end items-center">
                   <div 
                     className="w-full bg-[#09090B] rounded-t-[2px] transition-all duration-300 ease-out hover:bg-[#2563EB]"
                     style={{ height: `${displayHeight}%` }}
                   />
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#09090B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#09090B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 shadow-lg pointer-events-none">
                     {hour}:00 · {count} matches
                   </div>
                 </div>
