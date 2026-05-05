@@ -147,6 +147,11 @@ export default function ProducerMatches() {
                           🔒 Locked
                         </span>
                       )}
+                      {m.iot_status === 'TRIGGERED' && (
+                        <span className="inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full text-[10px] font-bold bg-[#FFF7ED] text-[#9A3412] border border-[#FFEDD5] uppercase w-fit animate-pulse">
+                          ⚡ IoT Triggered
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td className="p-[14px_16px] text-[14px] text-[#16A34A] font-semibold border border-[#E5E7EB]">

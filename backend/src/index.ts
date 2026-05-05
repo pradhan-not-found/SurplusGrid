@@ -5,12 +5,14 @@ import { supabase } from './lib/supabase';
 import { detectOverlaps } from './services/matchingEngine';
 import { BlockchainService } from './services/blockchainService';
 import { ExpiryService } from './services/expiryService';
+import { IotService } from './services/iotService';
 
 dotenv.config();
 
 // Initialize Services
 BlockchainService.init();
 ExpiryService.start();
+IotService.start();
 
 // ⛓️ BLOCKCHAIN CONTRACT ORACLE
 // Listens for 'accepted' status and executes the Smart Contract
