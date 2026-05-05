@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/DashboardLayout';
-import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info } from 'lucide-react';
+import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info, Activity, CheckCircle2, AlertTriangle, AlertCircle, Wifi } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
@@ -47,14 +47,14 @@ export default function ProducerOverview() {
       const data = await res.json();
       
       // 🧠 ADAPTIVE INTELLIGENCE: Change recommendation based on real-time latency
-      let recommendation = "✅ STABLE: Ultra-fast edge processing";
+      let recommendation = "STABLE: Ultra-fast edge processing";
       let stressFactor = "STABLE";
       
       if (actualLatency > 50) {
-        recommendation = "🚨 HIGH LOAD: Scaling Edge nodes";
+        recommendation = "HIGH LOAD: Scaling Edge nodes";
         stressFactor = "HIGH";
       } else if (actualLatency > 25) {
-        recommendation = "⚠️ MODERATE: Normal network load";
+        recommendation = "MODERATE: Normal network load";
         stressFactor = "MODERATE";
       }
 
@@ -70,7 +70,7 @@ export default function ProducerOverview() {
       setEdgeStatus({
         node: "Edge-Node-Mumbai-1",
         latency: `${actualLatency}ms`,
-        recommendation: "✅ STABLE: Maintain Normal Operations",
+        recommendation: "STABLE: Maintain Normal Operations",
         stressFactor: "STABLE"
       });
     }
@@ -208,7 +208,7 @@ export default function ProducerOverview() {
       <div className="mb-4 flex items-center justify-between px-4 py-2 bg-[#0F172A] rounded-[8px] text-white">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <Wifi size={14} className="text-[#10B981] animate-pulse" />
             <span className="text-[11px] font-bold uppercase tracking-widest text-[#94A3B8]">Edge Layer: Connected</span>
           </div>
           <div className="h-4 w-[1px] bg-[#334155]" />
@@ -219,14 +219,18 @@ export default function ProducerOverview() {
             Latency: <span className="text-[#38BDF8]">{edgeStatus?.latency || '--'}</span>
           </div>
         </div>
-        <div className="text-[12px] font-bold text-[#F1F5F9]">
-          System Intelligence: <span className={
+        <div className="flex items-center gap-2 text-[12px] font-bold text-[#F1F5F9]">
+          <span>System Intelligence:</span>
+          <div className={`flex items-center gap-1.5 ${
             edgeStatus?.stressFactor === 'HIGH' ? 'text-[#F87171]' : 
             edgeStatus?.stressFactor === 'MODERATE' ? 'text-[#FBBF24]' : 
             'text-[#34D399]'
-          }>
-            {edgeStatus?.recommendation || 'Analyzing...'}
-          </span>
+          }`}>
+            {edgeStatus?.stressFactor === 'HIGH' && <AlertCircle size={14} />}
+            {edgeStatus?.stressFactor === 'MODERATE' && <AlertTriangle size={14} />}
+            {edgeStatus?.stressFactor === 'STABLE' && <CheckCircle2 size={14} />}
+            <span>{edgeStatus?.recommendation || 'Analyzing...'}</span>
+          </div>
         </div>
       </div>
 
@@ -243,7 +247,7 @@ export default function ProducerOverview() {
             </div>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 bg-[#F8FAFC] rounded-full border border-[#E2E8F0]">
-            <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <Activity size={12} className="text-[#10B981] animate-pulse" />
             <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Pipeline Active</span>
           </div>
         </div>
