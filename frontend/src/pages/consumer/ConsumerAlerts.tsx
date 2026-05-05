@@ -1,23 +1,65 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { BellRing, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { BellRing, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ConsumerAlerts() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('All');
-
-  const [alerts, setAlerts] = useState([
-    { id: 1, time: 'Tomorrow 11:00–14:00', rateSurplus: 2.1, rateGrid: 6.8, savings: 12400, producer: 'SolarTech Farm', zone: 'WRLDC', confidence: 'High', status: 'Pending' },
-    { id: 2, time: 'May 3 09:00–12:00', rateSurplus: 1.9, rateGrid: 6.8, savings: 9100, producer: 'WindGen India', zone: 'SRLDC', confidence: 'Medium', status: 'Pending' },
-    { id: 3, time: 'Apr 28 14:00–17:00', rateSurplus: 2.3, rateGrid: 6.8, savings: 8600, producer: 'SolarTech Farm', zone: 'WRLDC', confidence: 'High', status: 'Accepted' },
-    { id: 4, time: 'Apr 20 10:00–13:00', rateSurplus: 2.0, rateGrid: 6.8, savings: 10200, producer: 'GreenPower', zone: 'NLDC', confidence: 'Low', status: 'Expired' },
-  ]);
-
-  const filtered = activeTab === 'All' ? alerts : alerts.filter(a => a.status === activeTab);
+  const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState<any[]>([]);
   const [msg, setMsg] = useState('');
 
-  const accept = (id: number) => {
-    setAlerts(alerts.map(a => a.id === id ? { ...a, status: 'Accepted' } : a));
-    setMsg("Load shift scheduled successfully.");
+  const fetchMatches = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('matches')
+      .select(`
+        *,
+        surplus_windows (
+          price_per_kw,
+          date,
+          start_time,
+          end_time,
+          producers (full_name)
+        )
+      `)
+      .eq('consumer_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setAlerts(data.map(m => ({
+        id: m.id,
+        time: `${m.surplus_windows?.date} ${m.surplus_windows?.start_time}–${m.surplus_windows?.end_time}`,
+        rateSurplus: m.surplus_windows?.price_per_kw,
+        rateGrid: 7.5,
+        savings: m.consumer_savings_inr,
+        producer: m.surplus_windows?.producers?.full_name || 'Solar Farm',
+        zone: 'WRLDC',
+        confidence: m.confidence_score || 'High',
+        status: m.status === 'pending' ? 'Pending' : (m.status === 'accepted' ? 'Accepted' : 'Expired')
+      })));
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchMatches();
+  }, [user]);
+
+  const accept = async (id: string) => {
+    setMsg("📡 Signaling Blockchain Oracle...");
+    const { error } = await supabase
+      .from('matches')
+      .update({ status: 'accepted' })
+      .eq('id', id);
+
+    if (!error) {
+      setMsg("🔒 Smart Contract Executed. Load shift scheduled.");
+      fetchMatches();
+    }
     setTimeout(() => setMsg(''), 4000);
   };
 

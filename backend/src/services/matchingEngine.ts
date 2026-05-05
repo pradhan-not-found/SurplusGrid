@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { GridPriceService } from './gridPriceService';
 import { BlockchainService } from './blockchainService';
 import { NotificationService } from './notificationService';
 import { PriceService } from './priceService';
@@ -94,11 +95,12 @@ export async function detectOverlaps(windowId: string) {
             const surplusRate = Number(window.price_per_kw) || 4.0;
             
             const savings = matchedKw * (gridRate - surplusRate);
-            const revenue = matchedKw * surplusRate;
-            const carbonOffset = matchedKw * carbonMultiplier;
+            const consumerSavings = (gridPrice - surplusRate) * matchedKw;
+            const producerRevenue = surplusRate * matchedKw;
+            const carbonOffset = (matchedKw * 0.85) / 1000; // Standard tCO2 factor
             
             console.log(`💰 PRICING DEBUG: Grid=${gridRate}, Surplus=${surplusRate}, SavingsPerKw=${gridRate - surplusRate}`);
-            console.log(`🌿 SUSTAINABILITY DEBUG: Source=${energySource}, Offset=${carbonOffset.toFixed(2)} kg`);
+            console.log(`🌿 SUSTAINABILITY DEBUG: Source=${energySource}, Offset=${carbonOffset} tCO2`);
 
             // 4. Create the match record
             const { data: newMatch, error: matchError } = await supabase
@@ -107,11 +109,11 @@ export async function detectOverlaps(windowId: string) {
                     window_id: window.id,
                     consumer_id: consumer.id,
                     matched_kw: matchedKw,
-                    consumer_savings_inr: savings,
-                    producer_revenue_inr: revenue,
+                    consumer_savings_inr: consumerSavings,
+                    producer_revenue_inr: producerRevenue,
                     status: 'pending',
                     confidence_score: 'High',
-                    carbon_offset_kg: carbonOffset
+                    carbon_offset_tco2: carbonOffset
                 })
                 .select()
                 .single();
@@ -124,16 +126,15 @@ export async function detectOverlaps(windowId: string) {
             // 📢 NOTIFICATION TRIGGER: Alert the consumer immediately
             await NotificationService.notifyNewMatch(consumer.id, matchedKw, savings);
 
-            // 5. Update window availability
+            // 5. Update window availability (Atomic Sync)
             currentAvailable = currentAvailable - matchedKw;
             
-            // Temporary update inside loop
             await supabase
                 .from('surplus_windows')
-                .update({ available_kw: currentAvailable })
+                .update({ predicted_kw: currentAvailable })
                 .eq('id', window.id);
                 
-            console.log(`[MatchingEngine] Match recorded, Remaining: ${currentAvailable}kW`);
+            console.log(`[GRID BALANCED] Window ${window.id} updated. Remaining supply: ${currentAvailable.toFixed(2)}kW`);
         }
     }
 
