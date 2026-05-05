@@ -11,9 +11,7 @@ export default function ConsumerAlerts() {
   const [alerts, setAlerts] = useState<any[]>([]);
   const [msg, setMsg] = useState('');
 
-  const filtered = alerts.filter(a => 
-    activeTab === 'All' || a.status === activeTab
-  );
+
 
   const fetchMatches = async () => {
     if (!user) return;
@@ -54,14 +52,14 @@ export default function ConsumerAlerts() {
   }, [user]);
 
   const accept = async (id: string) => {
-    setMsg("📡 Signaling Blockchain Oracle...");
+    setMsg("Signaling Blockchain Oracle...");
     const { error } = await supabase
       .from('matches')
       .update({ status: 'accepted' })
       .eq('id', id);
 
     if (!error) {
-      setMsg("🔒 Smart Contract Executed. Load shift scheduled.");
+      setMsg("Smart Contract Executed. Load shift scheduled.");
       fetchMatches();
     }
     setTimeout(() => setMsg(''), 4000);

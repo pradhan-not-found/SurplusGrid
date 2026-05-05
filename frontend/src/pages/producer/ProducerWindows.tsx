@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { Plus, X, Loader2, Trash2, Zap, CheckCircle2, Search, XCircle, PieChart, AlertCircle } from 'lucide-react';
+import { Plus, X, Loader2, Trash2, Zap, CheckCircle2, Search, XCircle, PieChart, AlertCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -200,9 +200,9 @@ export default function ProducerWindows() {
                     <div className="flex justify-between mb-[6px]">
                       <label className="block text-[13px] font-medium text-[#374151]">Asking Price (₹/kW)</label>
                       {Number(askingPrice) > gridPrice ? (
-                        <span className="text-[11px] font-bold text-[#EF4444]">⚠️ Above Market</span>
+                        <span className="flex items-center gap-1 text-[11px] font-bold text-[#EF4444]"><AlertTriangle size={12} /> Above Market</span>
                       ) : (
-                        <span className="text-[11px] font-bold text-[#10B981]">✓ Competitive</span>
+                        <span className="flex items-center gap-1 text-[11px] font-bold text-[#10B981]"><CheckCircle2 size={12} /> Competitive</span>
                       )}
                     </div>
                     <input type="number" step="0.1" required value={askingPrice} onChange={e=>setAskingPrice(e.target.value)} className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" />
