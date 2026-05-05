@@ -1,9 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { supabase } from './lib/supabase';
 import { detectOverlaps } from './services/matchingEngine';
+import { BlockchainService } from './services/blockchainService';
 
 dotenv.config();
+
+// Initialize Services
+BlockchainService.init();
 
 const app = express();
 const PORT = process.env.PORT || 5001;

@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { BlockchainService } from './blockchainService';
 
 interface SurplusWindow {
     id: string;
@@ -98,7 +99,7 @@ export async function detectOverlaps(windowId: string) {
             console.log(`🌿 SUSTAINABILITY DEBUG: Source=${energySource}, Offset=${carbonOffset.toFixed(2)} kg`);
 
             // 4. Create the match record
-            const { error: matchError } = await supabase
+            const { data: newMatch, error: matchError } = await supabase
                 .from('matches')
                 .insert({
                     window_id: window.id,
@@ -109,13 +110,22 @@ export async function detectOverlaps(windowId: string) {
                     status: 'pending',
                     confidence_score: 'High',
                     carbon_offset_kg: carbonOffset
-                });
-
-
+                })
+                .select()
+                .single();
 
             if (matchError) {
                 console.error('[MatchingEngine] Error creating match:', matchError);
                 continue;
+            }
+
+            // ⛓️ BLOCKCHAIN LOGGING
+            const txHash = await BlockchainService.logTrade(newMatch.id, matchedKw, surplusRate);
+            if (txHash) {
+                await supabase
+                    .from('matches')
+                    .update({ blockchain_tx_hash: txHash })
+                    .eq('id', newMatch.id);
             }
 
             // 5. Update window availability

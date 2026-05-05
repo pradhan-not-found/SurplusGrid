@@ -151,14 +151,20 @@ export default function ProducerMatches() {
                 </tr>
                 {expandedRow === m.id && (
                   <tr className="bg-[#F8FAFC]">
-                    <td colSpan={7} className="p-[20px_24px] border border-[#E5E7EB]">
-                      <div className="flex justify-between items-center text-[13px]">
-                        <div className="text-[#374151] space-y-2">
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Match ID:</strong> {m.id}</div>
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Consumer ID:</strong> {m.consumer_id}</div>
-                          <div><strong className="text-[#0D1117] font-medium w-[80px] inline-block">Confirmed:</strong> {new Date(m.created_at).toLocaleString()}</div>
+                    <td colSpan={8} className="p-[20px_24px] border border-[#E5E7EB]">
+                      <div className="flex justify-between items-start text-[13px]">
+                        <div className="text-[#374151] space-y-2 flex-1">
+                          <div><strong className="text-[#0D1117] font-medium w-[120px] inline-block">Match ID:</strong> {m.id}</div>
+                          <div><strong className="text-[#0D1117] font-medium w-[120px] inline-block">Consumer ID:</strong> {m.consumer_id}</div>
+                          <div><strong className="text-[#0D1117] font-medium w-[120px] inline-block">Confirmed:</strong> {new Date(m.created_at).toLocaleString()}</div>
+                          <div className="flex items-start">
+                            <strong className="text-[#0D1117] font-medium w-[120px] inline-block shrink-0">Blockchain Hash:</strong> 
+                            <span className="font-mono text-[11px] text-[#2563EB] break-all bg-[#EFF6FF] px-2 py-0.5 rounded border border-[#DBEAFE]">
+                              {m.blockchain_tx_hash || 'Pending Chain Sync...'}
+                            </span>
+                          </div>
                         </div>
-                        <button className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium">
+                        <button className="flex items-center gap-1.5 text-[13px] text-[#2563EB] hover:underline font-medium ml-4">
                           <Download size={13} /> Export row as CSV
                         </button>
                       </div>
@@ -169,7 +175,7 @@ export default function ProducerMatches() {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-[48px] text-center border border-[#E5E7EB]">
+                <td colSpan={8} className="p-[48px] text-center border border-[#E5E7EB]">
                   <div className="flex flex-col items-center justify-center text-[#6B7280]">
                     <GitMerge size={48} strokeWidth={1} className="text-[#D1D5DB] mb-4" />
                     <h3 className="text-[16px] font-medium text-[#374151] mb-1">No matches yet</h3>
