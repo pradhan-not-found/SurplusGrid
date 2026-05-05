@@ -11,6 +11,10 @@ export default function ConsumerAlerts() {
   const [alerts, setAlerts] = useState<any[]>([]);
   const [msg, setMsg] = useState('');
 
+  const filtered = alerts.filter(a => 
+    activeTab === 'All' || a.status === activeTab
+  );
+
   const fetchMatches = async () => {
     if (!user) return;
     setLoading(true);
