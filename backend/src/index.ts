@@ -8,6 +8,7 @@ import { ExpiryService } from './services/expiryService';
 import { IotService } from './services/iotService';
 import { ReportService } from './services/reportService';
 import { NotificationService } from './services/notificationService';
+import { OptimizationService } from './services/optimizationService';
 
 dotenv.config();
 
@@ -28,32 +29,21 @@ supabase
             const match = payload.new;
             // Only trigger if status changed to 'accepted' AND contract isn't locked yet
             if (match.status === 'accepted' && match.contract_status !== 'LOCKED') {
-                console.log(`⛓️ Oracle: Match ${match.id} accepted. Executing Smart Contract...`);
+                console.log(`⛓️ Oracle: Executing Smart Contract for match ${match.id}...`);
                 
-                // Execute Blockchain Contract
-                const txHash = await BlockchainService.logTrade(match.id, match.matched_kw, 4.0);
-                
-                if (txHash) {
-                    await supabase
-                        .from('matches')
-                        .update({ 
-                            contract_status: 'LOCKED',
-                            blockchain_tx_hash: txHash 
-                        })
-                        .eq('id', match.id);
-                    console.log(`🔒 Oracle: Contract LOCKED for Match ${match.id}`);
-
-                    // 📢 NOTIFICATION: Alert the producer about blockchain verification
-                    // We fetch the producer ID from the window (linked via window_id)
-                    const { data: win } = await supabase.from('surplus_windows').select('producer_id').eq('id', match.window_id).single();
-                    if (win) {
-                        await NotificationService.send(
-                            win.producer_id,
-                            '🔒 Trade Blockchain-Verified',
-                            `Match #${match.id.substring(0, 8)} has been immutably recorded. Revenue is now guaranteed.`,
-                            'match'
-                        );
-                    }
+                try {
+                    // 1. Log to Blockchain
+                    await BlockchainService.logTrade(match.id, match.matched_kw, match.consumer_savings_inr);
+                    
+                    // 2. Alert the Producer (Verification Success)
+                    await NotificationService.send(
+                        match.producer_id,
+                        '🔒 Blockchain-Verified',
+                        `Trade for ${match.matched_kw}kW has been locked on-chain. Verification Complete.`,
+                        'verification'
+                    );
+                } catch (err) {
+                    console.error('❌ Oracle Execution Error:', err);
                 }
             }
         }
@@ -87,38 +77,45 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-// Health Check
-app.get('/health', (req, res) => {
-    res.json({ status: 'SurplusGrid Backend is operational' });
-});
-
-/**
- * Trigger matching for a specific window.
- * This can be called via a Supabase Webhook when a window is inserted.
- */
+// Routes
 app.post('/api/trigger-match', async (req, res) => {
     const { windowId } = req.body;
-
-    if (!windowId) {
-        return res.status(400).json({ error: 'Missing windowId' });
-    }
+    if (!windowId) return res.status(400).json({ error: 'windowId is required' });
 
     try {
-        // Run matching logic in the background
-        detectOverlaps(windowId);
-        res.json({ message: 'Matching process initiated' });
+        await detectOverlaps(windowId);
+        res.json({ message: 'Matching process triggered successfully' });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`⚡ [SurplusGrid Backend] Running on http://localhost:${PORT}`);
-    });
-}
+// 🛠️ SYSTEM ALERTS & OPTIMIZATION
+app.post('/api/trigger-optimization', async (req, res) => {
+    try {
+        await OptimizationService.checkUnderUtilization();
+        res.json({ message: 'Optimization scan complete. Alerts dispatched.' });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-// Export for Vercel
+app.post('/api/trigger-curtailment', async (req, res) => {
+    const { location } = req.body;
+    try {
+        await OptimizationService.triggerCurtailmentAlert(location || 'Maharashtra');
+        res.json({ message: `Grid Curtailment broadcasted to ${location || 'Maharashtra'}` });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/health', (req, res) => {
+    res.json({ status: 'operational', timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => {
+    console.log(`⚡ [SurplusGrid Backend] Running on http://localhost:${PORT}`);
+});
+
 export default app;
-
