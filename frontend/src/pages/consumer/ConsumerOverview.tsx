@@ -238,14 +238,15 @@ export default function ConsumerOverview() {
           </div>
           <div className="flex items-end justify-between h-[120px] gap-1 px-2 border-b border-[#F4F4F5] pb-2">
             {Array.from({ length: 24 }).map((_, hour) => {
-              const count = heatmap[hour] || 0;
-              const max = Math.max(...Object.values(heatmap));
-              const height = max > 0 ? (count / max) * 100 : 0;
+              // Handle string keys from JSONB
+              const count = Number(heatmap[hour] || heatmap[String(hour)] || 0);
+              const max = Math.max(...Object.values(heatmap).map(Number), 1);
+              const height = (count / max) * 100;
               return (
                 <div key={hour} className="group relative flex-1 flex flex-col items-center">
                   <div 
                     className="w-full bg-[#09090B] rounded-t-[2px] transition-all duration-500 ease-out hover:bg-[#2563EB]"
-                    style={{ height: `${Math.max(height, 2)}%`, minHeight: count > 0 ? '4px' : '0' }}
+                    style={{ height: `${Math.max(height, 4)}%`, minHeight: count > 0 ? '4px' : '0' }}
                   />
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#09090B] text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                     {hour}:00 · {count} matches

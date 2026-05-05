@@ -27,16 +27,27 @@ export class ReportService {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        const { data: matches } = await supabase
+        // 1. Fetch matches as Consumer
+        const { data: consumerMatches } = await supabase
             .from('matches')
-            .select(`
-                *,
-                surplus_windows(start_time)
-            `)
-            .or(`consumer_id.eq.${userId},window_id.in.(select id from surplus_windows where producer_id.eq.${userId})`)
-            .gte('created_at', thirtyDaysAgo.toISOString());
+            .select(`*, surplus_windows(start_time)`)
+            .eq('consumer_id', userId);
 
-        if (!matches || matches.length === 0) return;
+        // 2. Fetch matches as Producer (via windows)
+        const { data: windows } = await supabase
+            .from('surplus_windows')
+            .select('id')
+            .eq('producer_id', userId);
+        
+        const windowIds = (windows || []).map(w => w.id);
+        const { data: producerMatches } = await supabase
+            .from('matches')
+            .select(`*, surplus_windows(start_time)`)
+            .in('window_id', windowIds);
+
+        const matches = [...(consumerMatches || []), ...(producerMatches || [])];
+
+        if (matches.length === 0) return;
 
         // Calculate Totals
         const totals = matches.reduce((acc, m) => ({
