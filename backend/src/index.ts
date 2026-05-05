@@ -126,14 +126,17 @@ app.get('/api/weather/:location', async (req, res) => {
 
 app.post('/api/edge-simulation', async (req, res) => {
     const { region } = req.body;
+    const requestId = Math.random().toString(36).substring(7).toUpperCase();
+    console.log(`📡 [EDGE NODE] Processing Intelligence Request [${requestId}] for region: ${region}`);
+    
     // Simulate Edge Intelligence Logic
     const stressFactor = Math.random() > 0.7 ? 'HIGH' : 'STABLE';
     res.json({
+        id: requestId,
         region,
         stressFactor,
         recommendation: stressFactor === 'HIGH' ? '🚨 CRITICAL: Trigger Curtailment Protocol' : '✅ STABLE: Maintain Normal Operations',
         processedAt: new Date().toISOString(),
-        latency: '14ms',
         node: "Edge-Node-Mumbai-1"
     });
 });

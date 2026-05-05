@@ -25,6 +25,10 @@ export default function ProducerOverview() {
       fetchDashboardData();
       fetchWeather();
       fetchEdgeStatus();
+      
+      // 🚀 AUTO-PULSE: Update Edge status every 3 seconds for a "Live" feel
+      const interval = setInterval(fetchEdgeStatus, 3000);
+      return () => clearInterval(interval);
     }
   }, [user?.id]);
 
@@ -41,14 +45,28 @@ export default function ProducerOverview() {
       
       if (!res.ok) throw new Error();
       const data = await res.json();
+      
+      // 🧠 ADAPTIVE INTELLIGENCE: Change recommendation based on real-time latency
+      let recommendation = "✅ STABLE: Ultra-fast edge processing";
+      let stressFactor = "STABLE";
+      
+      if (actualLatency > 50) {
+        recommendation = "🚨 HIGH LOAD: Scaling Edge nodes";
+        stressFactor = "HIGH";
+      } else if (actualLatency > 25) {
+        recommendation = "⚠️ MODERATE: Normal network load";
+        stressFactor = "MODERATE";
+      }
+
       setEdgeStatus({
         ...data,
-        latency: `${actualLatency}ms`
+        latency: `${actualLatency}ms`,
+        recommendation,
+        stressFactor
       });
     } catch (e) {
       const endTime = performance.now();
       const actualLatency = Math.round(endTime - startTime);
-      // 🛡️ EDGE SELF-HEALING
       setEdgeStatus({
         node: "Edge-Node-Mumbai-1",
         latency: `${actualLatency}ms`,
@@ -202,7 +220,11 @@ export default function ProducerOverview() {
           </div>
         </div>
         <div className="text-[12px] font-bold text-[#F1F5F9]">
-          System Intelligence: <span className={edgeStatus?.stressFactor === 'HIGH' ? 'text-[#F87171]' : 'text-[#34D399]'}>
+          System Intelligence: <span className={
+            edgeStatus?.stressFactor === 'HIGH' ? 'text-[#F87171]' : 
+            edgeStatus?.stressFactor === 'MODERATE' ? 'text-[#FBBF24]' : 
+            'text-[#34D399]'
+          }>
             {edgeStatus?.recommendation || 'Analyzing...'}
           </span>
         </div>
