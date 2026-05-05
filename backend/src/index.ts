@@ -4,11 +4,13 @@ import dotenv from 'dotenv';
 import { supabase } from './lib/supabase';
 import { detectOverlaps } from './services/matchingEngine';
 import { BlockchainService } from './services/blockchainService';
+import { ExpiryService } from './services/expiryService';
 
 dotenv.config();
 
 // Initialize Services
 BlockchainService.init();
+ExpiryService.start();
 
 // ⛓️ BLOCKCHAIN CONTRACT ORACLE
 // Listens for 'accepted' status and executes the Smart Contract
