@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import axios from 'axios';
 import { supabase } from './lib/supabase';
 import { detectOverlaps } from './services/matchingEngine';
 import { BlockchainService } from './services/blockchainService';
@@ -150,6 +151,40 @@ app.post('/api/webhooks/surplus-window', async (req, res) => {
     console.log(`📝 Record ID: ${record?.id} | Producer: ${record?.producer_id}`);
     
     if (type === 'INSERT') {
+        const { predicted_kw, zone } = record;
+        const currentWeather = "Partly Cloudy"; // Mocked for now
+        let ai_corrected_kw = predicted_kw;
+        let confidence_score = 0.1;
+
+        console.log(`[NODE] Sending data to AI Engine... predicted_kw: ${predicted_kw}, zone: ${zone}`);
+        try {
+            const aiResponse = await axios.post('http://localhost:8000/api/v1/predict/yield', {
+                event: "NEW_WINDOW_ADDED",
+                data: { kw: predicted_kw, zone: zone, weather: currentWeather }
+            });
+            console.log(`[AI ENGINE] Received response:`, aiResponse.data);
+            ai_corrected_kw = aiResponse.data.ai_corrected_yield;
+            confidence_score = aiResponse.data.confidence_score;
+        } catch (error: any) {
+            console.error(`[NODE] AI Engine offline or error. Falling back to original values.`);
+        }
+
+        console.log(`[NODE] Updating Supabase for record ID ${record.id}...`);
+        const { error: updateError } = await supabase
+            .from('surplus_windows')
+            .update({
+                ai_corrected_kw,
+                confidence_score,
+                status: 'AI_VERIFIED'
+            })
+            .eq('id', record.id);
+
+        if (updateError) {
+            console.error(`[NODE] Error updating Supabase:`, updateError);
+        } else {
+            console.log(`[NODE] Successfully updated record ${record.id} with AI predictions.`);
+        }
+
         console.log(`🚀 [AUTONOMOUS MATCH] Triggering engine for new surplus window...`);
         try {
             const { MatchingEngine } = require('./services/matchingEngine');
