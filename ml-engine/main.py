@@ -10,7 +10,7 @@ app = FastAPI(title="SurplusGrid ML Engine")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,6 +25,21 @@ class ForecastResponse(BaseModel):
     predicted_load_kw: float
     lower_confidence_kw: float
     upper_confidence_kw: float
+
+class EventData(BaseModel):
+    kw: float
+    zone: str
+    weather: str
+
+class GridEventRequest(BaseModel):
+    event: str
+    data: EventData
+
+class AIYieldResponse(BaseModel):
+    ai_corrected_yield: float
+    confidence_score: float
+    price_recommendation: float
+    load_shift_trigger: bool
 
 @app.get("/")
 def health_check():
@@ -58,3 +73,35 @@ def forecast_demand(request: ForecastRequest):
         )
         
     return forecasts
+
+@app.post("/api/v1/predict/yield", response_model=AIYieldResponse)
+def predict_yield(request: GridEventRequest):
+    kw = request.data.kw
+    weather = request.data.weather.lower()
+    
+    multiplier = 1.0
+    confidence = 0.90
+    
+    if "storm" in weather or "thunder" in weather:
+        multiplier = 0.15
+        confidence = 0.40
+    elif "rain" in weather:
+        multiplier = 0.35
+        confidence = 0.65
+    elif "cloud" in weather or "overcast" in weather:
+        multiplier = 0.60
+        confidence = 0.75
+    elif "clear" in weather or "sunny" in weather:
+        multiplier = 0.95
+        confidence = 0.95
+        
+    ai_corrected_yield = round(kw * multiplier, 2)
+    price_recommendation = round(3.50 * (1 if multiplier > 0.8 else 0.8), 2)
+    load_shift_trigger = multiplier < 0.4
+    
+    return AIYieldResponse(
+        ai_corrected_yield=ai_corrected_yield,
+        confidence_score=confidence,
+        price_recommendation=price_recommendation,
+        load_shift_trigger=load_shift_trigger
+    )
