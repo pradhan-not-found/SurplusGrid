@@ -147,28 +147,37 @@ export default function ConsumerOverview() {
     }
   };
 
-  const handleAccept = async (id: string) => {
+  const handleAcceptMatch = async (windowId: string) => {
     try {
       // 1. Update the surplus window
       const { error: winError } = await supabase
         .from('surplus_windows')
         .update({ status: 'matched', available_kw: 0 })
-        .eq('id', id);
+        .eq('id', windowId);
 
-      if (winError) throw winError;
+      if (winError) {
+        alert(`Failed to accept match: ${winError.message}`);
+        throw winError;
+      }
 
       // 2. Create a match record to show in History
-      const alert = alerts.find(a => a.id === id);
-      if (alert && user) {
-        await supabase.from('matches').insert({
+      const alertItem = alerts.find(a => a.id === windowId);
+      if (alertItem && user) {
+        const { error: matchError } = await supabase.from('matches').insert({
           consumer_id: user.id,
-          surplus_window_id: id,
-          matched_kw: alert.capacity,
-          consumer_savings_inr: alert.capacity * 2, // Estimated savings
+          surplus_window_id: windowId,
+          matched_kw: alertItem.capacity,
+          consumer_savings_inr: alertItem.capacity * 2, // Estimated savings
           status: 'accepted'
         });
+        
+        if (matchError) {
+          alert(`Failed to create match record: ${matchError.message}`);
+          throw matchError;
+        }
       }
       
+      alert("Match successfully accepted!");
       // Refresh data
       fetchConsumerData();
     } catch (error) {
@@ -321,7 +330,7 @@ export default function ConsumerOverview() {
                 <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{a.capacity} kW</td>
                 <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{a.price}</td>
                 <td className="p-[16px_20px] text-right">
-                  <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#09090B] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#27272A] transition-colors shadow-sm">
+                  <button onClick={() => handleAcceptMatch(a.id)} className="h-[32px] px-[16px] bg-[#09090B] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#27272A] transition-colors shadow-sm">
                     Accept Match
                   </button>
                 </td>
