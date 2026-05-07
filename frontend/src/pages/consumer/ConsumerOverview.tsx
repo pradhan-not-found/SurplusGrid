@@ -109,17 +109,22 @@ export default function ConsumerOverview() {
         carbonOffset
       });
 
-      // 3. Split into Pending and Recent (Safe Mapping)
-      const pending = allMatches.filter(m => m.status === 'pending').map(m => {
-        // Try to find the window data in any possible key Supabase might use
-        const win = m.surplus_windows || (m as any).window;
-        return {
-          id: m.id,
-          time: win ? `${win.date} ${win.start_time?.substring(0, 5)}–${win.end_time?.substring(0, 5)}` : 'Time Pending',
-          matchedKw: m.matched_kw,
-          savings: m.consumer_savings_inr
-        };
-      });
+      // 3. Fetch seeking surplus windows for Pending Alerts
+      const { data: seekingWindows, error: seekingError } = await supabase
+        .from('surplus_windows')
+        .select('*')
+        .eq('status', 'seeking')
+        .order('created_at', { ascending: false });
+
+      if (seekingError) console.error('Error fetching seeking windows:', seekingError);
+
+      const pending = (seekingWindows || []).map(win => ({
+        id: win.id,
+        date: win.date,
+        time: `${win.start_time?.substring(0, 5)}–${win.end_time?.substring(0, 5)}`,
+        capacity: win.ai_corrected_kw || win.predicted_kw,
+        price: win.price_per_kw || 4.0
+      }));
 
       const history = allMatches.filter(m => m.status !== 'pending').map(m => {
         const win = m.surplus_windows || (m as any).window;
@@ -144,12 +149,25 @@ export default function ConsumerOverview() {
 
   const handleAccept = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('matches')
-        .update({ status: 'accepted' })
+      // 1. Update the surplus window
+      const { error: winError } = await supabase
+        .from('surplus_windows')
+        .update({ status: 'matched', available_kw: 0 })
         .eq('id', id);
 
-      if (error) throw error;
+      if (winError) throw winError;
+
+      // 2. Create a match record to show in History
+      const alert = alerts.find(a => a.id === id);
+      if (alert && user) {
+        await supabase.from('matches').insert({
+          consumer_id: user.id,
+          surplus_window_id: id,
+          matched_kw: alert.capacity,
+          consumer_savings_inr: alert.capacity * 2, // Estimated savings
+          status: 'accepted'
+        });
+      }
       
       // Refresh data
       fetchConsumerData();
@@ -178,7 +196,7 @@ export default function ConsumerOverview() {
             <Zap size={20} className="text-[#09090B]" />
             <div>
               <span className="text-[14px] font-semibold text-[#09090B] mr-2">New matching opportunity!</span>
-              <span className="text-[14px] text-[#3F3F46]">{alerts[0].time} · Save ₹{alerts[0].savings.toLocaleString()}</span>
+              <span className="text-[14px] text-[#3F3F46]">{alerts[0].time} · Save ₹{((alerts[0].capacity * 2) || 0).toLocaleString()}</span>
             </div>
           </div>
           <div className="flex items-center gap-6">
@@ -288,21 +306,23 @@ export default function ConsumerOverview() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-[#E5E7EB]">
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Date</th>
               <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Time Window</th>
-              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Matched Capacity</th>
-              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Estimated Savings</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">AI Capacity</th>
+              <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider">Price (₹)</th>
               <th className="p-[14px_20px] text-[12px] font-medium text-[#71717A] uppercase tracking-wider text-right">Action</th>
             </tr>
           </thead>
           <tbody>
             {alerts.map((a: any) => (
               <tr key={a.id} className="border-b border-[#F4F4F5] last:border-0 hover:bg-[#FAFAFA] transition-colors duration-150">
+                <td className="p-[16px_20px] text-[14px] font-medium text-[#09090B]">{a.date}</td>
                 <td className="p-[16px_20px] text-[14px] font-medium text-[#09090B]">{a.time}</td>
-                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{a.matchedKw} kW</td>
-                <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{a.savings.toLocaleString()}</td>
+                <td className="p-[16px_20px] text-[14px] text-[#3F3F46]">{a.capacity} kW</td>
+                <td className="p-[16px_20px] text-[14px] font-semibold text-[#10B981]">₹{a.price}</td>
                 <td className="p-[16px_20px] text-right">
                   <button onClick={() => handleAccept(a.id)} className="h-[32px] px-[16px] bg-[#09090B] text-white rounded-[6px] font-medium text-[13px] hover:bg-[#27272A] transition-colors shadow-sm">
-                    Accept shift
+                    Accept Match
                   </button>
                 </td>
               </tr>
