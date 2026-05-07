@@ -165,7 +165,7 @@ export default function ConsumerOverview() {
       if (alertItem && user) {
         const { error: matchError } = await supabase.from('matches').insert({
           consumer_id: user.id,
-          surplus_window_id: windowId,
+          window_id: windowId,
           matched_kw: alertItem.capacity,
           consumer_savings_inr: alertItem.capacity * 2, // Estimated savings
           status: 'accepted'
