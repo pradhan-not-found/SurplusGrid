@@ -96,20 +96,25 @@ export default function Onboarding() {
         onboarding_complete: true
       };
 
-      const { error } = await supabase
-        .from('profiles')
-        .upsert(payload, { onConflict: 'id' });
+      // Wrap supabase upsert in a Promise.race to prevent infinite hangs
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 10000));
+      
+      const { error } = await Promise.race([
+        supabase.from('profiles').upsert(payload, { onConflict: 'id' }),
+        timeoutPromise
+      ]) as any;
 
       if (error) {
-        setErrorMsg(error.message);
+        setErrorMsg(error.message || 'Unknown error occurred');
+        setLoading(false);
         return;
       }
       
-      await refreshProfile();
+      await Promise.race([refreshProfile(), timeoutPromise]);
+      setLoading(false);
       navigate(`/dashboard/${role}`);
     } catch (err: any) {
-      setErrorMsg('Failed to save profile: ' + err.message);
-    } finally {
+      setErrorMsg('Failed to save profile: ' + (err.message || 'Unknown error'));
       setLoading(false);
     }
   };
