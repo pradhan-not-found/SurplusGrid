@@ -10,10 +10,7 @@ export default function ProducerOverview() {
   
   const [loading, setLoading] = useState(true);
   const [weatherLoading, setWeatherLoading] = useState(true);
-  const [skyCondition, setSkyCondition] = useState('Analyzing...');
-  const [regionalTemp, setRegionalTemp] = useState<number | null>(null);
-  const [aiInsightText, setAiInsightText] = useState('Processing data streams...');
-  const [location, setLocation] = useState(profile?.state_location || 'Mumbai');
+  const [weather, setWeather] = useState({ temp: '--', condition: '--', insight: 'Loading...' });
   
   const [todaysPredictedSurplus, setTodaysPredictedSurplus] = useState(0);
   const [curtailmentAvoided, setCurtailmentAvoided] = useState(0);
@@ -30,48 +27,50 @@ export default function ProducerOverview() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (profile?.state_location) {
-      setLocation(profile.state_location);
+    // a) On mount, read current location from localStorage (defaulting to 'Mumbai' if null) and fetch
+    const storedUserStr = localStorage.getItem('surplusgrid_user');
+    let initLocation = 'Mumbai';
+    if (storedUserStr) {
+      try {
+        const storedUser = JSON.parse(storedUserStr);
+        if (storedUser.state_location) initLocation = storedUser.state_location;
+      } catch (e) {}
+    } else if (profile?.state_location) {
+      initLocation = profile.state_location;
     }
+    fetchWeather(initLocation);
 
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === 'surplusgrid_user') {
-        try {
-          const userObj = JSON.parse(e.newValue || '{}');
-          if (userObj.state_location) {
-            setLocation(userObj.state_location);
-          }
-        } catch (err) {
-          console.error("Error parsing storage event", err);
-        }
+    // b) Add CustomEvent listener
+    const handleLocationUpdated = (e: any) => {
+      if (e.detail && e.detail.location) {
+        fetchWeather(e.detail.location);
       }
     };
 
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [profile?.state_location]);
+    window.addEventListener('location_updated', handleLocationUpdated);
+    return () => {
+      window.removeEventListener('location_updated', handleLocationUpdated);
+    };
+  }, []);
 
-  useEffect(() => {
-    if (!location) return;
-    if (user) {
-      fetchWeatherData(location);
-    }
-  }, [user?.id, location]);
-
-  const fetchWeatherData = async (stateName: string) => {
+  const fetchWeather = async (location: string) => {
     setWeatherLoading(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/v1/weather?location=${stateName}`);
+      const res = await fetch(`http://localhost:5001/api/v1/weather?location=${location}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setSkyCondition(data.condition);
-      setRegionalTemp(data.temperature);
-      setAiInsightText(data.insight);
+      setWeather({
+        temp: data.temperature !== undefined ? data.temperature : '--',
+        condition: data.condition || 'Clear',
+        insight: data.insight || 'Ideal conditions for solar generation.'
+      });
     } catch (e) {
       console.log('📡 Weather Pipeline Error: Falling back to Mumbai');
-      setSkyCondition('Clear');
-      setRegionalTemp(32);
-      setAiInsightText('Ideal conditions for solar generation.');
+      setWeather({
+        temp: '32',
+        condition: 'Clear',
+        insight: 'Ideal conditions for solar generation.'
+      });
     } finally {
       setWeatherLoading(false);
     }
@@ -206,11 +205,11 @@ export default function ProducerOverview() {
         <div className="grid grid-cols-3 gap-6">
           <div className="flex items-center gap-4 p-4 bg-[#F8FAFC] rounded-[12px] border border-[#F1F5F9]">
             <div className="text-[#F59E0B]">
-              {skyCondition === 'Clear' ? <Sun size={32} /> : <Cloud size={32} />}
+              {weather.condition === 'Clear' ? <Sun size={32} /> : <Cloud size={32} />}
             </div>
             <div>
               <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-0.5">Sky Condition</p>
-              <p className="text-[15px] font-bold text-[#0D1117]">{weatherLoading ? 'Fetching...' : skyCondition}</p>
+              <p className="text-[15px] font-bold text-[#0D1117]">{weatherLoading ? 'Fetching...' : weather.condition}</p>
             </div>
           </div>
 
@@ -220,7 +219,7 @@ export default function ProducerOverview() {
             </div>
             <div>
               <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-0.5">Regional Temp</p>
-              <p className="text-[15px] font-bold text-[#0D1117]">{weatherLoading ? 'Fetching...' : (regionalTemp !== null ? `${regionalTemp}°C` : '--')}</p>
+              <p className="text-[15px] font-bold text-[#0D1117]">{weatherLoading ? 'Fetching...' : `${weather.temp}°C`}</p>
             </div>
           </div>
 
@@ -230,7 +229,7 @@ export default function ProducerOverview() {
             </div>
             <div>
               <p className="text-[11px] font-bold text-[#2563EB] uppercase tracking-wider mb-0.5">AI Yield Insight</p>
-              <p className="text-[13px] font-medium text-[#1E40AF] leading-tight">{weatherLoading ? 'Fetching live telemetry...' : aiInsightText}</p>
+              <p className="text-[13px] font-medium text-[#1E40AF] leading-tight">{weatherLoading ? 'Fetching live telemetry...' : weather.insight}</p>
             </div>
           </div>
         </div>

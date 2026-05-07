@@ -66,6 +66,9 @@ export default function ProducerSettings() {
         await refreshProfile();
       }
       
+      // Dispatch custom event so the Dashboard updates its weather widget instantly
+      window.dispatchEvent(new CustomEvent('location_updated', { detail: { location: stateLoc } }));
+      
       setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
     } catch (e) {
       alert('Error saving details');
