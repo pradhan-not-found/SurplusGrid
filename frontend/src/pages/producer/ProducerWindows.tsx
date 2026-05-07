@@ -120,7 +120,7 @@ export default function ProducerWindows() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             type: 'INSERT', 
-            record: { id: data.id, producer_id: user.id } 
+            record: data 
           })
         });
       } catch (err) {

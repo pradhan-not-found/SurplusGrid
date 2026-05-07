@@ -188,9 +188,8 @@ app.post('/api/webhooks/surplus-window', async (req, res) => {
 
         console.log(`🚀 [AUTONOMOUS MATCH] Triggering engine for new surplus window...`);
         try {
-            const { MatchingEngine } = require('./services/matchingEngine');
             // Run the matching engine immediately
-            await MatchingEngine.detectOverlaps();
+            await detectOverlaps(record.id);
             console.log(`✅ [MATCHING COMPLETE] Automated overlap detection finished.`);
         } catch (error) {
             console.error(`❌ [WEBHOOK ERROR] Matching engine failed:`, error);
