@@ -64,17 +64,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (session?.user) {
         if (currentUserId.current !== session.user.id) {
+          if (mounted) setLoading(true);
           currentUserId.current = session.user.id;
           setUser(session.user);
           const prof = await fetchProfile(session.user.id);
-          if (mounted) setProfile(prof);
+          if (mounted) {
+            setProfile(prof);
+            setLoading(false);
+          }
         }
       } else {
         currentUserId.current = null;
         setUser(null);
         setProfile(null);
+        if (mounted) setLoading(false);
       }
-      if (mounted) setLoading(false);
     });
 
     return () => {
