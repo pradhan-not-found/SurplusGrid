@@ -67,7 +67,7 @@ export default function ProducerWindows() {
     if (!user) return;
     const { data, error } = await supabase
       .from('surplus_windows')
-      .select('*, ai_corrected_kw, confidence_score, price_recommendation')
+      .select('*, ai_corrected_kw, confidence_score')
       .eq('producer_id', user.id)
       .order('date', { ascending: false })
       .order('start_time', { ascending: false });
