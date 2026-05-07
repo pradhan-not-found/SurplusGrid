@@ -118,9 +118,10 @@ app.post('/api/trigger-curtailment', async (req, res) => {
     }
 });
 
-app.get('/api/weather/:location', async (req, res) => {
+app.get('/api/v1/weather', async (req, res) => {
     try {
-        const data = await WeatherService.getWeatherData(req.params.location);
+        const location = (req.query.location as string) || 'Mumbai';
+        const data = await WeatherService.getWeatherData(location);
         res.json(data);
     } catch (error: any) {
         res.status(500).json({ error: error.message });

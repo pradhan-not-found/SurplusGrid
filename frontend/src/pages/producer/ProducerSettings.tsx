@@ -3,10 +3,17 @@ import { useAuth } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
 import { Eye, Copy, Check, CheckCircle2, Send } from 'lucide-react';
 
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+  "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu and Kashmir"
+];
+
 import { supabase } from '../../lib/supabase';
 
 export default function ProducerSettings() {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   
   const [msg1, setMsg1] = useState('');
   const [msg2, setMsg2] = useState('');
@@ -54,6 +61,10 @@ export default function ProducerSettings() {
       await supabase.auth.updateUser({
         data: { phone, gst_number: gstNumber }
       });
+      
+      if (refreshProfile) {
+        await refreshProfile();
+      }
       
       setMsg1('Saved'); setTimeout(() => setMsg1(''), 3000);
     } catch (e) {
@@ -121,7 +132,19 @@ export default function ProducerSettings() {
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Email</label><input type="email" className="w-full h-[40px] px-[12px] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#9CA3AF] outline-none" value={user?.email || ''} disabled /></div>
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Phone</label><input type="tel" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
             <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Company name</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={companyName} onChange={e=>setCompanyName(e.target.value)} /></div>
-            <div><label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label><input type="text" className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow" value={stateLoc} onChange={e=>setStateLoc(e.target.value)} /></div>
+            <div>
+              <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">State</label>
+              <select 
+                className="w-full h-[40px] px-[12px] bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#0D1117] outline-none focus:border-[#2563EB] focus:ring-[3px] focus:ring-[#2563EB]/10 transition-shadow"
+                value={stateLoc} 
+                onChange={e=>setStateLoc(e.target.value)}
+              >
+                <option value="">Select State...</option>
+                {INDIAN_STATES.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+            </div>
             <div>
               <label className="block text-[13px] font-medium text-[#374151] mb-[6px]">Energy Source</label>
               <select 
