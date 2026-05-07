@@ -59,19 +59,18 @@ export async function detectOverlaps(windowId: string) {
 
     const producerLocation = (window.producer as any).state_location;
 
-    // 2. Fetch potential consumers in the same location
+    // 2. Fetch potential consumers across the grid (cross-state matching)
     const { data: consumers, error: consumersError } = await supabase
         .from('profiles')
         .select('id, state_location, flexible_load_kw, shiftable_hours')
-        .eq('role', 'consumer')
-        .eq('state_location', producerLocation);
+        .eq('role', 'consumer');
 
     if (consumersError) {
         console.error('[MatchingEngine] Error fetching consumers:', consumersError);
         return;
     }
 
-    console.log(`[MatchingEngine] Found ${consumers?.length} potential consumers in ${producerLocation}`);
+    console.log(`[MatchingEngine] Found ${consumers?.length} potential consumers globally for producer in ${producerLocation}`);
 
     for (const consumer of consumers as ConsumerProfile[]) {
         if (currentAvailable <= 0) break;
