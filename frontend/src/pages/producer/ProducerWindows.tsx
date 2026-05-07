@@ -67,7 +67,7 @@ export default function ProducerWindows() {
     if (!user) return;
     const { data, error } = await supabase
       .from('surplus_windows')
-      .select('*')
+      .select('*, ai_corrected_kw, confidence_score, price_recommendation')
       .eq('producer_id', user.id)
       .order('date', { ascending: false })
       .order('start_time', { ascending: false });
@@ -266,7 +266,7 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.end_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
-                    {w.predicted_kw} {w.ai_corrected_kw != null ? <span className="text-[#10B981] font-medium text-[12px] ml-1">(AI: {w.ai_corrected_kw})</span> : ''}
+                    {w.predicted_kw} kW {w.ai_corrected_kw != null ? <span className="text-[#10B981] font-medium text-[12px] ml-1">(AI: {w.ai_corrected_kw} kW)</span> : ''}
                   </td>
                   <td className="p-[14px_16px] text-[14px] font-semibold text-[#0D1117] border border-[#E5E7EB]">
                     ₹{w.price_recommendation ? w.price_recommendation : w.price_per_kw || '4.0'}
@@ -275,7 +275,7 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
                     {w.confidence_score != null ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium bg-[#ECFDF5] text-[#065F46]">
-                        {Math.round(w.confidence_score * 100)}%
+                        {w.confidence_score * 100}%
                       </span>
                     ) : '-'}
                   </td>
