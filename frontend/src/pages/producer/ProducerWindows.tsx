@@ -13,6 +13,9 @@ interface Window {
   available_kw: number;
   price_per_kw: number;
   status: string;
+  ai_corrected_kw?: number;
+  confidence_score?: number;
+  price_recommendation?: number;
 }
 
 export default function ProducerWindows() {
@@ -245,6 +248,7 @@ export default function ProducerWindows() {
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">End</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Total (kW)</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Price (₹)</th>
+                <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">AI Conf.</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Available (kW)</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Status</th>
                 <th className="p-[12px_16px] text-[12px] font-semibold text-[#6B7280] tracking-[0.04em] uppercase border border-[#E5E7EB]">Action</th>
@@ -253,11 +257,28 @@ export default function ProducerWindows() {
             <tbody>
               {windows.map((w) => (
                 <tr key={w.id} className="hover:bg-[#F9FAFB] transition-colors duration-100">
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.date}</td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    <div className="flex items-center gap-1.5">
+                      {w.date}
+                      {w.ai_corrected_kw != null && <Zap size={14} className="text-[#10B981]" fill="#10B981" title="AI Processed" />}
+                    </div>
+                  </td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start_time.substring(0, 5)}</td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.end_time.substring(0, 5)}</td>
-                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.predicted_kw}</td>
-                  <td className="p-[14px_16px] text-[14px] font-semibold text-[#0D1117] border border-[#E5E7EB]">₹{w.price_per_kw || '4.0'}</td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    {w.predicted_kw} {w.ai_corrected_kw != null ? <span className="text-[#10B981] font-medium text-[12px] ml-1">(AI: {w.ai_corrected_kw})</span> : ''}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] font-semibold text-[#0D1117] border border-[#E5E7EB]">
+                    ₹{w.price_recommendation ? w.price_recommendation : w.price_per_kw || '4.0'}
+                    {w.price_recommendation ? <span className="block text-[10px] text-[#10B981] font-medium mt-0.5">AI Rec</span> : null}
+                  </td>
+                  <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
+                    {w.confidence_score != null ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-medium bg-[#ECFDF5] text-[#065F46]">
+                        {Math.round(w.confidence_score * 100)}%
+                      </span>
+                    ) : '-'}
+                  </td>
                   <td className="p-[14px_16px] text-[14px] font-bold text-[#2563EB] border border-[#E5E7EB]">{w.available_kw ?? w.predicted_kw}</td>
                   <td className="p-[14px_16px] text-[14px] border border-[#E5E7EB]">
                     <span className={`inline-flex items-center gap-1.5 px-[10px] py-[3px] rounded-full text-[11px] font-medium border capitalize ${
@@ -284,7 +305,7 @@ export default function ProducerWindows() {
               ))}
               {windows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-[48px] text-center border border-[#E5E7EB]">
+                  <td colSpan={9} className="p-[48px] text-center border border-[#E5E7EB]">
                     <div className="flex flex-col items-center justify-center text-[#6B7280]">
                       <Zap size={48} strokeWidth={1} className="text-[#D1D5DB] mb-4" />
                       <h3 className="text-[16px] font-medium text-[#374151] mb-1">No surplus windows</h3>
