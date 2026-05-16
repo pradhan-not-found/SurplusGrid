@@ -260,7 +260,7 @@ export default function ProducerWindows() {
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">
                     <div className="flex items-center gap-1.5">
                       {w.date}
-                      {w.ai_corrected_kw != null && <Zap size={14} className="text-[#10B981]" fill="#10B981" title="AI Processed" />}
+                      {w.ai_corrected_kw != null && <Zap size={14} className="text-[#10B981]" fill="#10B981" aria-label="AI Processed" />}
                     </div>
                   </td>
                   <td className="p-[14px_16px] text-[14px] text-[#0D1117] border border-[#E5E7EB]">{w.start_time.substring(0, 5)}</td>

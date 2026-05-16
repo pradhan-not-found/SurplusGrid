@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/DashboardLayout';
-import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info, Activity, CheckCircle2, AlertTriangle, AlertCircle, Wifi, Search, PieChart, XCircle } from 'lucide-react';
+import { Zap, ShieldCheck, IndianRupee, GitMerge, Sun, Cloud, Thermometer, Info, Activity, CheckCircle2, AlertCircle, Search, PieChart, XCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
