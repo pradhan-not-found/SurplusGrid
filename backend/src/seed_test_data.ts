@@ -6,36 +6,16 @@ async function seed() {
 
     try {
         // 1. Create a Producer User & Profile
-        let producerId: string;
-        try {
-            const { data: producerUser, error: pUserError } = await supabase.auth.admin.createUser({
-                email: 'producer@test.com',
-                password: 'password123',
-                email_confirm: true,
-                user_metadata: { full_name: 'Test Producer Corp', role: 'producer' }
-            });
+        const { data: producerUser, error: pUserError } = await supabase.auth.admin.createUser({
+            email: `producer_${Date.now()}@test.com`,
+            password: 'password123',
+            email_confirm: true,
+            user_metadata: { full_name: 'Test Producer Corp', role: 'producer' }
+        });
 
-            if (pUserError) {
-                if (pUserError.message.includes('already registered')) {
-                    const { data: existing, error: fetchError } = await supabase
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', 'producer@test.com')
-                        .single();
-                    if (fetchError || !existing) throw new Error('Could not find existing producer: ' + fetchError?.message);
-                    producerId = existing.id;
-                    console.log(`✅ Existing Producer found: ${producerId}`);
-                } else {
-                    throw pUserError;
-                }
-            } else {
-                producerId = producerUser.user.id;
-                console.log(`✅ Producer created: ${producerId}`);
-            }
-        } catch (err: any) {
-            console.error('Error handling producer seed:', err.message);
-            throw err;
-        }
+        if (pUserError) throw pUserError;
+        const producerId = producerUser.user.id;
+        console.log(`✅ Producer created: ${producerId}`);
 
         // Update profile details (capacity, location)
         await supabase.from('profiles').update({
@@ -45,36 +25,16 @@ async function seed() {
         }).eq('id', producerId);
 
         // 2. Create a Consumer User & Profile
-        let consumerId: string;
-        try {
-            const { data: consumerUser, error: cUserError } = await supabase.auth.admin.createUser({
-                email: 'consumer@test.com',
-                password: 'password123',
-                email_confirm: true,
-                user_metadata: { full_name: 'Green Factory LLC', role: 'consumer' }
-            });
+        const { data: consumerUser, error: cUserError } = await supabase.auth.admin.createUser({
+            email: `consumer_${Date.now()}@test.com`,
+            password: 'password123',
+            email_confirm: true,
+            user_metadata: { full_name: 'Green Factory LLC', role: 'consumer' }
+        });
 
-            if (cUserError) {
-                if (cUserError.message.includes('already registered')) {
-                    const { data: existing, error: fetchError } = await supabase
-                        .from('profiles')
-                        .select('id')
-                        .eq('email', 'consumer@test.com')
-                        .single();
-                    if (fetchError || !existing) throw new Error('Could not find existing consumer: ' + fetchError?.message);
-                    consumerId = existing.id;
-                    console.log(`✅ Existing Consumer found: ${consumerId}`);
-                } else {
-                    throw cUserError;
-                }
-            } else {
-                consumerId = consumerUser.user.id;
-                console.log(`✅ Consumer created: ${consumerId}`);
-            }
-        } catch (err: any) {
-            console.error('Error handling consumer seed:', err.message);
-            throw err;
-        }
+        if (cUserError) throw cUserError;
+        const consumerId = consumerUser.user.id;
+        console.log(`✅ Consumer created: ${consumerId}`);
 
         // Update consumer profile (location, flexible load, shiftable hours)
         await supabase.from('profiles').update({

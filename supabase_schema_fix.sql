@@ -186,20 +186,6 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
--- Trigger to auto-confirm email for all new signups
-CREATE OR REPLACE FUNCTION public.auto_confirm_email() 
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.email_confirmed_at = COALESCE(NEW.email_confirmed_at, now());
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-DROP TRIGGER IF EXISTS on_auth_user_created_before ON auth.users;
-CREATE TRIGGER on_auth_user_created_before
-  BEFORE INSERT ON auth.users
-  FOR EACH ROW EXECUTE PROCEDURE public.auto_confirm_email();
-
 -- Drop it first just in case it was partially created
 drop policy if exists "Users can insert own profile" on public.profiles;
 
@@ -211,4 +197,3 @@ create policy "Users can insert own profile"
 
 -- FORCE INSTANT SCHEMA RELOAD FOR API
 NOTIFY pgrst, 'reload schema';
-
