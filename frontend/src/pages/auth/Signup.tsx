@@ -52,7 +52,7 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -63,15 +63,26 @@ export default function Signup() {
         }
       });
 
-      if (error) {
-        if (error.status === 429 || error.message?.toLowerCase().includes('rate limit')) {
+      if (signUpError) {
+        if (signUpError.status === 429 || signUpError.message?.toLowerCase().includes('rate limit')) {
           setErrorMsg('Security rate limit reached. Please wait a few minutes, or disable the signup rate limit in your Supabase Dashboard.');
-        } else if (error.message?.includes('User already registered')) {
+        } else if (signUpError.message?.includes('User already registered')) {
           setErrorMsg('An account with this email exists. Sign in instead.');
         } else {
-          setErrorMsg(error.message || 'Signup failed');
+          setErrorMsg(signUpError.message || 'Signup failed');
         }
         return;
+      }
+
+      // If email confirmation is disabled, signUp returns a session immediately.
+      // If not, explicitly sign in to get a session.
+      if (!signUpData.session) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          setErrorMsg('Account created! Please sign in with your credentials.');
+          navigate('/signin');
+          return;
+        }
       }
 
       navigate('/onboarding');
