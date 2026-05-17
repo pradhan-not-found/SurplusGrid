@@ -110,13 +110,20 @@ export default function Signin() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMsg && (
-              <div className="flex items-start justify-between bg-red-50/50 border border-red-200 rounded-lg p-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                <span className="text-[13px] text-red-600 leading-snug font-medium">
-                  {errorMsg}
-                </span>
-                <button type="button" onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-600">
-                  <X size={16} />
-                </button>
+              <div className="flex flex-col gap-2 bg-red-50/50 border border-red-200 rounded-lg p-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="flex items-start justify-between">
+                  <span className="text-[13px] text-red-600 leading-snug font-medium">
+                    {errorMsg}
+                  </span>
+                  <button type="button" onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-600 shrink-0 ml-2">
+                    <X size={16} />
+                  </button>
+                </div>
+                {errorMsg.toLowerCase().includes('credential') && (
+                  <div className="mt-1.5 pt-2 border-t border-red-100/60 text-[11px] text-[#B45309] leading-relaxed font-normal">
+                    💡 <strong>Developer Tip:</strong> Supabase requires email verification by default for new signups (e.g. <code>dassatwik123@gmamil.com</code>). To bypass this, please disable <strong>"Confirm email"</strong> in your Supabase Auth dashboard (Authentication &gt; Providers &gt; Email), or run the auto-confirm database trigger located at the bottom of <code>supabase_schema_fix.sql</code>!
+                  </div>
+                )}
               </div>
             )}
             
@@ -153,12 +160,6 @@ export default function Signin() {
               </div>
             </div>
 
-            {errorMsg && (
-              <div className="flex items-center gap-2 mt-4 text-[#EF4444] bg-[#FEF2F2] p-3 rounded-lg border border-[#FEE2E2]">
-                <AlertTriangle size={16} />
-                <span className="text-[13px] font-medium">{errorMsg}</span>
-              </div>
-            )}
 
             <button
               type="submit"
